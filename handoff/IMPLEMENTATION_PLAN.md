@@ -18,7 +18,7 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 | `js/area-insight.js` | Aha 3 ย่าน และ area-focus filter | ตัวเศษ = union ของ banner ใน 3 ย่าน; ตัวหาร = banner ทั้งหมดในฐานที่กรอง รวมแถวนอก Locale และแถวไม่มีพิกัด |
 | `js/chart-model.js` | อันดับ / matrix / exclusive-shared | เทียบทุก assigned areas ก่อนตัด Top-N; ช่อง matrix นับคู่ (สาขา × banner) ตาม segment ของ banner |
 | `js/profile-model.js` | โปรไฟล์ย่าน สถานที่ ร้าน, `segmentMixOf`, `describeStatus` (ที่อยู่ติดต่อ, ตัวตนหน้าร้านรอตรวจ, รวมรายการรอตรวจ, ที่ตั้งขัดกัน), `describeGeometry` (จุดตัวแทนศูนย์การค้า; จุดตัวแทนไฮเปอร์มาร์เก็ตรองรับ; พิกัดรอตรวจ เมื่อ `venueJoin = held`), `rankVenues` | pure; ใช้ `scopeRows` เป็นฐานเทียบ; ไม่ยกระดับความแม่นพิกัด; ร้านริมถนนที่ไม่มีสถานที่ไม่ใช่ “สถานที่” |
-| `js/scales.js` | LDS `count` LUT 41 ค่า, class projection, EVID-05 | ห้าม interpolate สีใหม่; HEX เดียวกันสองธีม |
+| `js/scales.js` | LDS `count` LUT 41 ค่า ใช้ครบ 41 ระดับแบบเส้นตรง (`buildCountScale`, `countSampleIndex`, `countRamp`), EVID-05 | ห้าม interpolate สีใหม่; HEX เดียวกันสองธีม |
 | `js/map-style.js`, `js/massing.js`, `js/mvt.js`, `js/geometry.js`, `js/camera.js`, `js/venue-xray.js` | basemap กระดาษ, มวลอาคารสองชั้น, MVT reader, เรขาคณิต, กล้อง, venue x-ray — **โค้ดเดียวกับ Luxury 0.5** | ลำดับชั้น 3D: city/focus/occluder → host extrusion → venue-xray → `water-name`; ทุก preset pitch ≤ 90° − fov/2 − 3° |
 | `js/map-layers.js` | choropleth Locale + outline + selected, focus/quiet, ป้าย ink chip (ย่าน/จังหวัด) | fill ก่อน `waterway`, maxzoom 14.5; ป้ายนับ “ร้าน” |
 | `js/pins.js` | หมุดรายสาขา, context pins, ป้ายที่ zoom ≥ 14 ในโฟกัส: โลโก้ banner เมื่อมีทะเบียน ไม่เช่นนั้นป้ายชื่อขนาดตามข้อความ (`textLabelWidth`), keyboard | พิกัดต้นทางไม่เปลี่ยน; ≤ 250 ป้าย; context pins ไม่มีป้ายและไม่อยู่ใน tab order; ป้ายชื่อไม่ใช่โลโก้แทน |
@@ -77,6 +77,7 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 | P19 | Live attestation + bundle (manifest บน commit ที่ push, `verify:live`, bundle พร้อม receipt/evidence) | pending | `RELEASE_RECEIPT.json` |
 | P20 | Resilience จาก Luxury (launch overlay, file bridge, vendor retry) | retained, source-checked | file: ไปที่ `https://montri-th.github.io/camera/`; ไม่ได้ทำ fault injection ซ้ำ |
 | P21 | Rebase บน research master ฉบับ 13:13 UTC: จุด host และอาคารที่ตั้งจาก venue join / building join ของ master; สาขามีจุด 208 → 179, ย่าน 27 → 26, อาคาร 136 → 103 features, ข้อค้นพบแรก 61% → 58%; ถอด `03_build_crosswalk.py` และ `05_build_host_buildings.py` | done | `tests/data-contract.test.js`; `scripts/host-links/README.md`; harness รันซ้ำ |
+| P22 | สีข้อมูลใช้ครบ 41 ระดับของ LDS (กฎเจ้าของ 2026-10-22): `buildCountScale` / `countSampleIndex` / `countRamp` แทนการจัด 5 ชั้น ทั้งสีย่าน กรอบจังหวัด แท่งอันดับ และตารางกราฟ; คำอธิบายเป็นแถบไล่สี 41 ช่อง (1 · 7 · 13 สำหรับย่าน, 1 · 19 · 36 สำหรับจังหวัด); ตัวเลขบนสีลำดับ 27–29 อยู่บนชิปพื้นการ์ด | done | `tests/scales.test.js`; harness รันซ้ำทุก scenario |
 
 ## งานถัดไปที่แนะนำ (backlog สำหรับ vibe coding)
 
@@ -142,6 +143,7 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 | AC35 | สาขาไม่มีพิกัด | 55 สาขา (ร้านริมถนน 15, สถานที่ที่ master รอจับคู่ทะเบียน 32, สถานที่ที่ master พักไว้ 8) อยู่ในจำนวน ตาราง ยอดจังหวัด และตัวหารของ Aha; ไม่มีหมุดและไม่มีย่าน (ย่านแสดง “—”); ร้านริมถนนไม่เป็นกลุ่มสถานที่ ส่วนสาขาที่สถานที่ไม่มี host คงชื่อสถานที่ไว้ |
 | AC36 | สถานที่ที่ research master พักไว้ | สาขาที่ `venueJoin = held` (Siam Square One, Central Phuket Floresta และอีก 4 แห่ง รวม 8 สาขา) ไม่มีจุด; หน้าร้านอ่าน “พิกัดรอตรวจ”, ย่าน “—”, breadcrumb ข้ามระดับย่าน; ยังอยู่ในจำนวน ตาราง ตัวหารของ Aha และ cohort `review` (17 แถว) |
 | AC37 | จุดและอาคารมาจาก research master | ทุกแถวที่มีจุดเป็นสาขาที่ master จับคู่และอยู่บนจุด detail ของ Shopping Center (`coordinateSource` = URL ของ detail); แถวที่พักไว้หรือยังไม่จับคู่ไม่มีจุด; อาคารทุกรูปเป็น feature ของ `13_BUILDINGS` (id ไม่ซ้ำ, `render_as` extrusion/outline, สาขาที่ผูกเป็นสาขาที่จับคู่แล้วของ host นั้น, © OpenStreetMap contributors); ข้อเสนอของแอปไม่เผยแพร่ |
+| AC38 | สีข้อมูล 41 ระดับ (กฎเจ้าของ) | ทุกค่าที่ระบายสี (ย่าน กรอบจังหวัด แท่งอันดับ ช่องตาราง) ได้หนึ่งใน 41 สีของ LDS `count` แบบเส้นตรงจาก 1 ถึงค่าสูงสุดของตัวกรอง ไม่มีการจัด 5 ชั้นเหลือ; คำอธิบายเป็นแถบไล่สี 41 ช่องพร้อมค่า 1 · กลาง · สูงสุด; ศูนย์ยังเป็น measured_zero; ตัวเลขบนสีได้ contrast ≥ 4.5:1 (ลำดับ 27–29 ผ่านชิป) |
 
 วิธีตรวจของแต่ละข้อ (ชื่อ unit test, ฉาก harness หรือ live) อยู่ใน `implementation-plan.json` (`verification`, `result`)
 

@@ -92,7 +92,7 @@
       },
       {
         "path": "js/scales.js",
-        "role": "LDS count family LUT, class projection, EVID-05 states (unit ร้านไม่ซ้ำ)"
+        "role": "LDS count family LUT: full 41-sample linear mapping (buildCountScale, countSampleIndex, countRamp), EVID-05 states, ink contrast per sample (unit ร้านไม่ซ้ำ)"
       },
       {
         "path": "js/map-style.js",
@@ -783,6 +783,29 @@
       ],
       "status": "done",
       "note": "The first build used the 12:36 UTC export; the master then gained 12_SPATIAL_JOIN / 13_BUILDINGS and held six venues the app had placed. Rows with a point 208 → 179 (−19 hypermarket and −6 Robinson outlets awaiting a registry match, −6 outlets at held venues, +2 newly joined: Ayutthaya City Park, Jampha Lamphun; Lotus’s Surat Thani on a Shopping Center record), Locales 27 → 26, buildings 136 → 103; first finding 61% → 58%. 03_build_crosswalk.py and 05_build_host_buildings.py removed; steps 01–04 and the data build reproduce every public file byte-for-byte from the cache"
+    },
+    {
+      "id": "P22",
+      "title": "Colour scales use the full 41-sample LDS scale (owner rule 2026-10-22)",
+      "dependsOn": [
+        "P21"
+      ],
+      "acceptanceCriteria": [
+        "AC38"
+      ],
+      "files": [
+        "js/scales.js",
+        "js/map-layers.js",
+        "js/provinces.js",
+        "js/charts.js",
+        "js/app.js",
+        "styles.css",
+        "tests/scales.test.js",
+        "tests/profile-model.test.js",
+        "tests/provinces.test.js"
+      ],
+      "status": "done",
+      "note": "buildCountScale / countSampleIndex / countRamp replace the 5-class projection (classColors, countThresholds, buildCountClasses): a count v takes count-LUT sample round(40 × (v − 1) / (max − 1)) of the current selection on the neighborhood choropleth, the province frames, the ranking bars and the matrix; legends show the 41-sample ramp with 1 · middle · max ticks (snapshot 1 · 7 · 13 for Locales, 1 · 19 · 36 for provinces); matrix numbers on samples 27–29, which reach < 4.5:1 with both foundation inks, sit on a surface chip."
     }
   ],
   "acceptanceCriteria": [
@@ -1074,6 +1097,14 @@
       "expected": "Every row with a point is a master-joined outlet on its CityMETER Shopping Center detail point (coordinateSource = the detail URL); no held or unjoined row has a point; every host building is a 13_BUILDINGS feature (unique id, render_as extrusion or outline, linked outlets are joined outlets of the feature’s host, © OpenStreetMap contributors); app crosswalk proposals are never published",
       "verificationType": "unit-and-build",
       "verification": "tests/data-contract.test.js; scripts/host-links/03_verify_master_join.py and scripts/build-camera-data.py stop on any difference",
+      "result": "see VERIFICATION.md"
+    },
+    {
+      "id": "AC38",
+      "scenario": "Colour scale (owner rule: always the full 41-sample LDS scale)",
+      "expected": "Every coloured count (Locale fill, province frame, ranking bar, matrix cell) takes one of the 41 count-LUT samples linearly from 1 to the maximum of the current selection; no 5-class projection remains; the legend is the 41-sample ramp with 1 · middle · max ticks; zero keeps the measured_zero treatment; every number drawn on a fill reaches 4.5:1 (samples 27–29 via a surface chip)",
+      "verificationType": "unit-and-browser",
+      "verification": "tests/scales.test.js; harness desktop/mobile legend and matrix screenshots; live browser check on real tiles",
       "result": "see VERIFICATION.md"
     }
   ],

@@ -56,7 +56,8 @@
       "rebase 2026-10-22 on the research master revision 13:13 UTC (the first build used the 12:36 UTC export): host points and host buildings now come from the master’s own venue join and building join (13_BUILDINGS + its feature file); rows with a point 208 → 179, Locales 27 → 26, host buildings 136 → 103 features (69 footprints + 34 parts, 69 hosts, © OpenStreetMap contributors only); first finding 61% → 58% (22/38 ร้าน, 37/233 สาขา)",
       "the app crosswalk (scripts/host-links/crosswalk_*.py) only proposes host links for venues the master has not joined — host_link_proposals.csv, 28 venues / 29 outlets (19 Big C / Lotus’s hypermarkets, 6 Robinson stores, 3 held venues) for the research team; never published",
       "row field venueJoin (joined | held | awaiting_registry | no_venue) from the master venue_join_status; describeGeometry reads held as พิกัดรอตรวจ; the review cohort includes held rows (17)",
-      "venue-level finding names the leading venue that has a host point (venues without one stay in the venue list); ย่าน shows “—” for a row without a point (was “นอกย่าน”); the host-building legend key hides when no host building is displayed"
+      "venue-level finding names the leading venue that has a host point (venues without one stay in the venue list); ย่าน shows “—” for a row without a point (was “นอกย่าน”); the host-building legend key hides when no host building is displayed",
+      "colour scales use the full 41-sample LDS count LUT (owner rule 2026-10-22): a linear sample per count from 1 to the selection maximum on the map, the province frames, the ranking bars and the matrix; legends are the 41-sample ramp; the 5-class projection (classColors, countThresholds, buildCountClasses) is removed; matrix numbers on samples 27–29 sit on a surface chip"
     ]
   },
   "rowScopes": {
@@ -191,7 +192,7 @@
         "quiet": "other Locales outline-only with quiet labels; outlets outside focus are grey context dots without labels; city massing in the quiet tone; no name chips below zoom 14"
       },
       "overviewAll": {
-        "focus": "all 26 Locales filled by distinct banners (count family, 5 equal-interval classes), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
+        "focus": "all 26 Locales filled by distinct banners (count family, all 41 samples mapped linearly from 1 to the maximum), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
         "quiet": "pins are size-tiered dots; city massing only; no rounded focus massing"
       },
       "neighborhood": {
@@ -207,14 +208,14 @@
         "quiet": "other venues' rows are grey context dots; their host buildings fall back to quiet/focus massing; SCENE.eye lowers massing opacity (city 0.16, focus 0.62) and buildings between the camera and the venue move to the 0.14-opacity occluder layer; the city tier fades to the ground tone with distance from the focus"
       },
       "countryAll": {
-        "focus": "below zoom 9: frames of the 64 provinces that hold an outlet, filled by distinct banners per province (count family, 5 equal-interval classes of their own), ink-chip province labels with counts, legend “จังหวัด · จำนวนร้าน”, panel list “จังหวัดที่มีร้านกล้อง” (ten rows + a disclosure for the rest)",
+        "focus": "below zoom 9: frames of the 64 provinces that hold an outlet, filled by distinct banners per province (count family, all 41 samples mapped linearly from 1 to the province maximum), ink-chip province labels with counts, legend “จังหวัด · จำนวนร้าน”, panel list “จังหวัดที่มีร้านกล้อง” (ten rows + a disclosure for the rest)",
         "quiet": "provinces without outlets are not drawn (out_of_scope); with a จังหวัด filter the other frames are outline-only; from zoom 9 the frames are outlines until zoom 12 and the Locales carry the scale"
       }
     },
     "choropleth": {
       "scaleId": "count",
       "metric": "distinct shop banners per Locale within scopeRows",
-      "classification": "equal-interval, 5 classes from the current maximum, integer closed intervals shown in the legend",
+      "classification": "none: owner rule 2026-10-22 — a colour scale always uses the full 41-sample LDS scale; a count v takes count-LUT sample round(40 × (v − 1) / (max − 1)) of the current selection (max 1 → darkest sample); the legend is the 41-sample ramp with 1 · middle · max ticks; numbers drawn on samples 27–29 (below 4.5:1 with both foundation inks) sit on a surface chip",
       "defaultClasses": [
         "1–2",
         "3–5",
@@ -228,7 +229,7 @@
         "out_of_scope": "bare basemap (every place outside the 26 Locales, i.e. every province but Bangkok)"
       },
       "themePolicy": "identical light HEX on both themes; fill-opacity 1 inserted before the basemap's first line layer (waterway); hard switch off at zoom ≥ 14.5",
-      "model": "js/map-layers.js#buildAreaModel, js/scales.js#buildCountClasses"
+      "model": "js/map-layers.js#buildAreaModel, js/scales.js#buildCountScale / countSampleIndex / countRamp"
     },
     "hostBuildings": "map.activeLayer role (light #347DA8 / dark #65B6DB), only for detail rows, extrusion zoom ≥ 14, outline zoom ≥ 12, visible in both plan and 3D; layers camera-venue-buildings-3d / camera-venue-buildings-outline",
     "labels": "pin labels at zoom ≥ 14 for focused rows only, ≤ 250 (js/pins.js LOGO_MIN_ZOOM, MAX_LOGOS): banner logo when registered, else a text name chip (Camera Shops: always a chip, see bannerContract.labels); the map status line reads “{n} สาขา · ป้ายชื่อ {placed}/250 · บริบท {n}”",
@@ -1024,7 +1025,7 @@
     "source": "https://github.com/chingchai/OpenGISData-Thailand provinces.geojson (publisher credits DOPA); extracted by scripts/extract-provinces.mjs from the rows of data/camera.json; coordinates rounded to 5 decimals, no simplification; rings that collapse below 4 positions after rounding are dropped (one sliver hole in ร้อยเอ็ด)",
     "module": "js/provinces.js#installProvinceLayers(map, geojson, {onSelect}) → {update({rows, selectedCode, visible}), retheme, dispose, model}; buildProvinceModel(rows, geojson)",
     "rows": "filterRows(data.rows, {...filters, province: \"\"}) — every filter except the province filter, so each frame keeps its own count",
-    "metric": "distinct shop banners per province; equal-interval 5 classes of the count family from the province maximum (snapshot 1–7 · 8–14 · 15–21 · 22–28 · 29–36; กรุงเทพมหานคร 36 ร้าน); measured_zero = lowest fill + zero outline; out_of_scope = not drawn",
+    "metric": "distinct shop banners per province; the full 41-sample count scale from 1 to the province maximum (snapshot ramp 1 · 19 · 36; กรุงเทพมหานคร 36 ร้าน); measured_zero = lowest fill + zero outline; out_of_scope = not drawn",
     "zoomWindows": {
       "fill": "< 9 (PROVINCE_FILL_MAX_ZOOM, hard switch)",
       "outline": "< 12 (PROVINCE_OUTLINE_MAX_ZOOM, opacity fades 10.5 → 12)",

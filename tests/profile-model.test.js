@@ -107,5 +107,5 @@ test('area model carries EVID-05 states for every defined area and never colours
   for (const a of m.areas) assert.ok(['measured', 'measured_zero'].includes(a.state));
   const phuket = buildAreaModel(filterRows(data.rows, {cohort: 'current', province: 'ภูเก็ต'}), geojson);
   assert.equal(phuket.zeroCount, geojson.features.length);
-  assert.deepEqual(phuket.classes.classes, []);
+  assert.equal(phuket.scale.max, 0);
 });

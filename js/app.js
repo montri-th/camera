@@ -32,7 +32,7 @@
  */
 import {SEGMENTS, CHANNELS, COHORTS, DEFAULT_COHORT, PROVINCES, provinceByName, provinceByCode, provinceNameFrom, filterRows, summarize, hasPoint, isClosed, bannersOf} from './model.js';
 import {summarizeAreaInsight, filterAreaRows} from './area-insight.js';
-import {renderInsightChart} from './charts.js';
+import {renderInsightChart, rampMarkup} from './charts.js';
 import {loadMapLibrary} from './vendors.js';
 import {installStorePins} from './pins.js';
 import {installVenueBuildings, HOST_LAYERS} from './buildings.js';
@@ -433,11 +433,11 @@ function renderLegend() {
   const steps = $('legend-steps');
   $('legend-title').textContent = atProvince ? 'จังหวัด · จำนวนร้าน' : 'ย่าน · จำนวนร้าน';
   const unit = atProvince ? 'จังหวัด' : 'ย่าน';
-  if (!model || !model.classes.classes.length) { steps.innerHTML = `<span class="hint">ไม่มี${unit}ที่มีร้านในตัวกรองนี้</span>`; }
+  if (!model || !model.scale.max) { steps.innerHTML = `<span class="hint">ไม่มี${unit}ที่มีร้านในตัวกรองนี้</span>`; }
   else {
-    steps.innerHTML = model.classes.classes.map(c => `<span class="legend-step"><i style="background:${c.fill}" aria-hidden="true"></i>${esc(c.label)}</span>`).join('') +
+    steps.innerHTML = rampMarkup(model.scale, `ร้านไม่ซ้ำต่อ${unit}`) +
       (model.zeroCount ? `<span class="legend-step" title="${unit}ที่มีร้านในข้อมูลแต่ไม่พบในตัวกรองนี้"><i class="legend-zero" aria-hidden="true"></i>0</span>` : '');
-    $('legend-areas').title = `ร้านไม่ซ้ำต่อ${unit} · ${model.classes.classCount} ระดับเท่าช่วง จากค่าสูงสุด ${model.classes.max} · นอกขอบเขต${unit}ไม่ระบายสี · สีเดียวกันทั้งสองธีม`;
+    $('legend-areas').title = `ร้านไม่ซ้ำต่อ${unit} · สีไล่ ${model.scale.steps} ระดับของ LDS จาก 1 ถึง ${model.scale.max} · นอกขอบเขต${unit}ไม่ระบายสี · สีเดียวกันทั้งสองธีม`;
   }
   document.querySelector('.map-panel').classList.toggle('is-3d', state.view3d);
   document.querySelector('.map-panel').classList.toggle('is-province-zoom', atProvince);

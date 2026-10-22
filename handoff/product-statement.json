@@ -176,9 +176,25 @@
     "note": "regression fixture of the research master revision 2026-10-22 13:13 UTC (meta.researchRevision), never a UI constant",
     "share": "22/38 shop banners (58%) have an outlet in the top three Locales",
     "areas": [
-      {"locale": "รัชดา-ตะวันตก", "localeId": "1d671f78-108c-4bcb-9da8-a29a3117e931", "brands": 13, "outlets": 17, "exclusiveBrands": 9},
-      {"locale": "ราชประสงค์", "localeId": "228edb69-6e1a-42f7-8001-f3eed7ee016d", "brands": 8, "outlets": 10},
-      {"locale": "สยาม", "localeId": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e", "brands": 8, "outlets": 10}
+      {
+        "locale": "รัชดา-ตะวันตก",
+        "localeId": "1d671f78-108c-4bcb-9da8-a29a3117e931",
+        "brands": 13,
+        "outlets": 17,
+        "exclusiveBrands": 9
+      },
+      {
+        "locale": "ราชประสงค์",
+        "localeId": "228edb69-6e1a-42f7-8001-f3eed7ee016d",
+        "brands": 8,
+        "outlets": 10
+      },
+      {
+        "locale": "สยาม",
+        "localeId": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
+        "brands": 8,
+        "outlets": 10
+      }
     ],
     "outlets": "37 of 233 default outlets",
     "chainCoverage": "BIG CAMERA 142 outlets (+1 co-branded) in all 64 provinces; the only banner observed in 55 of 63 provinces outside Bangkok",
@@ -391,7 +407,7 @@
       "share",
       "exclusiveBrands",
       "sharedBrands",
-      "class (equal-interval 5)",
+      "colour sample (linear over the full 41-sample LDS count scale)",
       "leading-venue share"
     ],
     "inferred_outputs": [
@@ -408,7 +424,7 @@
       "export"
     ],
     "source_note": "official retailer locators, branch lists, brand locators, mall directories and retailer websites with per-row links; checked 2026-10-22; phone numbers removed from public files",
-    "calculation_note": "distinct banners counted separately from outlet rows; a co-branded storefront is one outlet with each counted banner; a store-type filter counts only that type's banners; equal-interval classes from the current maximum within the filter",
+    "calculation_note": "distinct banners counted separately from outlet rows; a co-branded storefront is one outlet with each counted banner; a store-type filter counts only that type's banners; colours take the full 41-sample LDS count scale linearly from 1 to the current maximum within the filter (owner rule 2026-10-22)",
     "inference_note": "Locales are production navigation and analysis units, not administrative areas or catchments; rankings help prioritise, not judge potential",
     "confidence_note": "status, identity holds and coordinate precision stated per row; conflicting evidence kept and labelled, never merged or dropped",
     "limitation_summary": "not a census; listed ≠ field-verified open; host point ≠ shop entrance; 55 outlets without coordinates (8 held by the research master, 32 awaiting a registry match, 15 without a venue); 37 of 106 hosts without an accepted building; no store-banner logos collected; production Locales exist in Bangkok only; OSM heights may be defaults"

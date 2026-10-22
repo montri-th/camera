@@ -46,7 +46,7 @@ test('buildProvinceModel counts distinct banners and rows per province and class
   assert.equal(bkk.brands, countBrands(bkkRows));
   assert.equal(bkk.state, 'measured');
   assert.ok(bkk.brands > 30, 'Bangkok carries most banners');
-  assert.equal(model.classes.max, Math.max(...model.provinces.map(p => p.brands)));
+  assert.equal(model.scale.max, Math.max(...model.provinces.map(p => p.brands)));
   // Narrow filter: provinces without rows are measured_zero (lowest fill + zero outline), never dropped silently.
   const narrow = buildProvinceModel(rows.filter(r => r.province === 'ภูเก็ต'), provinces);
   assert.equal(narrow.zeroCount, 63);

@@ -18,7 +18,7 @@
  * (provinces without rows in the dataset — nothing drawn).
  */
 import {PROVINCES, provinceByName, bannersOf} from './model.js';
-import {buildCountClasses, classify} from './scales.js';
+import {buildCountScale, classify} from './scales.js';
 import {featureBounds, firstLineLayerId} from './map-layers.js';
 
 export const PROVINCE_FILL_MAX_ZOOM = 9;
@@ -53,9 +53,9 @@ export function buildProvinceModel(rows, geojson) {
     const e = byCode.get(code);
     return {id: code, code, name: meta.th, nameEn: meta.en, brands: e ? e.brands.size : 0, pos: e ? e.pos : 0, feature: f};
   });
-  const classes = buildCountClasses(provinces.map(p => p.brands));
-  for (const p of provinces) { const c = classify(p.brands, classes); p.state = c.state; p.fill = c.fill; p.ink = c.ink; p.outline = c.outline || null; }
-  return {provinces, classes, zeroCount: provinces.filter(p => p.state === 'measured_zero').length};
+  const scale = buildCountScale(provinces.map(p => p.brands));
+  for (const p of provinces) { const c = classify(p.brands, scale); p.state = c.state; p.fill = c.fill; p.ink = c.ink; p.outline = c.outline || null; }
+  return {provinces, scale, zeroCount: provinces.filter(p => p.state === 'measured_zero').length};
 }
 
 export function installProvinceLayers(map, geojson, {onSelect} = {}) {

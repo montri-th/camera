@@ -14,7 +14,7 @@
  * everything outside the defined set (bare basemap, nothing drawn).
  */
 import {summarizeNeighborhoods} from './neighborhoods.js';
-import {buildCountClasses, classify} from './scales.js';
+import {buildCountScale, classify} from './scales.js';
 
 export const FILL_MAX_ZOOM = 14.5;
 const SOURCE = 'neighborhoods';
@@ -41,16 +41,16 @@ export function featureBounds(feature, LngLatBounds) {
 
 /**
  * Build the per-area model used by the layer, the legend and the labels.
- * Returns {areas, classes} where every defined area carries its EVID-05 state.
+ * Returns {areas, scale} where every defined area carries its EVID-05 state and its LUT sample.
  */
 export function buildAreaModel(rows, geojson) {
   const summaries = summarizeNeighborhoods(rows, geojson, {includeEmpty: true});
-  const classes = buildCountClasses(summaries.map(s => s.brands));
+  const scale = buildCountScale(summaries.map(s => s.brands));
   const areas = summaries.map(s => {
-    const c = classify(s.brands, classes);
+    const c = classify(s.brands, scale);
     return {id: s.id, name: s.name, nameEn: s.nameEn, brands: s.brands, pos: s.pos, state: c.state, fill: c.fill, ink: c.ink, outline: c.outline || null, feature: s.feature, latitude: s.latitude, longitude: s.longitude};
   });
-  return {areas, classes, zeroCount: areas.filter(a => a.state === 'measured_zero').length};
+  return {areas, scale, zeroCount: areas.filter(a => a.state === 'measured_zero').length};
 }
 
 export function installNeighborhoodLayers(map, geojson, {onSelect} = {}) {
