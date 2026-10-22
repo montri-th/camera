@@ -364,7 +364,7 @@
         "scripts/host-links/03_verify_master_join.py"
       ],
       "status": "done",
-      "note": "Master join methods (venues): unique_normalized_exact_curated_alias 43, curated_distinctive_bilingual_or_official_host_alias 33, existing_explicit_host_reference 30; every master point equals its production detail (106/106) and lies in the production province of its venue; 32 venues await a registry match and 6 are held (N05). The app crosswalk only feeds host_link_proposals.csv (28 venues / 29 outlets, never published). Before the rebase on the 13:13 UTC revision the app crosswalk itself placed 133 venues (112 Shopping Center + 20 Grocery hosts)"
+      "note": "Master join methods (venues): unique_normalized_exact_curated_alias 43, curated_distinctive_bilingual_or_official_host_alias 33, existing_explicit_host_reference 30; every master point equals its production detail (106/106) and lies in the production province of its venue; 32 venues await a registry match and 6 are held (N05). The app crosswalk only feeds host_link_proposals.csv (28 venues / 29 outlets, never published). Before the rebase on the 13:13 UTC revision the app crosswalk itself placed 133 venues on 132 host records (112 Shopping Center + 20 Grocery)"
     },
     {
       "id": "P04",
@@ -1065,7 +1065,7 @@
       "scenario": "Venue held by the research master",
       "expected": "Rows at a held venue (venueJoin held: Siam Square One, Central Phuket Floresta and four more — 8 outlets) have no point; the store reads พิกัดรอตรวจ, the ย่าน fact shows “—”, the breadcrumb skips ย่าน; they stay in counts, the table and the Aha denominator and appear in the review cohort (17 rows)",
       "verificationType": "unit-and-browser",
-      "verification": "tests/data-contract.test.js, tests/profile-model.test.js, tests/model.test.js (cohorts); harness held store (FUJIFILM House of Photography Bangkok, Siam Square One)",
+      "verification": "tests/data-contract.test.js, tests/profile-model.test.js, tests/model.test.js (cohorts); tests/map-style.test.js (a venue outside every Locale skips ย่าน); harness held store (FUJIFILM House of Photography Bangkok, Siam Square One) and states ?cohort=review&areas=all (17 rows); the 8-outlet / 6-venue counts are checked against meta.heldVenues only",
       "result": "see VERIFICATION.md"
     },
     {
@@ -1117,7 +1117,7 @@
     },
     {
       "id": "N05",
-      "title": "Host links for the 32 venues the research master has not joined: review host_link_proposals.csv (25 proposals — 19 Big C / Lotus’s hypermarkets on CityMETER Grocery records, 6 Robinson stores on Shopping Center records named only “Robinson”) and find hosts for the other 7 (Lit Bangkok Hotel, Maneeya Center North, Panasiri Resident, The Rich Biz Home, แพชชั่น ระยอง, เม-ญ่า ไลฟ์สไตล์ เชียงใหม่, เจียง-ฟิวเจอร์ หนองคาย); resolve the 6 held venues (Siam Square One, Central Phuket Floresta, ท็อปส์ ซูเปอร์สโตร์ พะเยา, มาร์คโฟร์ แพร่, ไชยแสง สิงห์บุรี, ไอที พลาซ่า สำโรง). A link reaches the app only when the master marks it joined; Grocery hosts need a host-kind column in the master (citymeter_shopping_center_id holds Shopping Center ids only)",
+      "title": "Host links for the 32 venues the research master has not joined: review host_link_proposals.csv (25 proposals — 19 Big C / Lotus’s hypermarkets on CityMETER Grocery records, 6 Robinson stores on Shopping Center records with a non-branch name (“Robinson”/“ROBINSON” ×5, “Robinson Lifestyle Center” ×1)) and find hosts for the other 7 (Lit Bangkok Hotel, Maneeya Center North, Panasiri Resident, The Rich Biz Home, แพชชั่น ระยอง, เม-ญ่า ไลฟ์สไตล์ เชียงใหม่, เจียง-ฟิวเจอร์ หนองคาย); resolve the 6 held venues (Siam Square One, Central Phuket Floresta, ท็อปส์ ซูเปอร์สโตร์ พะเยา, มาร์คโฟร์ แพร่, ไชยแสง สิงห์บุรี, ไอที พลาซ่า สำโรง). A link reaches the app only when the master marks it joined; Grocery hosts need a host-kind column in the master (citymeter_shopping_center_id holds Shopping Center ids only)",
       "ownerRole": "research team (master) + data owner + CityMETER platform",
       "status": "research backlog"
     },

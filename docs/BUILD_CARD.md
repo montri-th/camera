@@ -38,4 +38,4 @@ UI icons use the approved Material Symbols Rounded nav-7 subset (`assets/icons/m
 
 ## Verification scope
 
-`npm test` (102 tests) covers the default snapshot and exact Locale ids, banner ranking and union, co-branded outlets, shared-edge assignment, filtered denominators, missing geometry, empty cases, segment projection and the province-level venue finding. Actual first paint, map actions, responsive Thai layout, keyboard operation and theme behaviour are recorded separately in [handoff/VERIFICATION.md](../handoff/VERIFICATION.md).
+`npm test` (106 tests) covers the default snapshot and exact Locale ids, banner ranking and union, co-branded outlets, shared-edge assignment, filtered denominators, missing geometry, empty cases, segment projection and the province-level venue finding. Actual first paint, map actions, responsive Thai layout, keyboard operation and theme behaviour are recorded separately in [handoff/VERIFICATION.md](../handoff/VERIFICATION.md).
