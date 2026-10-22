@@ -1,0 +1,1264 @@
+{
+  "$schema": "./handoff.schema.json",
+  "schemaVersion": "1.4.0",
+  "documentType": "product-brief",
+  "productId": "citymeter-camera-shops",
+  "productVersion": "0.5.0",
+  "updatedOn": "2026-10-22",
+  "datasetCheckedOn": "2026-10-22",
+  "language": "th-TH",
+  "productName": "CityMETER · Camera Shops",
+  "repository": "https://github.com/montri-th/camera",
+  "liveUrl": "https://montri-th.github.io/camera/",
+  "siblingProduct": {
+    "productId": "citymeter-luxury-brands",
+    "version": "0.5.0",
+    "liveUrl": "https://montri-th.github.io/luxurybrands/",
+    "relation": "same 0.5 architecture and screen contract (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops changes the dataset, the counting unit (ร้าน = shop banner), the ย่าน layer (production Locales), the host kinds and the items listed in changesSince"
+  },
+  "productStatement": {
+    "human": "../PRODUCT_STATEMENT.md",
+    "machine": "product-statement.json",
+    "framework": "MBB v0.5.3 §7.2 + CityMETER Product Brief v6 §1.6 (Who → What → Which → How)"
+  },
+  "job": "ถ้าจะเปิดร้านกล้องที่นี่ จะอยู่ข้างใคร — เห็นทันทีว่าร้านกล้องกระจุกอยู่ย่านใดในภาพเมือง 3 มิติ แล้วเจาะลงถึงสถานที่ อาคาร และสาขาพร้อมหลักฐาน",
+  "audiences": [
+    "ทีมขยายสาขาของเครือร้านกล้องและร้านแบรนด์ผู้ผลิต (Hypothesis)",
+    "ทีม leasing / asset ของศูนย์การค้าและศูนย์ไอที (Hypothesis)",
+    "ทีมขายและช่องทางของแบรนด์ผู้ผลิตกล้อง/โดรน (Hypothesis)",
+    "นักวิเคราะห์และที่ปรึกษาด้านทำเล"
+  ],
+  "journey": [
+    "เห็นข้อค้นพบระดับย่าน (Locale ของ CityMETER) ในเมือง 3 มิติที่โฟกัส 3 ย่านอันดับต้นแล้วทันที ไม่ต้องตั้งค่าตัวกรอง; ซูมออกทั้งประเทศแล้วเห็นกรอบ 64 จังหวัดที่มีร้านกล้อง กดเพื่อเจาะลง",
+    "ขยายเป็นทุกย่านด้วยการกดครั้งเดียว (ดูทุกย่าน) หรือเจาะย่านจาก breadcrumb/ป้าย; จังหวัดที่ไม่มี Locale ให้ข้อค้นพบระดับสถานที่แทน",
+    "เปิดโปรไฟล์ย่าน: ประเภทร้าน (ร้าน/สาขา) สถานที่ ร้านเฉพาะ/ร่วม และลิงก์ “ย่านนี้ใน CityMETER” ไปที่ Locale เดียวกันบน production",
+    "เจาะสถานที่ (ศูนย์การค้า/ไฮเปอร์มาร์เก็ต): เฉพาะอาคารและร้านของสถานที่นั้นมีสี อาคารของสถานที่มองเห็นเสมอ (x-ray) และกดได้ กล้องมุมสถาปนิกจัดกรอบทั้งอาคาร; เจาะร้าน อ่านสถานะ ที่อยู่ ร้านที่ร่วมหน้าร้าน หลักฐาน และระดับความแม่นของพิกัด",
+    "เปรียบเทียบย่านด้วยกราฟและตารางช่องเท่ากัน แล้วคัดรายการไปสำรวจ"
+  ],
+  "changesSince": {
+    "from": "citymeter-luxury-brands 0.5.0 (sibling product; Camera Shops starts at 0.5.0 with the same architecture)",
+    "ownerInstructions": "2026-10-22: “ทำแบบเดียวกัน” กับ CityMETER Luxury Brands สำหรับ Camera Shops จากชีต research ของร้านกล้อง แล้ว publish ที่ github.com/montri-th/camera",
+    "items": [
+      "dataset: data/camera.json from “CityMETER Camera Shops Thailand — Research Master 2026-10-22” (one row = one outlet record; built by scripts/build-camera-data.py)",
+      "counting unit ร้าน = distinct shop banner (bannersOf/brandSet); a co-branded storefront is one outlet with every counted banner; “แบรนด์” is never a unit on screen (it would read as camera makers)",
+      "segment filter projects banners (projectSegment): an outlet stays when any of its banners is in the segment and only those banners count",
+      "ย่าน = CityMETER production Locales (27 in Bangkok, ids = Locale uuids, membership checked against production locatePoint); the neighborhood profile links to the same Locale on landometer.com",
+      "hosts: CityMETER Shopping Center records and, for 20 hypermarket hosts, CityMETER Grocery records (mallId = host record id, hostKind says which); street shops without a verified host keep no coordinate",
+      "venue level is fed from scopeRows (detailRows): a venue outside the automatic top-three areas still gets its pins, blue host and x-ray",
+      "desktop 3D fits count the legend (pitchedPadding) and the 3D overview is never framed below zoom 13 (CITY_MASSING_ZOOM) so the city massing is on the first screen; phones keep the full fit",
+      "provinces without a Locale get a venue-level first finding (share of banners at the leading venue) and no “0 ย่าน” tile",
+      "province frames for all 64 provinces that hold an outlet; the panel lists ten and folds the rest in a native disclosure",
+      "no store-banner logos are collected: pins carry text name chips (BANNER_LABELS for long names) under the same 250 ceiling from zoom 14",
+      "pictogram role brand (ร้าน) = photo_camera U+E412 (Luxury Brands: diamond); subset rebuilt byte-reproducibly",
+      "store facts add address, store format (FORMATS), linked banners (ร่วมกับ …), the retailer’s own map link and hold statuses; cohorts current / all / review",
+      "public files carry no phone numbers (build-time scrub) and no private Drive/Docs URLs"
+    ]
+  },
+  "rowScopes": {
+    "scopeRows": {
+      "definition": "rows after search/cohort/segment/province/channel/venue filters, before neighborhood selection and area focus (segment filter = banner projection, see bannerContract.segmentFilter)",
+      "consumers": [
+        "aha denominator",
+        "choropleth",
+        "charts",
+        "neighborhood profile exclusive/shared reference",
+        "context pins",
+        "venue-level detail rows (detailRows)"
+      ]
+    },
+    "baseRows": {
+      "definition": "scopeRows narrowed by the selected neighborhood (Locale)",
+      "consumers": [
+        "panel ranking",
+        "aha when a neighborhood is selected"
+      ]
+    },
+    "rows": {
+      "definition": "baseRows narrowed by area focus (auto top-3, explicit ?areas=, or none with ?areas=all)",
+      "consumers": [
+        "focused pins (overview and neighborhood)",
+        "counters (labelled ในโฟกัส when narrowed)",
+        "table",
+        "host buildings outside venue level",
+        "focus massing regions"
+      ]
+    },
+    "focusModes": {
+      "auto": {
+        "default": true,
+        "focusIds": "top areaIds from summarizeAreaInsight (≤ 3) when no neighborhood is selected",
+        "url": "no areas parameter",
+        "state": "state.autoFocus = true, state.focusAreaIds = []"
+      },
+      "explicit": {
+        "focusIds": "user-chosen Locale ids (≤ 3)",
+        "url": "?areas=1d671f78-108c-4bcb-9da8-a29a3117e931,8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
+        "state": "state.focusAreaIds non-empty"
+      },
+      "none": {
+        "focusIds": "[] — every area equal, no quiet",
+        "url": "?areas=all",
+        "state": "state.autoFocus = false, state.focusAreaIds = []"
+      }
+    },
+    "venueLevel": "Camera Shops: at venue level (venue mode, or a store inside a venue) detailRows() = rows of the current venue taken from scopeRows, so a venue outside the automatic focus keeps its detail; counters and the table keep using rows",
+    "visibleCue": "chart scope caption appends ‘ทุกย่าน’ whenever rows ≠ scopeRows; counters are labelled ‘ในโฟกัส’ when focus narrows rows"
+  },
+  "firstAha": {
+    "scope": "baseRows (scopeRows narrowed by a selected neighborhood when present)",
+    "ranking": "top three Locales by distinct shop banners (ร้าน), then outlets (สาขา), then stable id",
+    "headlineTemplate": "{sharePercent}% ของร้านกล้องมีสาขาใน {areaCount} ย่านนี้",
+    "numerator": "union of the counted banners (bannersOf) of the outlets assigned to the top Locales — a banner present in two areas counts once, a co-branded outlet contributes each of its banners",
+    "denominator": "all distinct banners in baseRows, including outlets outside every Locale and outlets without a coordinate",
+    "secondaryFinding": "Locale with the most banners found in no other Locale within scopeRows (profile-model.js#buildOverviewInsights) — “ร้านที่พบเฉพาะย่านมากที่สุด”",
+    "defaultFocus": "auto",
+    "defaultCamera": "city preset; fitPitched over the vertices of the focused Locales with legend-aware padding (pitchedPadding, bottom ≤ 45 % of the map height); on wide screens the result is never below zoom 13 (CITY_MASSING_ZOOM — the city and focus massing tiers start there), phones keep the full fit. Harness 1280×800: fit 12.82 → framed at 13.0; 390×844: 12.73 (Ratchada-West ↔ Siam/Ratchaprasong are about 2 km apart)",
+    "action": "ดูทุกย่าน (clears auto focus → ?areas=all; with outlets in 64 provinces the fit becomes the country plan view); เปรียบเทียบย่าน; Locale names in the Aha copy are links",
+    "explicitAction": "โฟกัส {areaCount} ย่านนี้ (shown only when focus mode is none)",
+    "model": "js/area-insight.js#summarizeAreaInsight",
+    "filter": "js/area-insight.js#filterAreaRows",
+    "fallbacks": {
+      "noRows": "ไม่พบสาขาตามตัวกรองนี้ + clear filter action",
+      "rowsOutsideAllAreas": "no Locale holds a row (a province outside Bangkok — production has Locales in Bangkok only — or a filter): the finding moves to the venue level — “{share}% ของร้านกล้องมีสาขาที่ {leading venue}” = banners at the venue ranked first by rankVenues ÷ banners of the selection, with the next two venues and the actions ดูสถานที่นี้ / ดูสาขา; the ย่าน metric tile is omitted (out_of_scope, not zero). Snapshot: ?province=CMI → 80% at Central Chiangmai (4/5 ร้าน, 4/7 สาขา); ?province=PKT → 100% at Central Phuket (3/3 ร้าน)",
+      "noVenue": "only street shops without a venue: headline “{pos} สาขา · {brands} ร้าน” with ดูสาขา / ล้างตัวกรอง"
+    },
+    "defaultSnapshot": {
+      "cohort": "current",
+      "areas": [
+        "1d671f78-108c-4bcb-9da8-a29a3117e931",
+        "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
+        "228edb69-6e1a-42f7-8001-f3eed7ee016d"
+      ],
+      "areaRows": [
+        {
+          "id": "1d671f78-108c-4bcb-9da8-a29a3117e931",
+          "name": "รัชดา-ตะวันตก",
+          "brands": 13,
+          "pos": 17
+        },
+        {
+          "id": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
+          "name": "สยาม",
+          "brands": 9,
+          "pos": 12
+        },
+        {
+          "id": "228edb69-6e1a-42f7-8001-f3eed7ee016d",
+          "name": "ราชประสงค์",
+          "brands": 8,
+          "pos": 10
+        }
+      ],
+      "brands": 23,
+      "totalBrands": 38,
+      "sharePercent": 60.5,
+      "sharePercentDisplayed": 61,
+      "pos": 39,
+      "totalPos": 233,
+      "assignedPos": 85,
+      "outsidePos": 148,
+      "outsideBreakdown": {
+        "mappedOutsideLocales": 123,
+        "withoutCoordinate": 25
+      },
+      "areaCount": 27,
+      "mostExclusive": {
+        "id": "1d671f78-108c-4bcb-9da8-a29a3117e931",
+        "name": "รัชดา-ตะวันตก",
+        "exclusiveBrands": 9,
+        "brands": 13
+      }
+    },
+    "requirements": [
+      "No login, sharing or geolocation prerequisite",
+      "Core dataset and Locale boundaries enable the area Aha; counts and table still work without boundaries; the map vendor and tiles load separately",
+      "Snapshot values are regression fixtures, never UI constants (tests/area-insight.test.js, tests/chart-model.test.js)",
+      "Returning to all (ดูทุกย่าน) clears only area focus; filters stay",
+      "3D is the default; the 3D toggle and ?view3d=0 switch to the plan preset without changing data"
+    ]
+  },
+  "mapFocusContract": {
+    "principle": "Show detail only for the focused part; keep everything else quiet (owner instruction 2026-10-22, carried over from Luxury Brands)",
+    "states": {
+      "overviewAuto": {
+        "focus": "top-3 Locales: count fill, labels with banner counts, category pins, host buildings, rounded focus massing (zoom ≥ 13)",
+        "quiet": "other Locales outline-only with quiet labels; outlets outside focus are grey context dots without labels; city massing in the quiet tone; no name chips below zoom 14"
+      },
+      "overviewAll": {
+        "focus": "all 27 Locales filled by distinct banners (count family, 5 equal-interval classes), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
+        "quiet": "pins are size-tiered dots; city massing only; no rounded focus massing"
+      },
+      "neighborhood": {
+        "focus": "selected Locale fill below zoom 14.5, selected outline, host buildings, rounded focus massing, category pins, name chips",
+        "quiet": "as overviewAuto"
+      },
+      "store": {
+        "focus": "selected pin ring, leader line to the source coordinate, desktop popup naming every counted banner; a store inside a venue inherits the venue state",
+        "quiet": "inherits current focus"
+      },
+      "venue": {
+        "focus": "only the venue's own rows (from scopeRows): category pins, name chips, host building(s) in map.activeLayer drawn by the venue x-ray on top of every massing tier (always visible, clickable); camera = eye preset framed on the host footprint(s) and roof, or framePoint(zoom 16) on the host point when the host has no footprint (12 of the 20 hypermarket hosts and other hosts without an accepted building)",
+        "quiet": "other venues' rows are grey context dots; their host buildings fall back to quiet/focus massing; SCENE.eye lowers massing opacity (city 0.16, focus 0.62) and buildings between the camera and the venue move to the 0.14-opacity occluder layer; the city tier fades to the ground tone with distance from the focus"
+      },
+      "countryAll": {
+        "focus": "below zoom 9: frames of the 64 provinces that hold an outlet, filled by distinct banners per province (count family, 5 equal-interval classes of their own), ink-chip province labels with counts, legend “จังหวัด · จำนวนร้าน”, panel list “จังหวัดที่มีร้านกล้อง” (ten rows + a disclosure for the rest)",
+        "quiet": "provinces without outlets are not drawn (out_of_scope); with a จังหวัด filter the other frames are outline-only; from zoom 9 the frames are outlines until zoom 12 and the Locales carry the scale"
+      }
+    },
+    "choropleth": {
+      "scaleId": "count",
+      "metric": "distinct shop banners per Locale within scopeRows",
+      "classification": "equal-interval, 5 classes from the current maximum, integer closed intervals shown in the legend",
+      "defaultClasses": [
+        "1–2",
+        "3–5",
+        "6–7",
+        "8–10",
+        "11–13"
+      ],
+      "evidenceStates": {
+        "measured": "class fill",
+        "measured_zero": "lowest fill + zero outline",
+        "out_of_scope": "bare basemap (every place outside the 27 Locales, i.e. every province but Bangkok)"
+      },
+      "themePolicy": "identical light HEX on both themes; fill-opacity 1 inserted before the basemap's first line layer (waterway); hard switch off at zoom ≥ 14.5",
+      "model": "js/map-layers.js#buildAreaModel, js/scales.js#buildCountClasses"
+    },
+    "hostBuildings": "map.activeLayer role (light #347DA8 / dark #65B6DB), only for detail rows, extrusion zoom ≥ 14, outline zoom ≥ 12, visible in both plan and 3D; layers camera-venue-buildings-3d / camera-venue-buildings-outline",
+    "labels": "pin labels at zoom ≥ 14 for focused rows only, ≤ 250 (js/pins.js LOGO_MIN_ZOOM, MAX_LOGOS): banner logo when registered, else a text name chip (Camera Shops: always a chip, see bannerContract.labels); the map status line reads “{n} สาขา · ป้ายชื่อ {placed}/250 · บริบท {n}”",
+    "detailRows": "js/app.js#detailRows: venueLevel() ? venueRows(scopeRows) — rows of the current venue (mallId, else venue label) : rows",
+    "areaLabels": "ink chips (--area-label-bg/ink/border, display font, area square glyph, light count badge) so they never read as name chips or logo boxes; quiet = 72% opacity; hidden below zoom 11.5",
+    "drawOrder": "host extrusion (buildings.js) is installed first; installMassing({beforeId: HOST_LAYERS.extrusion}) inserts city/focus/occluder tiers before it; venue-xray is the last 3D layer (before water-name). Reason: MapLibre 3D layers share one depth buffer and translucent fill-extrusion writes depth in its first pass, so anything drawn later and farther is cut away."
+  },
+  "basemapContract": {
+    "generator": "js/map-style.js#buildMapStyle(theme, {palette, tileJSON, glyphs}) — a MapLibre style v8 object built at runtime; no hosted style URL (unchanged from Luxury Brands 0.5)",
+    "tiles": {
+      "tileJson": "https://tiles.openfreemap.org/planet",
+      "schema": "OpenMapTiles (OpenFreeMap build)",
+      "sourceId": "openmaptiles",
+      "maxzoom": 14,
+      "buildingLayer": "building (fields render_height, render_min_height, hide_3d; available z13–14)",
+      "glyphs": "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf (Noto Sans Regular / Italic)",
+      "attribution": "© OpenMapTiles © OpenStreetMap contributors (OpenFreeMap)",
+      "labels": "name:th preferred, then name; no POI, housenumber or boundary labels"
+    },
+    "palette": {
+      "source": "assets/theme.css --basemap-* tokens (light and dark declared once each; basemap-only, not data colours)",
+      "resolver": "js/map-style.js#basemapPalette(theme)",
+      "light": {
+        "ground": "#EEF1EE",
+        "water": "#E2E9ED",
+        "park": "#DCE6D4",
+        "building": "#DFE2DD",
+        "massingQuiet": "#ECEDE8",
+        "massingFocus": "#D9D7CD",
+        "road": "#FFFFFF",
+        "roadCasing": "#DCE1DD",
+        "label": "#5F635A",
+        "halo": "#F6F7F3",
+        "sky": "#F6F7F3",
+        "fog": "#EEF1EE"
+      },
+      "dark": {
+        "ground": "#11191D",
+        "water": "#18333E",
+        "park": "#16251F",
+        "building": "#1C262B",
+        "massingQuiet": "#2A343A",
+        "massingFocus": "#4A5760",
+        "road": "#293337",
+        "roadCasing": "#33403D",
+        "label": "#A6B5B1",
+        "halo": "#11191D",
+        "sky": "#0D1418",
+        "fog": "#11191D"
+      }
+    },
+    "layerOrder": [
+      "background / landcover / park / water",
+      "data fill (inserted before DATA_FILL_BEFORE = waterway)",
+      "2D building footprints",
+      "roads, rail, paths",
+      "massing + host buildings (inserted before MASSING_BEFORE = water-name, the first symbol layer)",
+      "labels",
+      "area outlines, selection outline, pins, name chips"
+    ],
+    "atmosphere": "sky + fog blend the far ground into the paper colour; viewport-anchored light (#FFFFFF, intensity 0.32) gives massing a soft shade; both are quiet context, never data",
+    "themeSwitch": "map.setStyle(buildMapStyle(theme)) then re-install spatial layers; data layers keep the same HEX on both themes"
+  },
+  "massingContract": {
+    "module": "js/massing.js#installMassing(map, {sourceId, beforeId, colors, tileUrl, fetchImpl}) → {update, retheme, dispose, layerIds, setScene}",
+    "cityTier": {
+      "layer": "city-massing (fill-extrusion, source openmaptiles, source-layer building, minzoom 13)",
+      "height": "render_height / render_min_height from the tile; hide_3d features excluded",
+      "colour": "--basemap-massing-quiet, vertical gradient, no outline",
+      "visibility": "3D view only; hidden in plan",
+      "filter": "['all', ['!=', ['get','hide_3d'], true], ['!', ['in', ['id'], ['literal', hiddenIds]]]] — OSM twins of host buildings hidden by feature id"
+    },
+    "focusTier": {
+      "source": "focus-massing (GeoJSON built from the same tile URLs MapLibre loads, decoded by js/mvt.js; z14, ≤ 9 tiles per update, tiles touching the focus regions only)",
+      "layer": "focus-massing-3d (fill-extrusion, minzoom 13)",
+      "selection": "buildings overlapping a focus polygon (point-in-ring or ring intersection), clipped to the tile box with buffer, host-overlapping buildings dropped",
+      "shape": "js/geometry.js: cleanRing → clipRingToBox → offsetRing(+d) → roundRing(r, 3 segments, encloseOffset d)",
+      "height": "render_height + 0.35 m (HEIGHT_LIFT_M); base = render_min_height",
+      "colour": "--basemap-massing-focus, vertical gradient",
+      "visibility": "3D and plan (plan shows the rounded footprints flat)",
+      "cacheKey": "regions + hosts + zoom bucket (full zoom level) + tile availability"
+    },
+    "hostTier": {
+      "source": "data/venue-buildings.geojson via js/buildings.js (controller exposes displayedFeatures()); features joined to outlets by outlet_ids, to hosts by mall_ids (Shopping Center or Grocery record ids)",
+      "colour": "map.activeLayer; outline map.selectedStroke",
+      "visibility": "extrusion zoom ≥ 14, outline zoom ≥ 12, detail rows only; before MASSING_BEFORE",
+      "attribution": "source attribution “© OpenStreetMap contributors · Microsoft Global ML Building Footprints · CityMETER”; per-feature attribution / license on the CityMETER V4 footprints"
+    },
+    "rounding": {
+      "radiusMetres": "roundingRadiusM(zoom, lat) = clamp(4 px in metres at max(zoom, 14.5), 3, 12)",
+      "segmentsPerCorner": 3,
+      "reference": "maplibre/maplibre-style-spec#1047 (polygon corner radius) is unsupported in MapLibre; rounding is done in geometry, display only"
+    },
+    "enclosure": {
+      "offsetMetres": "encloseOffsetM(r) = max(1, r / 2.5)",
+      "radiusCap": "radius ≤ 0.95 · d / (1 − sin(θ/2)) so the rounded ring still encloses the original polygon at every corner",
+      "purpose": "the quiet city twin stays fully inside the rounded focus solid → no z-fighting without hiding it; host twins are hidden instead because the host solid is the data layer"
+    },
+    "provenance": "building heights and footprints of the city and focus tiers are OSM via OpenFreeMap (defaults when no height tag); context only, never a claim of this dataset; OpenFreeMap merges same-height buildings into MultiPolygons, so single roofs cannot be picked",
+    "scene": {
+      "module": "massing.setScene('default'|'eye', targets)",
+      "opacities": {
+        "default": {
+          "city": 0.22,
+          "focus": 1,
+          "occluder": 0.18
+        },
+        "eye": {
+          "city": 0.16,
+          "focus": 0.62,
+          "occluder": 0.14
+        }
+      },
+      "occluderLayer": "focus-massing-occluding (same source as the focus tier; filter by unique feature ids; the focus tier excludes them)",
+      "occlusionTest": "screen-space: a focus building whose box (ground vertices + tops lifted by height × local px/m × sin(pitch)) overlaps a target's box and whose mean ground y is larger (nearer the camera) is an occluder; recomputed on moveend and after each tile update; targets = the venue's host rings (displayedFeatures filtered by mall_ids / venue_names) with display_height_m",
+      "hostStaysOpaque": true
+    },
+    "distanceFade": {
+      "rule": "city-tier colour interpolates from --basemap-massing-quiet (fade 0) to --basemap-ground (fade 1, invisible) by distance from the nearest focus anchor (area centroid; every area when nothing is focused)",
+      "nearMetres": 500,
+      "farMetres": 2200,
+      "mechanism": "feature-state `fade` written once per building id after tiles load (querySourceFeatures on sourcedata/moveend); anchors change → states rebuilt",
+      "why": "MapLibre has no camera-distance expression and fill-extrusion-opacity is not data-driven"
+    }
+  },
+  "cameraContract": {
+    "module": "js/camera.js (CAMERA, presetFor, applyPreset, fitPitched, framePoint, shiftPadding, projectPoint)",
+    "presets": {
+      "plan": {
+        "pitch": 0,
+        "bearing": 0,
+        "fov": 36.87,
+        "when": "view3d off (3D toggle / ?view3d=0) or bounds wider than 0.3° (e.g. ดูทุกย่าน over 64 provinces)"
+      },
+      "city": {
+        "pitch": 56,
+        "bearing": 28,
+        "fov": 36.87,
+        "fitShift": 0.2,
+        "when": "overview in 3D (first Aha)"
+      },
+      "model": {
+        "pitch": 60,
+        "bearing": 28,
+        "fov": 14,
+        "fitShift": 0.16,
+        "when": "neighborhood in 3D (and venue level when มุมสถาปนิก is switched off) — near-axonometric, verticals upright"
+      },
+      "eye": {
+        "pitch": 75,
+        "bearing": 28,
+        "fov": 24,
+        "fitShift": 0.1,
+        "when": "venue level only (venue mode, or a store inside a venue): on by default, ?cam=model opts out; disabled elsewhere and in 2D; on mobile portrait it waits until the sheet closes",
+        "constraint": "MapLibre 5.6.2 draws fill-extrusion displaced or not at all once the horizon enters the viewport (pitch > 90 − fov/2) — verified live on Luxury Brands 2026-10-22 (pitch 73 ok, 76 displaced, 82 missing); the eye preset keeps the horizon just outside the frame (90 − 12 − 3 = 75)"
+      }
+    },
+    "fitting": {
+      "function": "fitPitched(map, bounds, {preset, padding, maxZoom 16, minZoom 10, points, shift, apply})",
+      "method": "start from cameraForBounds (flat), apply preset pitch/bearing/FOV, zoom out in 0.1 steps until every point (polygon vertices when given, else bbox corners) projects inside the padded viewport, then zoom in while they still fit; jumps are computed without rendering and the final camera is animated",
+      "padding": "Camera Shops: desktop 3D padding counts the legend — bottom = max(chart tray + 40, map bottom − legend top + 12), capped at 45 % of the map height (Luxury Brands ignored the legend); mobile portrait uses the flat cameraPadding, with the sheet open plan, then re-frames in 3D on sheet close",
+      "overviewFloor": "fitMap: on wide screens a city-preset fit below zoom 13 (CITY_MASSING_ZOOM) is applied at zoom 13 with the same centre, so the 3D massing is on the first screen even when the focus areas are far apart; phones keep the full fit so all three named areas stay visible",
+      "bearing": "28° (family value from Luxury Brands); for Camera Shops the top-3 Locales lie on a north-east axis (Siam/Ratchaprasong → Ratchada-West)",
+      "venue": "frameVenue: fitPitched over the host footprint vertices AND roof vertices (vertex + display_height_m, projected with camera.projectPoint through transform.modelViewProjectionMatrix), top padding 12% (eye) / 10% (model), maxZoom 17.6, minZoom = max(14.5, footprint-only fit − 1); falls back to framePoint(zoom 16) when no host building is displayed or on mobile portrait",
+      "neighborhood": "fitArea: fitPitched over the Locale outline vertices, maxZoom 17.5 so the outline fills the frame"
+    },
+    "maplibre": {
+      "version": "5.6.2",
+      "requires": "setVerticalFieldOfView (≥ 4.7), maxPitch 85; keep pitch ≤ 90 − fov/2 − 3 for any fill-extrusion view",
+      "orthographic": "not available in MapLibre; narrow FOV is the standard substitute"
+    },
+    "alternatives": "deck.gl custom projectionMatrix or three.js camera.setViewOffset give a true two-point camera; not adopted to keep a single MapLibre scene"
+  },
+  "breadcrumbContract": {
+    "module": "js/breadcrumb.js (buildBreadcrumb, renderBreadcrumb, breadcrumbText) + js/model.js PROVINCES (all 77 production provinces)",
+    "levels": [
+      "ประเทศไทย",
+      "จังหวัด (ชื่อไทย = the rows' province value; production code in the URL)",
+      "ย่าน (CityMETER production Locale; from point-in-polygon on the venue's representative point when a venue is open — Bangkok only)",
+      "สถานที่ (venue: CityMETER host record id — Shopping Center id or Grocery record id — else plain venue label)"
+    ],
+    "productionPath": {
+      "observed": "https://landometer.com/v3/citymeter/{PROVINCE_CODE} (codes = production base/info/lv0 abbrEn, e.g. BKK, CMI, NST, UTT); /v3/citymeter/BKK/L/{locale uuid}?d=shoppingCenter is a valid production route (checked 2026-10-22) and every ย่าน id of this product is a production Locale uuid",
+      "localeMapping": "neighborhood id = production Locale uuid, so ?neighborhood={uuid} ≡ /v3/citymeter/BKK/L/{uuid}; the neighborhood profile links there (“ย่านนี้ใน CityMETER”)",
+      "proposal": "/v3/citymeter/{PROVINCE_CODE}/L/{locale uuid}/V/{host id}?d=cameraShops for the venue level",
+      "status": "Inference — the venue-level path and a cameraShops dataset key are proposals, not implemented in production"
+    },
+    "demoQuery": "?province=BKK&neighborhood=<locale uuid>&place=<host id> (code preferred; Thai or English province names still resolve via provinceNameFrom)",
+    "provinceCodes": {
+      "BKK": "กรุงเทพมหานคร",
+      "SPK": "สมุทรปราการ",
+      "NBI": "นนทบุรี",
+      "PTE": "ปทุมธานี",
+      "AYA": "พระนครศรีอยุธยา",
+      "ATG": "อ่างทอง",
+      "LRI": "ลพบุรี",
+      "SBR": "สิงห์บุรี",
+      "CNT": "ชัยนาท",
+      "SRI": "สระบุรี",
+      "CBI": "ชลบุรี",
+      "RYG": "ระยอง",
+      "CTI": "จันทบุรี",
+      "TRT": "ตราด",
+      "CCO": "ฉะเชิงเทรา",
+      "PRI": "ปราจีนบุรี",
+      "NYK": "นครนายก",
+      "SKW": "สระแก้ว",
+      "NMA": "นครราชสีมา",
+      "BRM": "บุรีรัมย์",
+      "SRN": "สุรินทร์",
+      "SSK": "ศรีสะเกษ",
+      "UBN": "อุบลราชธานี",
+      "YST": "ยโสธร",
+      "CPM": "ชัยภูมิ",
+      "ACR": "อำนาจเจริญ",
+      "BKN": "บึงกาฬ",
+      "NBP": "หนองบัวลำภู",
+      "KKN": "ขอนแก่น",
+      "UDN": "อุดรธานี",
+      "LEI": "เลย",
+      "NKI": "หนองคาย",
+      "MKM": "มหาสารคาม",
+      "RET": "ร้อยเอ็ด",
+      "KSN": "กาฬสินธุ์",
+      "SNK": "สกลนคร",
+      "NPM": "นครพนม",
+      "MDH": "มุกดาหาร",
+      "CMI": "เชียงใหม่",
+      "LPN": "ลำพูน",
+      "LPG": "ลำปาง",
+      "UTT": "อุตรดิตถ์",
+      "PRE": "แพร่",
+      "NAN": "น่าน",
+      "PYO": "พะเยา",
+      "CRI": "เชียงราย",
+      "MSN": "แม่ฮ่องสอน",
+      "NSN": "นครสวรรค์",
+      "UTI": "อุทัยธานี",
+      "KPT": "กำแพงเพชร",
+      "TAK": "ตาก",
+      "STI": "สุโขทัย",
+      "PLK": "พิษณุโลก",
+      "PCT": "พิจิตร",
+      "PNB": "เพชรบูรณ์",
+      "RBR": "ราชบุรี",
+      "KRI": "กาญจนบุรี",
+      "SPB": "สุพรรณบุรี",
+      "NPT": "นครปฐม",
+      "SKN": "สมุทรสาคร",
+      "SKM": "สมุทรสงคราม",
+      "PBI": "เพชรบุรี",
+      "PKN": "ประจวบคีรีขันธ์",
+      "NST": "นครศรีธรรมราช",
+      "KBI": "กระบี่",
+      "PNA": "พังงา",
+      "PKT": "ภูเก็ต",
+      "SNI": "สุราษฎร์ธานี",
+      "RNG": "ระนอง",
+      "CPN": "ชุมพร",
+      "SKA": "สงขลา",
+      "STN": "สตูล",
+      "TRG": "ตรัง",
+      "PLG": "พัทลุง",
+      "PTN": "ปัตตานี",
+      "YLA": "ยะลา",
+      "NWT": "นราธิวาส"
+    },
+    "provinceCodesWithOutlets": [
+      "BKK",
+      "SPK",
+      "NBI",
+      "PTE",
+      "AYA",
+      "ATG",
+      "LRI",
+      "SBR",
+      "SRI",
+      "CBI",
+      "RYG",
+      "CTI",
+      "CCO",
+      "PRI",
+      "NYK",
+      "SKW",
+      "NMA",
+      "BRM",
+      "SRN",
+      "SSK",
+      "UBN",
+      "CPM",
+      "ACR",
+      "NBP",
+      "KKN",
+      "UDN",
+      "LEI",
+      "NKI",
+      "MKM",
+      "RET",
+      "KSN",
+      "SNK",
+      "NPM",
+      "MDH",
+      "CMI",
+      "LPN",
+      "LPG",
+      "UTT",
+      "PRE",
+      "PYO",
+      "CRI",
+      "NSN",
+      "KPT",
+      "TAK",
+      "STI",
+      "PLK",
+      "PCT",
+      "PNB",
+      "RBR",
+      "KRI",
+      "SPB",
+      "NPT",
+      "SKN",
+      "SKM",
+      "PBI",
+      "PKN",
+      "NST",
+      "KBI",
+      "PKT",
+      "SNI",
+      "CPN",
+      "SKA",
+      "STN",
+      "TRG"
+    ],
+    "dataBinding": "data/neighborhoods.geojson properties.provinceCode = BKK / provinceName = กรุงเทพมหานคร for all 27 Locales; rows carry the Thai province name",
+    "actions": [
+      "crumb-country (clear province + area)",
+      "crumb-province (clear area, keep province)",
+      "crumb-area (re-open the Locale profile)",
+      "crumb-venue (re-open the venue profile by id or label)",
+      "crumb-expand (unfold collapsed levels on narrow screens)"
+    ],
+    "documentTitle": "breadcrumbText(crumbs) · Camera Shops · CityMETER drives document.title",
+    "venueRules": [
+      "a venue outside every Locale skips the ย่าน level (ประเทศไทย › ภูเก็ต › Central Phuket)",
+      "a store is never a crumb — the panel heading names it; the trail ends at its venue (or at ย่าน/จังหวัด for street shops)",
+      "four or more levels fold the upper ones behind “…” on narrow screens (crumb-expand); the last two stay visible",
+      "venue ids come from data/camera.json centers[].id (Shopping Center: landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}; Grocery: the production grocery overlay record id)",
+      "never invent a Locale or municipality id: places outside Bangkok have no ย่าน level because production has no Locale there"
+    ]
+  },
+  "panel": {
+    "modes": [
+      "overview",
+      "neighborhood",
+      "venue",
+      "store"
+    ],
+    "navigation": "back stack (max 20); mode and id restored from URL (?province, ?neighborhood, ?place, ?store, ?areas, ?view3d, ?cam)",
+    "actions": [
+      "select-area",
+      "select-store",
+      "select-venue",
+      "select-province",
+      "search-brand",
+      "back",
+      "explore-top",
+      "clear-focus",
+      "open-charts",
+      "open-table",
+      "clear-filter",
+      "crumb-country",
+      "crumb-province",
+      "crumb-area",
+      "crumb-venue",
+      "crumb-expand",
+      "toggle-3d"
+    ],
+    "models": {
+      "neighborhood": "js/profile-model.js#buildNeighborhoodProfile (scopeRows so exclusive/shared keeps the whole selection as reference; segmentMixOf counts outlet × banner pairs; productionUrl of the Locale)",
+      "venue": "js/profile-model.js#buildVenueProfile (center kind and production type → hostTypeLabel; Shopping Center link only)",
+      "store": "js/profile-model.js#buildStoreDetail (+describeGeometry, describeStatus, buildBrandPresence over every counted banner)",
+      "overview": "js/profile-model.js#buildOverviewInsights, rankVenues (rows without a venue never form a venue); js/panel.js#renderOverview(focusMode, view3d, venues, provinces)"
+    },
+    "copy": {
+      "units": "ร้าน = distinct shop banner · สาขา = outlet record · สถานที่ = venue (shopping centre, hypermarket or building) · ย่าน = CityMETER Locale; “แบรนด์” is not a unit",
+      "metricTiles": "ร้าน (photo_camera) · สาขา (storefront) · สถานที่ (local_mall, distinct venue keys) · ย่าน (map, omitted when no Locale holds a row)",
+      "statuses": "describeStatus: พบในแหล่งข้อมูล (listed) · ตัวตนหน้าร้านรอตรวจ / รวมรายการรอตรวจ / ที่ตั้งขัดกัน / ที่อยู่ติดต่อ (pending) · ปิดถาวร (closed, factual; none in this snapshot)",
+      "geometry": "describeGeometry: จุดตัวแทนอาคาร/ศูนย์การค้า · จุดตัวแทนไฮเปอร์มาร์เก็ต · ยังไม่มีพิกัด — never upgraded to a shopfront",
+      "storeFacts": "heading = primary banner; “ร่วมกับ …” lists linked banners as search buttons; facts สถานที่ (venue button, or channel for street shops) · ย่าน (or นอกย่าน) · รูปแบบ (channel + FORMATS label when it adds information) · ที่อยู่ · พิกัด (+ ร่วมพิกัดกับอีก n สาขา) · ตรวจเมื่อ; links หลักฐาน · สถานะ (only when different from หลักฐาน) · พิกัด · แผนที่ของร้าน (the retailer's own map link, never decoded into coordinates)",
+      "provinceList": "จังหวัดที่มีร้านกล้อง: first ten rows, the rest in <details class=\"province-more\"> “อีก n จังหวัด”; every row is a select-province button",
+      "footer": "Camera Shops Thailand · ข้อมูล {asOf in Thai date}"
+    },
+    "renderer": "js/panel.js (pure HTML strings, delegated data-action clicks); breadcrumb rendered first in .panel-top"
+  },
+  "data": {
+    "observationGrain": "one outlet record (point of sale, or a listed contact location) of a camera-shop banner; a co-branded storefront is one outlet with linked banners",
+    "core": "data/camera.json {meta, rows, centers, brands} built by scripts/build-camera-data.py from the research master tabs (02_STORES, 11_STORE_BRANDS, 01_BRANDS, 07_VENUES, 10_VENUE_LOGOS, 09_CLOSED_STORES) and the verified CityMETER host links",
+    "research": "CityMETER Camera Shops Thailand — Research Master 2026-10-22",
+    "rowFields": "id, brand, brands[], bannerSegments[], name, venue, venueId, province (Thai), segment, scope, channel, format, origin, status, identity, release, role, cameraSales, evidence, sourceType, source, statusSource, mapUrl, checkedOn (ISO), address, unit, operator, latitude, longitude, geometryRole, geometryStatus, coordinateSource, mallId, hostKind, dedupe, note",
+    "neighborhoods": "data/neighborhoods.geojson (metadata.version 2026-10-22-r1): 27 production Locales that hold a camera venue; ids = Locale uuids; 33/33 Bangkok host points: point-in-polygon on these polygons equals production base/locatePoint (checked 2026-10-22)",
+    "hostBuildings": "data/venue-buildings.geojson (136 features, 105 hosts, 176 matched outlet rows)",
+    "cityMassing": "OpenFreeMap vector tiles, building source-layer (context, not part of the dataset)",
+    "brandLogos": "data/brand-logos.json — empty registry, meta.status not_collected; pins show name chips",
+    "provinces": "data/provinces.geojson (metadata.version 2026-10-22-r1; 64 frames; OpenGISData-Thailand CC BY 4.0, commit fafcea1)",
+    "venueLogos": "data/venue-logos.json (meta.version 2026-10-22-r1; 30 files, 31 of 144 venue labels and 30 host links carry a logo; status complete; sha256 per file; no private URLs)",
+    "cohorts": {
+      "current": {
+        "default": true,
+        "rule": "role = retail_outlet_listing (identity/location holds stay in with their own status label)",
+        "rows": 233,
+        "banners": 38
+      },
+      "all": {
+        "rule": "every row, adds the one listed contact location (retailer_contact_location)",
+        "rows": 234,
+        "banners": 39
+      },
+      "review": {
+        "rule": "isReview: role ≠ retail_outlet_listing or identity ≠ source_listed_not_field_verified",
+        "rows": 9
+      }
+    },
+    "snapshot": {
+      "outletRows": 234,
+      "defaultOutlets": 233,
+      "bannersApproved": 43,
+      "bannersWithOutlets": 39,
+      "defaultBanners": 38,
+      "countedBannerLinks": 241,
+      "coBrandedOutlets": 7,
+      "provincesWithOutlets": 64,
+      "bangkokRows": 101,
+      "venues": 144,
+      "venuesWithHost": 133,
+      "hostRecords": 132,
+      "shoppingCenterHosts": 112,
+      "groceryHosts": 20,
+      "mappedRows": 208,
+      "rowsWithoutCoordinate": 26,
+      "rowsWithoutVenue": 15,
+      "rowsAtVenuesWithoutHost": 11,
+      "locales": 27,
+      "hostBuildingFeatures": 136,
+      "venueLogoFiles": 30,
+      "storeLogos": 0,
+      "channels": {
+        "street_or_building": 24,
+        "mall": 206,
+        "hotel_or_appointment": 2,
+        "downtown_travel_retail": 1
+      },
+      "identity": {
+        "source_listed_not_field_verified": 226,
+        "same_unit_floor_conflict_review": 1,
+        "location_conflict_review": 1,
+        "shared_venue_identity_review": 6
+      },
+      "segmentFilter": {
+        "multibrand_camera": {
+          "outlets": 183,
+          "banners": 14
+        },
+        "used_film_specialist": {
+          "outlets": 8,
+          "banners": 6
+        },
+        "manufacturer_brand_store": {
+          "outlets": 29,
+          "banners": 7
+        },
+        "imaging_equipment_specialist": {
+          "outlets": 12,
+          "banners": 8
+        },
+        "adjacent_retail_channel": {
+          "outlets": 7,
+          "banners": 3
+        }
+      }
+    },
+    "closurePolicy": "retain closure status factually; 1 brand-level closure (Eastbourne 2025-02-15) is recorded in meta.closedBrands, not as an outlet row; never delete to improve counts",
+    "coordinatePolicy": "coordinates only from a verified CityMETER host record (Shopping Center detail or the Grocery overlay tile record) and always the host point, never a shopfront or floor; missing stays null; no nearest-neighbour joins; the coordinates already present in the research sheet (74 rows) are identical to these host points; retailer map links are kept as links and never decoded",
+    "privacy": "no phone numbers (scripts/build-camera-data.py no_phone scrubs names, addresses, units, operators and notes) and no private Drive/Docs/googleusercontent URLs (public_https) in any public file",
+    "limitations": [
+      "Listings are source observations, not field-verified operating status.",
+      "Coordinates are host points (shopping centre or hypermarket), not shop entrances or floors.",
+      "Street stores without a verified host keep missing coordinates.",
+      "Coverage is not a national census of camera retail.",
+      "Do not infer sales, stock, spending or demographics from presence."
+    ]
+  },
+  "visualSystem": {
+    "release": "LDS 0.9.7",
+    "releaseId": "v0.9.7-owner.1",
+    "revision": "standalone-0.9.7-r1",
+    "colorSetId": "color-srgb-10",
+    "normativeSha256": "d3085cbc0a50195f1cbf0c77b1d77c0d19b84364daf2948eb367348d65432d96",
+    "appliedTokens": "assets/theme.css (foundation pairs, semantic states, map roles, data states, series 1–10, count classes, basemap-only tokens) — unchanged from Luxury Brands 0.5",
+    "analyticalScale": {
+      "family": "count",
+      "lutSamples": 41,
+      "scaleVersion": "4ff5c1fb4be71ecd13c48685b38371b528bcd4ce369ce964a75354c2eb4d0980",
+      "source": "js/scales.js",
+      "unit": "ร้านไม่ซ้ำ"
+    },
+    "categoricalSeries": {
+      "registry": "landometer-series-10-v8",
+      "variant": "soft",
+      "segmentAssignment": "model.js SEGMENTS order = series.01 … series.05 (กล้องหลายแบรนด์, มือสองและฟิล์ม, ร้านแบรนด์ผู้ผลิต, โดรนและอุปกรณ์ภาพ, ช่องทางขายเสริม)",
+      "compareCues": {
+        "exclusive": "series.07 hexagon",
+        "shared": "series.09 dash"
+      }
+    },
+    "locationProfile": {
+      "document": "Location-Intelligence-Profile-for-LDS-v0.9.7.md",
+      "applied": false,
+      "reason": "profile defines business metrics (demand, supply, market size …) that this dataset does not carry"
+    },
+    "fonts": {
+      "body": "Bai Jamjuree 400/600 (also the name chips, 600 11px)",
+      "headingLatin": "Arvo 700",
+      "headingThai": "IBM Plex Sans Thai Looped 700",
+      "numbers": "JetBrains Mono 400 tabular"
+    },
+    "icons": {
+      "asset": "assets/icons/material-nav-300.woff2",
+      "axes": {
+        "FILL": 0,
+        "wght": 300,
+        "GRAD": 0,
+        "opsz": 24
+      },
+      "allowed": [
+        "open_in_new",
+        "menu",
+        "close",
+        "light_mode",
+        "dark_mode",
+        "contrast",
+        "groups"
+      ],
+      "fallback": "visible semantic text label (3D / มุมสถาปนิก toggles use text)"
+    },
+    "iconSet": "iconset.landometer.portfolio.symbol.01 (16/32/48/180/192/512) + site.webmanifest",
+    "mapStyles": {
+      "generator": "js/map-style.js#buildMapStyle",
+      "tiles": "https://tiles.openfreemap.org/planet"
+    },
+    "layout": {
+      "headerPx": 48,
+      "desktopPanel": "min(max(300px,28%),440px)",
+      "chartTrayCollapsedPx": 52,
+      "mobileSheetMaxHeight": "64dvh",
+      "toolbar": [
+        "ดูทั้งหมด",
+        "กรุงเทพฯ",
+        "ย่าน",
+        "3D",
+        "มุมสถาปนิก",
+        "วิธีใช้",
+        "ข้อมูล (mobile)"
+      ],
+      "mixLabelColumnPx": 132
+    }
+  },
+  "invariants": [
+    {
+      "id": "INV01",
+      "rule": "One outlet record owns one pin; no clustering or aggregation, including quiet context pins; a co-branded storefront is one pin, never one per banner"
+    },
+    {
+      "id": "INV02",
+      "rule": "250 pin labels (logo or name chip) is a ceiling, never a quota; labels only at zoom ≥ 14 and only for rows in focus"
+    },
+    {
+      "id": "INV03",
+      "rule": "Preserve original logo artwork when a registry exists; a name chip is text, never a substitute or generated logo"
+    },
+    {
+      "id": "INV04",
+      "rule": "Default first insight concerns neighborhoods (Locales), not venues; the venue-level finding appears only when no Locale holds a row"
+    },
+    {
+      "id": "INV05",
+      "rule": "Never sum distinct banners across areas, venues or segments; use set union"
+    },
+    {
+      "id": "INV06",
+      "rule": "Keep generic caveats and workflow notes out of UI; retain provenance in documentation and real closure/hold/error states"
+    },
+    {
+      "id": "INV07",
+      "rule": "No CSV download UI"
+    },
+    {
+      "id": "INV08",
+      "rule": "No decorative bracket or colored left rail; keep visible focus"
+    },
+    {
+      "id": "INV09",
+      "rule": "No fabricated coordinates, store openings, administrative boundaries or consumer behaviour claims; no nearest-neighbour host or building joins; retailer map links are never decoded into coordinates"
+    },
+    {
+      "id": "INV10",
+      "rule": "Pins, counters, table and panel counts use the same committed rows; Aha, choropleth and charts use scopeRows and say so when they differ; at venue level the venue's rows come from scopeRows"
+    },
+    {
+      "id": "INV11",
+      "rule": "Detail only for the focused part; everything else stays visible but quiet (no labels, grey dots, outline-only areas, quiet massing)"
+    },
+    {
+      "id": "INV12",
+      "rule": "Analytical colours keep the approved light HEX on both themes; contrast is solved with labels, outlines and backplates, never by recolouring data"
+    },
+    {
+      "id": "INV13",
+      "rule": "Exclusive/shared and the Aha denominator reference the whole filtered scope, never a single selected area"
+    },
+    {
+      "id": "INV14",
+      "rule": "The first view is 3D with the top-3 Locales focused (desktop never below zoom 13); ?areas=all and the 3D toggle are the only ways to leave that state, and neither changes the data"
+    },
+    {
+      "id": "INV15",
+      "rule": "Basemap and massing colours come only from --basemap-* tokens; they never reuse data, series or state colours, and massing never encodes a metric"
+    },
+    {
+      "id": "INV16",
+      "rule": "City massing is OSM context: rounding and enclosure are display-only, heights are never quoted as dataset facts, and host buildings stay the only building layer that carries data colour"
+    },
+    {
+      "id": "INV17",
+      "rule": "Breadcrumb levels are ประเทศไทย › จังหวัด › ย่าน › สถานที่ with production province codes; ย่าน ids are production Locale uuids and are never invented — outside Bangkok there is no ย่าน level"
+    },
+    {
+      "id": "INV18",
+      "rule": "Matrix cells are equal in size; only the number and its count class carry meaning"
+    },
+    {
+      "id": "INV19",
+      "rule": "Camera presets never move or scale data; the eye preset is the venue-level camera only (default there, ?cam=model opts out) and never applies to overview or neighborhood"
+    },
+    {
+      "id": "INV20",
+      "rule": "At venue level only the venue's rows carry detail: its host building is the only blue one; other venues' buildings and pins become quiet context; the eye scene only changes massing opacity, never data"
+    },
+    {
+      "id": "INV21",
+      "rule": "On-screen copy is short and natural, without caveats: ร้าน = distinct shop banner, สาขา = one outlet record, สถานที่ = venue, ย่าน = Locale; “แบรนด์” is never a unit; provenance, units and limits live in the data section, help and docs"
+    },
+    {
+      "id": "INV22",
+      "rule": "The venue's host building is never hidden by context: it is drawn before every massing tier and the venue x-ray draws it on top in 3D; it stays clickable via the style layer and the x-ray hit-test"
+    },
+    {
+      "id": "INV23",
+      "rule": "Province frames are navigation context with their own count classes; they never replace the Locale scale above zoom 9 and never claim administrative authority"
+    },
+    {
+      "id": "INV24",
+      "rule": "Pictograms are decorative: every tile and heading keeps its text label; the nav-7 approved subset stays byte-identical and the pictogram subset (brand = photo_camera) is a declared test exception"
+    },
+    {
+      "id": "INV25",
+      "rule": "Venue logos identify, never decide: lookup by host id or exact label only, the venue name stays the record, and shared or parent-complex marks carry their role"
+    },
+    {
+      "id": "INV26",
+      "rule": "Counted banners = retail and host-counter banners of 11_STORE_BRANDS; an operator is never a banner; a segment filter projects banners on a copy of the row and never drops, merges or moves an outlet"
+    },
+    {
+      "id": "INV27",
+      "rule": "A coordinate is the point of a verified CityMETER host record (Shopping Center or Grocery) and is described as a host point; outlets without a verified host keep a null coordinate and stay in every count and the table"
+    },
+    {
+      "id": "INV28",
+      "rule": "Public files never carry phone numbers or private Drive/Docs/googleusercontent URLs"
+    },
+    {
+      "id": "INV29",
+      "rule": "Identity, unit and location holds stay in the default cohort with their own pending status; the listed contact location is outside the default and selectable (cohorts all / review)"
+    },
+    {
+      "id": "INV30",
+      "rule": "Display labels (BANNER_LABELS, FORMATS, hostTypeLabel, SEGMENT_SHORT) never change a row, a search key or a count"
+    }
+  ],
+  "chartContracts": [
+    {
+      "viewKey": "centers",
+      "title": "ย่านที่มีร้าน",
+      "question": "ย่านใดมีร้านกล้องหลากหลาย",
+      "encoding": "horizontal bars; bar fill = count class of the area; outlets as the secondary figure",
+      "metric": "distinct shop banners per assigned Locale",
+      "scope": "scopeRows",
+      "action": {
+        "type": "neighborhood",
+        "id": "Locale uuid"
+      }
+    },
+    {
+      "viewKey": "mix",
+      "title": "บุคลิกของย่าน",
+      "question": "ย่านใดเด่นร้านประเภทไหน",
+      "encoding": "numeric heat table with table-layout fixed and a <colgroup>; every cell equal width/height; cell tint = count class of the cell value; 0 shown with zero outline; caption states cell size carries no meaning",
+      "metric": "distinct banners per Locale × segment, counted on (outlet × banner) pairs by each banner's own segment (a co-branded outlet appears in each of its banners' segments)",
+      "scope": "scopeRows",
+      "action": {
+        "type": "neighborhood",
+        "id": "Locale uuid"
+      }
+    },
+    {
+      "viewKey": "compare",
+      "title": "ร้านเฉพาะ / ร่วม",
+      "question": "แต่ละย่านมีร้านต่างหรือซ้ำกับย่านอื่นเพียงใด",
+      "encoding": "stacked horizontal bars with shape cues",
+      "metric": "banners assigned to exactly one versus multiple Locales",
+      "reference": "all assigned Locales in scopeRows, before display truncation",
+      "scope": "scopeRows",
+      "minimumAreas": 2,
+      "emptyAction": {
+        "type": "resetAreas"
+      }
+    }
+  ],
+  "delivery": {
+    "human": [
+      "README.md",
+      "PRODUCT_BRIEF.md",
+      "IMPLEMENTATION_PLAN.md",
+      "VERIFICATION.md",
+      "START_HERE.md",
+      "../PRODUCT_STATEMENT.md",
+      "../DATA_METHOD.md",
+      "../docs/NEIGHBORHOOD_METHOD.md"
+    ],
+    "machine": [
+      "product-statement.json",
+      "product-brief.json",
+      "implementation-plan.json",
+      "handoff-manifest.json",
+      "handoff.schema.json"
+    ],
+    "start": "npm start",
+    "test": "npm test",
+    "handoff": "npm run handoff:bundle",
+    "verifyLive": "npm run verify:live",
+    "dataBuild": "npm run data:build -- --research <tab CSVs> --build <verified host links> --lux-buildings <Luxury venue-buildings.geojson> --lux-logos <Luxury repo>; npm run data:provinces -- <OpenGISData provinces.geojson> --commit … --sha256 … --retrieved …",
+    "localUrl": "http://127.0.0.1:4173/",
+    "devHook": "window.__citymeter (state, map, update, fitMap, fitPitched, applyPreset, buildMapStyle) — console tuning only, not an API"
+  },
+  "venueXrayContract": {
+    "module": "js/venue-xray.js#installVenueXray(map, {beforeId, toMercator, colors}) → {update(features, {colors}), setEnabled, hitTest(point), dispose, count, enabled, failed}",
+    "layer": "venue-xray (type custom, renderingMode 3d), inserted before water-name after every fill-extrusion layer",
+    "input": "host features of the venue being looked at (mall_ids — Shopping Center or Grocery id — or venue_names match) with render_as = extrusion; display_base_m / display_height_m",
+    "geometry": "walls (two triangles per edge), roof via earcut (holes supported; js/vendor/earcut.js 3.2.4 ISC), edge lines; mercator coordinates relative to the centroid origin; z = MercatorCoordinate.z of the altitude",
+    "matrix": "options.defaultProjectionData.mainMatrix (64-bit) × translate(origin) multiplied on the CPU, Float32 to the shader",
+    "depth": "scissored depth clear inside the venue screen box (device pixels, padded 4 px), then LEQUAL read-write depth test against itself only; polygon offset keeps edges on top",
+    "visibility": "3D only (pitch > 0) and zoom ≥ 13 (XRAY_MIN_ZOOM); hidden with the 3D toggle; disabled at non-venue levels (empty feature set); venues without an accepted footprint have no solid",
+    "colours": "faces map.activeLayer × shade (roof 1, walls 0.66–0.92 by orientation), edges map.selectedStroke — map roles, not data colours",
+    "interaction": "two paths: the style layer camera-venue-buildings-3d (MapLibre hit-test, reliable near the footprint) and xray.hitTest(point) — point-in-triangle against the solid projected with the last frame matrix — wired in app.js on map click (opens the venue when not already there) and mousemove (pointer cursor)",
+    "failSafe": "a GL error disables the layer (failed = true) and the style host layer keeps drawing",
+    "references": [
+      "MapLibre GL JS CustomLayerInterface (renderingMode 3d, defaultProjectionData.mainMatrix)",
+      "MapLibre src/render/draw_fill_extrusion.ts — translucent extrusions drawn depth-first, then colour with depth EQUAL",
+      "three.js material.depthTest = false selection highlight",
+      "Cesium Entity.disableDepthTestDistance"
+    ],
+    "knownTradeOff": "inside the cleared box a translucent 2D layer that sits below an opaque fill in style order may draw over it; none of the generated paper style layers are ordered that way"
+  },
+  "provinceContract": {
+    "data": "data/provinces.geojson — 64 provinces that hold at least one outlet row; id = production code, properties.dopaCode = DOPA two-digit code (equal to production lv0 code), name (Thai), nameEn; metadata: source, sourceCommit, sourceSha256, retrievedOn, license CC BY 4.0, attribution, vertices 23213",
+    "source": "https://github.com/chingchai/OpenGISData-Thailand provinces.geojson (publisher credits DOPA); extracted by scripts/extract-provinces.mjs from the rows of data/camera.json; coordinates rounded to 5 decimals, no simplification; rings that collapse below 4 positions after rounding are dropped (one sliver hole in ร้อยเอ็ด)",
+    "module": "js/provinces.js#installProvinceLayers(map, geojson, {onSelect}) → {update({rows, selectedCode, visible}), retheme, dispose, model}; buildProvinceModel(rows, geojson)",
+    "rows": "filterRows(data.rows, {...filters, province: \"\"}) — every filter except the province filter, so each frame keeps its own count",
+    "metric": "distinct shop banners per province; equal-interval 5 classes of the count family from the province maximum (snapshot 1–7 · 8–14 · 15–21 · 22–28 · 29–36; กรุงเทพมหานคร 36 ร้าน); measured_zero = lowest fill + zero outline; out_of_scope = not drawn",
+    "zoomWindows": {
+      "fill": "< 9 (PROVINCE_FILL_MAX_ZOOM, hard switch)",
+      "outline": "< 12 (PROVINCE_OUTLINE_MAX_ZOOM, opacity fades 10.5 → 12)",
+      "selected": "< 13",
+      "labels": "< 9.5 (PROVINCE_LABEL_MAX_ZOOM; collision-managed, so not every chip shows at country zoom)",
+      "legend": "province classes below 9, Locale classes from 9"
+    },
+    "layers": [
+      "province-fill (before the first basemap line layer)",
+      "province-zero-outline",
+      "province-outline",
+      "province-selected"
+    ],
+    "labels": "js/map-layers.js#installAreaLabels({className: province-label, minZoom 0, maxZoom 9.5}) — ink chips with the location_city pictogram and the banner count",
+    "drillDown": "click frame / label / panel row → app.js selectProvince(code): province filter, neighborhood cleared, overview panel, update({fit: true}) → camera on the province rows; URL ?province=CODE; breadcrumb ประเทศไทย › จังหวัด; outside Bangkok the first finding is venue-level",
+    "quiet": "with a province selected the other frames are outline-only (filled 0, quiet 1)",
+    "panelList": "จังหวัดที่มีร้านกล้อง: ten rows, the rest folded in a native <details> disclosure",
+    "limits": "frames are navigation context, not an administrative claim; production boundaries may differ"
+  },
+  "pictogramContract": {
+    "status": "test exception to LDS nav-7 (owner 2026-10-22); nav-7 subset unchanged; Camera Shops swaps brand diamond → photo_camera",
+    "font": "assets/icons/material-pictogram-300.woff2 (1724 bytes, sha256 259de66e057385539f2352657951597b1cad7206c1ca03205373e7f39d8edcb4), manifest assets/icons/material-pictogram-300.json, built by scripts/build-pictogram-font.py from google/material-design-icons MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf (Apache-2.0, sha256 32e4011709e055596eb8d2dd0f7cb547b47c1d40ac9ecb8fad54f7f7eac202e7); byte-reproducible (head timestamps taken from the source font) and checked so each codepoint carries the named icon",
+    "axes": {
+      "FILL": 0,
+      "wght": 300,
+      "GRAD": 0,
+      "opsz": 24
+    },
+    "glyphs": {
+      "brand": "photo_camera U+E412",
+      "store": "storefront U+EA12",
+      "venue": "local_mall U+E54C",
+      "area": "map U+E55B",
+      "province": "location_city U+E7F1",
+      "exclusive": "star U+F09A",
+      "gla": "square_foot U+EA49",
+      "segment": "category U+E72C"
+    },
+    "usage": "metric tiles (js/panel.js#metricTile), section headings (js/panel.js#heading), province label chips; CSS .pictogram / .pic-<role> with a matching unicode-range in styles.css; colour follows the mark (store = pin, venue = host building, exclusive = series 7)",
+    "accessibility": "aria-hidden decorative glyphs; the text label is the meaning; hidden until document.fonts reports the face (pictograms-ready), display:none when unavailable",
+    "cameraChange": "role brand (ร้าน) uses photo_camera U+E412 instead of Luxury Brands' diamond U+EAD5"
+  },
+  "venueLogoContract": {
+    "module": "js/venue-logos.js#configureVenueLogos(catalog) → coverage; getVenueLogo({mallId, venue}); venueLogoMarkup(ref, {size, className, decorative})",
+    "registry": "data/venue-logos.json — assets[] {key VL-…, file assets/venue-logos/<name>, mime, bytes, sha256, width, height, background, sourcePage, assetURL, sourceKind}; centers[] {id (CityMETER Shopping Center id), name, label, key, role}; venues[] {label (exact row label), canonical, type, role, key, status}",
+    "source": "research sheet “CityMETER Camera Shops Thailand — Research Master 2026-10-22”, tab 10_VENUE_LOGOS (31 labels marked ใช้ไฟล์เดิมที่ตรวจแล้ว); files reused byte-identical from the Luxury Brands 0.5 install set or downloaded from the sheet's Drive links, each verified against the sheet sha256 by scripts/build-camera-data.py; provenance per file in assets/venue-logos-manifest.json (official pages only, no Drive links)",
+    "coverage": {
+      "files": 30,
+      "labelsWithLogo": 31,
+      "labels": 144,
+      "centerLinks": 30,
+      "status": "complete",
+      "roles": {
+        "venue_specific": 28,
+        "shared_chain_banner": 1,
+        "parent_complex": 2
+      },
+      "backplates": {
+        "#182327": 14,
+        "#E5E9E6": 13,
+        "#FFFFFF": 3
+      }
+    },
+    "lookup": "mallId → centers link first, else exact normalized venue label (NFKC, trimmed, case-folded, whitespace collapsed); never fuzzy; canonical names are not lookup keys; hypermarket hosts have no logo link",
+    "roles": {
+      "venue_specific": "no caption",
+      "parent_complex": "โลโก้โครงการแม่",
+      "shared_department_store_banner": "โลโก้ห้างสรรพสินค้าในเครือ",
+      "shared_chain_banner": "โลโก้เครือ",
+      "none": "no logo"
+    },
+    "placement": "venue heading (lg, 56 px, alt = โลโก้ <name>, role caption in the eyebrow), overview and neighborhood venue rows (sm, 28 px, decorative), store facts สถานที่ (md, 36 px, decorative)",
+    "backing": "transparent marks on #E5E9E6 (LDS surface-soft stone), light transparent marks on #182327, opaque files on #FFFFFF; artwork bytes unchanged",
+    "invariants": "the venue name stays the identity; a logo never changes a row, label, coordinate or status; a missing registry only removes the boxes; collecting files is not a trademark licence",
+    "notInScope": "venue logos on the map; store-banner logos (not collected — data/brand-logos.json is empty)"
+  },
+  "bannerContract": {
+    "grain": {
+      "rule": "one row = one outlet record; brand = the primary banner of 02_STORES; brands[] = every counted banner of the outlet from 11_STORE_BRANDS (relationship retail_banner or host_counter_banner; operator links are not banners), primary first; bannerSegments[] = each banner's 01_BRANDS segment, parallel to brands[]",
+      "snapshot": {
+        "countedBannerLinks": 241,
+        "coBrandedOutlets": [
+          {
+            "id": "CAM-O-3f9807cb9ae9fb",
+            "banners": [
+              "BIG CAMERA",
+              "Power Mall"
+            ]
+          },
+          {
+            "id": "CAM-O-3068430da9e4b7",
+            "banners": [
+              "BIG CAMERA",
+              "Power Mall"
+            ]
+          },
+          {
+            "id": "CAM-O-3d3286f7cd1907",
+            "banners": [
+              "BIG CAMERA",
+              "Power Mall"
+            ]
+          },
+          {
+            "id": "CAM-O-01d54579da446a",
+            "banners": [
+              "BIG CAMERA",
+              "Power Mall"
+            ]
+          },
+          {
+            "id": "CAM-O-b8c7d206c40f86",
+            "banners": [
+              "BIG CAMERA",
+              "Power Mall"
+            ]
+          },
+          {
+            "id": "CAM-O-87ad6f80d2ed20",
+            "banners": [
+              "DJI Experience Store",
+              "Hasselblad Bangkok Store"
+            ]
+          },
+          {
+            "id": "CAM-O-676600c7735f0a",
+            "banners": [
+              "Insta360 Experience Store by BIG Camera",
+              "BIG CAMERA"
+            ]
+          }
+        ],
+        "operatorLinksNotCounted": "Canon Image Square CentralWorld ← WORLD CAMERA (operator)"
+      }
+    },
+    "counting": {
+      "banners": "ร้าน = |brandSet(rows)| — model.js bannersOf / brandSet / countBrands; used by summarize, area-insight, chart-model, neighborhoods, provinces and profile-model",
+      "outlets": "สาขา = number of rows",
+      "segmentMix": "profile-model.js#segmentMixOf and chart-model.js count (outlet × banner) pairs by each banner's own segment: a co-branded outlet appears once in each of its banners' segments, so segment rows can add up to more than the outlet total",
+      "exclusiveShared": "computed on banner names over all assigned Locales",
+      "presence": "buildBrandPresence finds a banner in every outlet that carries it (the Insta360 store also counts for BIG CAMERA)",
+      "search": "filterRows search matches every banner of the source row, the outlet name, venue, neighborhood and province"
+    },
+    "segmentFilter": {
+      "function": "model.js#projectSegment(row, segment) inside filterRows",
+      "rule": "an outlet stays when any of its banners is in the segment; the returned row keeps only those banners (brand = the first of them, segment = the filtered segment) — a shallow copy, never a mutation; an unchanged row is returned as is; coordinates, ids and every other field stay identical",
+      "snapshot": {
+        "multibrand_camera": {
+          "outlets": 183,
+          "banners": 14
+        },
+        "used_film_specialist": {
+          "outlets": 8,
+          "banners": 6
+        },
+        "manufacturer_brand_store": {
+          "outlets": 29,
+          "banners": 7
+        },
+        "imaging_equipment_specialist": {
+          "outlets": 12,
+          "banners": 8
+        },
+        "adjacent_retail_channel": {
+          "outlets": 7,
+          "banners": 3
+        }
+      }
+    },
+    "labels": {
+      "vocabulary": "ร้าน (banner) · สาขา (outlet) · สถานที่ (venue) · ย่าน (Locale); segment names SEGMENTS (full) / SEGMENT_SHORT (matrix columns)",
+      "storePanel": "heading = primary banner; linked banners “ร่วมกับ …” as search-brand buttons; table and popup join every banner with “ · ”",
+      "mapChips": "js/pins.js: when no logo is registered (always, in this release) a focused pin may get a text chip from zoom 14 under the 250 ceiling; text = model.js#bannerLabel(primary banner): BANNER_LABELS for 10 long names (the research name's leading words or an 01_BRANDS alias), otherwise the name, cut at 17 characters + “…” when longer than 18",
+      "bannerLabels": {
+        "Insta360 Experience Store by BIG Camera": "Insta360",
+        "FUJIFILM House of Photography Bangkok": "FUJIFILM House",
+        "DJI Experience Store": "DJI Experience",
+        "Hasselblad Bangkok Store": "Hasselblad Store",
+        "Leica Store / Leica Boutique": "Leica Store",
+        "JIA Colorlab / JIA Camera": "JIA Colorlab",
+        "DJI 13 Store / 13Store": "13Store",
+        "B2H / Best2Home": "B2H",
+        "STM / STM-Viltrox": "STM",
+        "SYG Camera Thailand": "SYG Camera"
+      },
+      "chipGeometry": "width = textLabelWidth(text) = clamp(16 + 6.6 × characters, 36, 136) px; height = round(0.66 × label height) = 20 px (22 px from zoom 15); light card chip (--surface-card, 1 px --border-default, Bai Jamjuree 600 11px) so it never reads as an ink area chip; placement and collision rules = placeBrandLogos (each banner gets a turn before repeated outlets)",
+      "formats": "model.js FORMATS translates the 15 store-format codes of the sheet; named formats (BIG Camera Galleria, Wonder Photo Shop by BIG Camera …) are shown as written; formatLabel hides a format that only repeats the banner name"
+    }
+  },
+  "hostContract": {
+    "kinds": {
+      "shopping_center": {
+        "records": 112,
+        "rows": 188,
+        "id": "CityMETER Shopping Center id (centers[].id; externalId SC-…)",
+        "geometryRole": "host_complex_point_not_shopfront",
+        "coordinateSource": "https://landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}",
+        "panelLink": "ศูนย์การค้านี้ใน CityMETER"
+      },
+      "grocery": {
+        "records": 20,
+        "rows": 20,
+        "id": "CityMETER Grocery record id of a hypermarket (Big C, Lotus's)",
+        "geometryRole": "host_hypermarket_point_not_shopfront",
+        "coordinateSource": "the production grocery overlay tile (z13, inTileType=SUBDISTRICT) in which the record was read",
+        "panelLink": "none (no public page)"
+      },
+      "none": {
+        "rows": 26,
+        "meaning": "15 street or appointment shops without a venue and 11 outlets at venues without a verified CityMETER host: geometryRole not_collected, coordinate null"
+      }
+    },
+    "fields": "rows.mallId = the host record id of either kind (named for compatibility with the 0.5 venue code); rows.hostKind = shopping_center | grocery; centers[].kind, type (production taxonomy: Neighborhood Center 15, Regional Mall 64, Super-Regional Mall 30, Airport Retail 1, Hypermarket 20, Market 2) → panel.js hostTypeLabel",
+    "join": {
+      "method": "reviewed crosswalk from the research venue label to one production record, basis recorded in centers[].match; no nearest-neighbour or radius join",
+      "basis": {
+        "shopping_center:name": 70,
+        "shopping_center:research_sheet_alias_crosswalk": 30,
+        "shopping_center:dup": 1,
+        "shopping_center:alias": 2,
+        "shopping_center:address": 3,
+        "grocery:address": 19,
+        "grocery:sole": 1,
+        "shopping_center:sole": 6
+      },
+      "basisCodes": {
+        "research_sheet_alias_crosswalk": "Shopping Center id already linked in the research sheet",
+        "name": "same centre, Thai/English spelling of one name after normalisation",
+        "alias": "documented alternate name of the same complex",
+        "dup": "production holds duplicate records at one point; the record whose name matches is used",
+        "sole": "the only centre of that operator in the province (grocery: the only Big C hypermarket in the province)",
+        "address": "house number / หมู่ / ตำบล of the production record equal to the outlet address"
+      },
+      "checks": "every host point lies in the production province polygon of its venue's province (decoded base/mvt/P); every Bangkok host point gets its Locale from production base/locatePoint and the shipped Locale polygons must agree (33/33, the build stops otherwise)",
+      "venues": "144 research venues → 133 with a host (132 host records: Central Phuket Festival and Central Phuket Floresta share the one Central Phuket record) and 11 without"
+    },
+    "geometry": {
+      "point": "the host record point is the outlet coordinate for every row of that venue (co-located outlets keep separate pins via screen-space slots)",
+      "buildings": "data/venue-buildings.geojson: 136 features for 105 hosts and 176 outlet rows — 60 features (29 hosts) reused from Luxury Brands 0.5 for the same CityMETER center and re-keyed to camera outlets; 68 CityMETER building V4 footprints that contain the host point (area within 12 % of building/detail, plausibility rules against small unnamed buildings); 8 OSM-named buildings within 150 m whose name matches the venue (identity by name, never nearest); 8 of 20 hypermarket hosts carry a footprint",
+      "heights": {
+        "unknown_display_fallback": 17,
+        "citymeter_part_height_source": 31,
+        "citymeter_model_estimate": 86,
+        "osm_published_height_not_survey_verified": 2
+      },
+      "renderAs": {
+        "outline": 6,
+        "extrusion": 130
+      },
+      "sources": {
+        "OpenStreetMap original geometry": 29,
+        "CityMETER public building parts (OSM-derived)": 31,
+        "CityMETER building V4 (osm_geom)": 66,
+        "CityMETER building V4 (osm)": 3,
+        "CityMETER building V4 (globfp)": 7
+      },
+      "attribution": "Microsoft Global ML Building Footprints (ODbL 1.0); © OpenStreetMap contributors (ODbL 1.0)",
+      "limits": "a footprint is the host building, not the shop unit; heights are source or model estimates (3 m display fallback when unknown)"
+    }
+  }
+}

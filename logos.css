@@ -1,0 +1,29 @@
+/* Brand identity artwork and categorical series assignment.
+   Logos keep their source bytes (sprite assets/brand-logos.svg) on a neutral
+   backing; category colours resolve the LDS series tokens by segment index
+   (model.js SEGMENTS order = series.01 … series.08). */
+
+.brand-logo { display: block; width: 80px; height: 40px; flex: 0 0 auto; border: 0; border-radius: 2px; overflow: hidden; background: transparent; }
+.brand-row { display: flex; align-items: center; gap: 10px; white-space: normal; }
+.brand-row > span { min-width: 0; overflow-wrap: anywhere; }
+.brand-row .brand-logo { width: 64px; height: 32px; }
+.logo-credit { font-size: 12px !important; }
+.row-name.brand-row { max-width: 320px; }
+
+/* Category fill variable: pins, swatches and mix bars read --pin-fill. */
+.store-pin[data-category="1"], .category-1 { --pin-fill: var(--series-1-fill); }
+.store-pin[data-category="2"], .category-2 { --pin-fill: var(--series-2-fill); }
+.store-pin[data-category="3"], .category-3 { --pin-fill: var(--series-3-fill); }
+.store-pin[data-category="4"], .category-4 { --pin-fill: var(--series-4-fill); }
+.store-pin[data-category="5"], .category-5 { --pin-fill: var(--series-5-fill); }
+.store-pin[data-category="6"], .category-6 { --pin-fill: var(--series-6-fill); }
+.store-pin[data-category="7"], .category-7 { --pin-fill: var(--series-7-fill); }
+.store-pin[data-category="8"], .category-8 { --pin-fill: var(--series-8-fill); }
+.mix-fill.category-1 { background: var(--series-1-fill); }
+.mix-fill.category-2 { background: var(--series-2-fill); }
+.mix-fill.category-3 { background: var(--series-3-fill); }
+.mix-fill.category-4 { background: var(--series-4-fill); }
+.mix-fill.category-5 { background: var(--series-5-fill); }
+.mix-fill.category-6 { background: var(--series-6-fill); }
+.mix-fill.category-7 { background: var(--series-7-fill); }
+.mix-fill.category-8 { background: var(--series-8-fill); }

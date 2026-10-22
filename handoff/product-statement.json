@@ -1,0 +1,462 @@
+{
+  "$schema": "./handoff.schema.json",
+  "schemaVersion": "1.4.0",
+  "documentType": "product-statement",
+  "productId": "citymeter-camera-shops",
+  "productVersion": "0.5.0",
+  "updatedOn": "2026-10-22",
+  "humanDocument": "../PRODUCT_STATEMENT.md",
+  "standard": "Product Brief — CityMETER v6 §1.6.3 metadata block; Master Brand Brief v0.5.3 §7.2 / §3.7",
+  "siblingProduct": {
+    "productId": "citymeter-luxury-brands",
+    "liveUrl": "https://montri-th.github.io/luxurybrands/",
+    "relation": "same 0.5 architecture and contracts; different dataset and unit vocabulary"
+  },
+  "evidenceLabels": {
+    "personas": "hypothesis",
+    "alternatives": "inference",
+    "dataFacts": "observed",
+    "urgency": "inference",
+    "severity": "inference",
+    "staleSourceExamples": "project-evidence"
+  },
+  "units": {
+    "ร้าน": "distinct shop banner (e.g. BIG CAMERA, Sony Store); a co-branded storefront contributes each counted banner",
+    "สาขา": "one outlet record (point of sale, or one listed contact location); a co-branded storefront is one สาขา",
+    "สถานที่": "venue: CityMETER host (Shopping Center or Grocery hypermarket) or a plain venue label",
+    "ย่าน": "CityMETER production Locale (Bangkok only in production)",
+    "note": "แบรนด์ is never used as a unit: it would read as camera makers"
+  },
+  "dataset_id": "camera-shops",
+  "dataset_name_en": "Camera Shops",
+  "dataset_name_th": "ย่านร้านกล้อง",
+  "category": "Location",
+  "outcome_layer": "Local Decisions",
+  "status": "prototype",
+  "positioning": {
+    "one_line_highlight": "แผนที่ย่านร้านกล้องของไทยที่แยกเครือข่ายสาขาออกจากการกระจุกของร้านเฉพาะทาง พร้อมหลักฐานรายสาขา เพื่อเลือกทำเลและ tenant mix ด้วยหลักฐาน ไม่ใช่ความจำ",
+    "unique_advantage": "นับร้านไม่ซ้ำแยกจากสาขาและอ่านเป็นย่าน (Locale ของ CityMETER) — ร้านเฉพาะย่าน/ร่วม บุคลิกตามประเภทร้าน — บนฉากเมือง 3 มิติแบบ focus/quiet ที่พร้อมฉายในห้องประชุม พร้อมหลักฐานต่อรายการ",
+    "unique_vs_other_citymeter_datasets": "ชุดเดียวที่ลงถึงร้านกล้อง–สาขาและ adjacency; Shopping Center และ Grocery ให้ host (ศูนย์การค้า ไฮเปอร์มาร์เก็ต GLA) แต่ไม่รู้ว่าร้านกล้องร้านใดอยู่ที่ไหน; Luxury Brands ใช้สถาปัตยกรรมเดียวกันกับตลาดอื่น",
+    "unique_vs_competitors": "locator รายเครือ, dealer list ของผู้ผลิต, directory รายศูนย์ และ Google Maps ให้ทีละแหล่ง/ทีละจุด รายงาน PDF ไม่ลงรายร้าน — ไม่มีแหล่งใดรวม ตรวจย้อนได้ เทียบย่านได้ และแยกเครือข่ายสาขาออกจากการกระจุกของร้าน"
+  },
+  "users": {
+    "primary_users": [
+      "ทีมขยายสาขาของร้านกล้อง (เครือข่ายใหญ่ ร้านเฉพาะทาง มือสอง/ฟิล์ม โดรนและอุปกรณ์ภาพ)",
+      "ทีมค้าปลีกของผู้ผลิตกล้องและอุปกรณ์ภาพ (brand store, shop-in-shop, experience store)",
+      "ทีม leasing ของศูนย์การค้าและ IT mall",
+      "นักวิเคราะห์ CityMETER และที่ปรึกษาด้านทำเล"
+    ],
+    "decision_contexts": [
+      "เปิด ย้าย หรือปิดสาขาร้านกล้องที่ย่าน/สถานที่ใด",
+      "เปิด brand store ที่ใด และพึ่งร้านหลายแบรนด์ที่ไหน",
+      "เชิญร้านกล้องประเภทใดเติม tenant mix และใช้อะไรโน้มน้าว",
+      "หลักฐานใดใช้ใน proposal และต้องตรวจเพิ่มอะไร"
+    ],
+    "functional_needs": [
+      "เห็นว่าร้านคู่แข่งและร้านประเภทเดียวกันอยู่ย่าน/สถานที่ใด",
+      "แยกเครือข่ายสาขาใหญ่ออกจากร้านเฉพาะทางเมื่อเทียบย่าน",
+      "หา gap และร้านเฉพาะย่านเทียบย่าน/ศูนย์คู่แข่ง",
+      "ส่งต่อรายการที่มีหลักฐาน วันที่ และระดับความแม่นพิกัด",
+      "เทียบย่านบนตัวชี้วัดเดียวกับ CityMETER production"
+    ],
+    "emotional_needs": [
+      "ไม่อยากผูกสัญญา สต็อก และพนักงานระยะยาวกับทำเลที่เลือกผิด",
+      "ต้องดูน่าเชื่อถือต่อผู้บริหาร principal landlord หรือลูกค้า",
+      "ไม่อยากถูกจับได้ว่ารายชื่อเก่าหรือตรวจไม่ได้"
+    ],
+    "trigger_voice_in_head": [
+      "ร้านกล้องร้านอื่นไปอยู่ที่ไหนกัน?",
+      "ถ้าจะเปิดร้านกล้องที่นี่ จะอยู่ข้างใคร — เป็นคู่แข่งหรือเป็นแม่เหล็ก?",
+      "จังหวัดนี้มีแต่ BIG CAMERA หรือเปล่า?",
+      "ย่านไหนยังไม่มีร้านแบรนด์ผู้ผลิตเลย?",
+      "ศูนย์เราขาดร้านกล้องประเภทไหนเมื่อเทียบกับ Fortune Town?",
+      "รายชื่อนี้มาจากไหน ตรวจเมื่อไร?"
+    ],
+    "value_proposition": "เติมช่องว่างระหว่าง ‘รู้ว่า BIG CAMERA มีแทบทุกห้าง และร้านกล้องรวมตัวที่ Fortune Town/MBK’ กับ ‘เห็นเป็นย่านว่าร้านกล้องร้านใดอยู่ข้างใคร ร้านใดพบเฉพาะที่ใด ตรวจเมื่อไร และส่งต่อได้ทันที’"
+  },
+  "problem": {
+    "statement": "ก่อนตัดสินใจเปิด ย้าย หรือเชิญร้านกล้อง ทีมต้องรู้ว่าตอนนี้ร้านกล้องประเภทใดอยู่ที่ไหน ข้างใคร และร้านใดพบเฉพาะที่ใด แต่ไม่มีแหล่งเดียวที่รวม ตรวจย้อนได้ เทียบย่านได้ และแยกเครือข่ายสาขาออกจากการกระจุกของร้าน",
+    "urgency": "ทุกรอบที่มีพื้นที่ว่าง ต่อสัญญา หรือขยายสาขา (inference: จังหวะงานเดียวกับที่ owner ระบุไว้สำหรับ Luxury Brands ยังไม่ยืนยันกับผู้ใช้กลุ่มร้านกล้อง)",
+    "severity": "ผลของการเลือกย่าน/สถานที่ผิดผูกกับสัญญาเช่า สต็อก พนักงาน และชื่อเสียงของผู้เสนอ (ไม่ระบุตัวเลขเพราะยังไม่มีหลักฐานโครงการ)",
+    "out_of_scope": [
+      "ยอดขาย",
+      "ค่าเช่า",
+      "footfall",
+      "กำลังซื้อ",
+      "สต็อกและราคา",
+      "สถานะตัวแทนจำหน่ายที่ได้รับอนุญาต",
+      "catchment"
+    ]
+  },
+  "competitor_landscape": {
+    "present_competitors": [
+      {
+        "name": "Store locator / branch list ของแต่ละเครือร้าน",
+        "how_users_use_it": "ยืนยันสาขาของร้านหนึ่ง",
+        "strength": "เป็นทางการ อัปเดตโดยร้าน (แหล่งหลักของชุดนี้: official retailer locator 147 รายการ)",
+        "gap": "ทีละเครือ ไม่มีย่าน ไม่มีวันที่ตรวจ ไม่เทียบข้ามร้าน และเครือใหญ่กลบร้านเล็ก"
+      },
+      {
+        "name": "รายชื่อตัวแทนจำหน่าย / where-to-buy ของผู้ผลิต",
+        "how_users_use_it": "หาร้านที่ขายกล้องยี่ห้อหนึ่ง",
+        "strength": "เป็นทางการจากผู้ผลิต",
+        "gap": "ทีละยี่ห้อ มักเก่าและปนจุดที่ปิดแล้ว (รอบนี้พักรายชื่อตัวแทนเดิม 42 รายการ) ไม่บอกว่าเป็นหน้าร้านขายปลีกจริงหรือไม่"
+      },
+      {
+        "name": "Directory / floor guide ของศูนย์การค้าและ IT mall",
+        "how_users_use_it": "ดูร้านในศูนย์หนึ่ง",
+        "strength": "ครบในศูนย์นั้น",
+        "gap": "ทีละศูนย์ ไม่มีร้านริมถนน ไม่รู้ว่าร้านนั้นมีที่อื่นด้วยไหม"
+      },
+      {
+        "name": "ค้น Google Maps / Apple Maps",
+        "how_users_use_it": "หาเร็ว ดูตำแหน่ง (“ร้านกล้อง ใกล้ฉัน”)",
+        "strength": "เร็ว เข้าถึงง่าย มีรีวิว",
+        "gap": "POI ทีละจุด ชื่อไม่สม่ำเสมอ ไม่รวมเป็นย่าน ปิดถาวรตามช้า ไม่มี evidence trail"
+      },
+      {
+        "name": "เว็บไซต์ / LINE OA / Facebook ของร้านเล็กและร้านมือสอง",
+        "how_users_use_it": "รู้ที่อยู่และข่าวร้านเฉพาะทาง",
+        "strength": "ร้านเล็กอัปเดตเองบ่อย",
+        "gap": "กระจัดกระจาย หลายร้านไม่มี locator ที่อยู่บางแห่งขัดกันเอง"
+      },
+      {
+        "name": "รายงานตลาดค้าปลีกของที่ปรึกษา/broker",
+        "how_users_use_it": "ภาพรวมค้าปลีกและค่าเช่า",
+        "strength": "น่าเชื่อถือ มีบริบทตลาด",
+        "gap": "ไม่ลงถึงร้านกล้องรายร้าน ไม่ interactive ช้าเป็นไตรมาส"
+      },
+      {
+        "name": "Excel/รายชื่อภายใน + เดินสำรวจ Fortune Town/MBK",
+        "how_users_use_it": "รายชื่อของตัวเองและคู่แข่งใกล้ตัว",
+        "strength": "แม่นในจุดที่สำรวจ",
+        "gap": "มืดสำหรับที่อื่น ใช้แรงงาน เก่าเร็ว"
+      }
+    ],
+    "aspirational_competitors": [
+      {
+        "name": "archiMap (masslabs) และเครื่องมือแผนที่สถาปัตยกรรม",
+        "benchmark_quality": "presentation quality",
+        "what_to_learn_or_match": "พื้นกระดาษ ถนนขาว มวลอาคารเรียบ มุมมองพร้อมฉาย"
+      },
+      {
+        "name": "แผนที่ consumer ที่มีอาคาร 3 มิติแบบ simplified",
+        "benchmark_quality": "clean 3D",
+        "what_to_learn_or_match": "อาคารมุมโค้ง สีเรียบ ไม่แย่งความสนใจจากข้อมูล"
+      },
+      {
+        "name": "แพลตฟอร์ม location intelligence ระดับสากล",
+        "benchmark_quality": "comparability",
+        "what_to_learn_or_match": "ตัวชี้วัดและตัวหารเดียวกันข้ามพื้นที่ output ที่ stakeholder ใช้ต่อได้"
+      },
+      {
+        "name": "CityMETER production",
+        "benchmark_quality": "consistency",
+        "what_to_learn_or_match": "ย่าน = Locale เดียวกับ production (/v3/citymeter/BKK/L/{uuid}), รหัสจังหวัด, Shopping Center id และ Grocery record id เดียวกัน, วินัย source/date/boundary"
+      }
+    ],
+    "expected_quality_bar": [
+      "ตอบ ‘ร้านกล้องที่นี่อยู่ข้างใคร’ ใน 1 นาทีโดยไม่ตั้งค่าตัวกรอง",
+      "ทุกตัวเลขมี dataset · source · date · boundary และทุกรายการมีลิงก์หลักฐาน",
+      "นับร้านแยกจากสาขาเสมอ และเทียบย่านบนตัวชี้วัดเดียวกัน",
+      "ภาพพร้อมห้องประชุมโดยไม่ต้องวาดใหม่",
+      "สถานะรอตรวจ ที่อยู่ติดต่อ และการปิดเก็บเป็นข้อเท็จจริง",
+      "เข้ากับ CityMETER (Locale uuid, host id, province code, agent-ready JSON)",
+      "ซื่อสัตย์เรื่องขอบเขต"
+    ]
+  },
+  "winning_strategy": [
+    "อ่านเป็นย่าน (Locale ของ production) ก่อน ไม่ใช่หมุดก่อน (scopeRows เป็นฐานเทียบเดียว; ทุกย่านเปิดหน้าเดียวกันใน CityMETER ได้)",
+    "แยกร้านออกจากสาขา (ร้านเฉพาะทางไม่ถูกเครือข่ายใหญ่กลบ; หน้าร้านหลายป้าย = หนึ่งสาขาที่มีหลายร้าน)",
+    "หลักฐานรายรายการเป็นสินค้า (1 หมุด = 1 สาขา; รายการรอตรวจติดป้าย; missing ≠ 0)",
+    "โฟกัสแล้วเงียบ ด้วยภาพระดับสถาปนิกจากข้อมูลเปิด (basemap paper, massing OSM, กล้องเส้นตั้งตั้งตรง, อาคารที่ตั้งมองเห็นเสมอ)",
+    "พร้อมสำหรับคนและเครื่อง และต่อ production ได้ทันที (JSON contracts; Locale uuid, Shopping Center id, Grocery record id, รหัสจังหวัดตรง production)"
+  ],
+  "first_finding_snapshot": {
+    "note": "regression fixture of the 2026-10-22 snapshot, never a UI constant",
+    "share": "23/38 shop banners (61%) have an outlet in the top three Locales",
+    "areas": [
+      {"locale": "รัชดา-ตะวันตก", "localeId": "1d671f78-108c-4bcb-9da8-a29a3117e931", "brands": 13, "outlets": 17, "exclusiveBrands": 9},
+      {"locale": "สยาม", "localeId": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e", "brands": 9, "outlets": 12},
+      {"locale": "ราชประสงค์", "localeId": "228edb69-6e1a-42f7-8001-f3eed7ee016d", "brands": 8, "outlets": 10}
+    ],
+    "outlets": "39 of 233 default outlets",
+    "chainCoverage": "BIG CAMERA 142 outlets (+1 co-branded) in all 64 provinces; the only banner observed in 55 of 63 provinces outside Bangkok",
+    "provinceVenueFindings": [
+      "เชียงใหม่: 4 of 5 banners (80%) at Central Chiangmai",
+      "ภูเก็ต: 3 of 3 banners (100%) at Central Phuket"
+    ]
+  },
+  "primary_decisions": [
+    "screen ย่าน/สถานที่สำหรับสาขาใหม่",
+    "compare tenant mix ร้านกล้องข้ามย่านและศูนย์",
+    "prioritize รายการไปสำรวจและเจรจา"
+  ],
+  "primary_questions": [
+    "ถ้าจะเปิดร้านกล้องที่นี่ จะอยู่ข้างใคร",
+    "ย่าน/ศูนย์นี้ยังขาดร้านกล้องประเภทไหน",
+    "ร้าน X มีสาขาที่ไหนบ้างและตรวจเมื่อไร",
+    "จังหวัดนี้มีร้านอื่นนอกจากเครือข่ายใหญ่หรือไม่"
+  ],
+  "channel_readiness": {
+    "search": {
+      "priority": "P2",
+      "target_queries": [
+        "ร้านกล้อง ฟอร์จูนทาวน์",
+        "ร้านกล้อง สยาม",
+        "camera shops Bangkok neighborhoods"
+      ],
+      "required_page_blocks": [
+        "title/meta",
+        "summary",
+        "map",
+        "HTML table",
+        "source/limitation"
+      ],
+      "schema_types": [
+        "Dataset",
+        "Place"
+      ]
+    },
+    "llm": {
+      "priority": "P1",
+      "askable_questions": [
+        "ย่านไหนในกรุงเทพฯ มีร้านกล้องหลายร้านที่สุด",
+        "รัชดา-ตะวันตกมีร้านกล้องอะไรที่ย่านอื่นไม่มี",
+        "จังหวัดไหนมีร้านกล้องนอกจาก BIG CAMERA"
+      ],
+      "answer_block": "signal → meaning → action → limitation (5–8 บรรทัด)",
+      "citation_note": "อ้าง release, snapshot date และ field path",
+      "freshness_note": "ตรวจถึง 2026-10-22"
+    },
+    "agent": {
+      "priority": "P1",
+      "actionability_score": 3,
+      "possible_actions": [
+        "compare_locations",
+        "shortlist",
+        "export"
+      ],
+      "required_fields": [
+        "id",
+        "brand",
+        "brands",
+        "venue",
+        "mallId",
+        "hostKind",
+        "province",
+        "latitude",
+        "longitude",
+        "status",
+        "identity",
+        "checkedOn",
+        "source"
+      ]
+    }
+  },
+  "primary_decision_actions": [
+    "screen",
+    "compare",
+    "prioritize",
+    "export"
+  ],
+  "data_sources": [
+    {
+      "name": "Official retailer store locators and branch lists",
+      "owner": "แต่ละเครือร้าน",
+      "url_or_reference": "ลิงก์ต่อรายการใน data/camera.json (source)",
+      "data_type": "official"
+    },
+    {
+      "name": "Manufacturer brand-store locators",
+      "owner": "ผู้ผลิตกล้องและอุปกรณ์ภาพ",
+      "url_or_reference": "ลิงก์ต่อรายการ",
+      "data_type": "official"
+    },
+    {
+      "name": "Shopping center directories",
+      "owner": "ผู้บริหารศูนย์",
+      "url_or_reference": "ลิงก์ต่อรายการ",
+      "data_type": "official"
+    },
+    {
+      "name": "Retailer websites, contact lists and social profiles",
+      "owner": "ผู้ประกอบการ",
+      "url_or_reference": "ลิงก์ต่อรายการ",
+      "data_type": "open"
+    },
+    {
+      "name": "CityMETER Shopping Center API",
+      "owner": "Landometer",
+      "url_or_reference": "https://landometer.com/api/v2/citymeter-v3/shopping-center",
+      "data_type": "derived"
+    },
+    {
+      "name": "CityMETER Grocery (hypermarket hosts)",
+      "owner": "Landometer",
+      "url_or_reference": "https://landometer.com/api/v2/citymeter-v3/grocery",
+      "data_type": "derived"
+    },
+    {
+      "name": "CityMETER production Locales",
+      "owner": "Landometer",
+      "url_or_reference": "https://landometer.com/api/v2/citymeter-v3/base/mvt/ML",
+      "data_type": "derived"
+    },
+    {
+      "name": "CityMETER building V4",
+      "owner": "Landometer (OSM, Microsoft Global ML Building Footprints)",
+      "url_or_reference": "https://landometer.com/api/v2/citymeter-v3/building",
+      "data_type": "derived"
+    },
+    {
+      "name": "OpenStreetMap via OpenFreeMap (OpenMapTiles)",
+      "owner": "OSM contributors / OpenFreeMap",
+      "url_or_reference": "https://tiles.openfreemap.org/planet",
+      "data_type": "open"
+    },
+    {
+      "name": "OpenGISData-Thailand provinces",
+      "owner": "chingchai/OpenGISData-Thailand (DOPA-credited, CC BY 4.0)",
+      "url_or_reference": "https://github.com/chingchai/OpenGISData-Thailand",
+      "data_type": "open"
+    }
+  ],
+  "spatial_granularity": "outlet (host point) → venue (Shopping Center / Grocery hypermarket / building) → locale (CityMETER production Locale, Bangkok) → province → country",
+  "temporal_coverage": "snapshot 2026-10-22 (research master)",
+  "update_frequency": "ad hoc",
+  "last_updated": "2026-10-22",
+  "key_metrics": [
+    "distinct shop banners (ร้าน) per Locale",
+    "outlets (สาขา) per Locale",
+    "share of banners in top-3 Locales",
+    "exclusive vs shared banners",
+    "banners by store type per Locale",
+    "share of banners at the leading venue (provinces without a Locale)"
+  ],
+  "visual_layers": [
+    "choropleth",
+    "point",
+    "polygon",
+    "ranking",
+    "matrix",
+    "3d-massing",
+    "province-frames"
+  ],
+  "recommended_pairing_layers": [
+    "Shopping Center",
+    "Grocery",
+    "Building",
+    "Locale Insight",
+    "Transit: Road"
+  ],
+  "data_transparency": {
+    "raw_fields": [
+      "brand",
+      "brands",
+      "bannerSegments",
+      "name",
+      "venue",
+      "province",
+      "segment",
+      "channel",
+      "format",
+      "status",
+      "identity",
+      "role",
+      "source",
+      "statusSource",
+      "mapUrl",
+      "coordinateSource",
+      "checkedOn",
+      "address",
+      "unit",
+      "latitude",
+      "longitude",
+      "geometryRole",
+      "geometryStatus",
+      "mallId",
+      "hostKind"
+    ],
+    "calculated_metrics": [
+      "brands (distinct banners incl. linked banners)",
+      "pos (outlet rows)",
+      "share",
+      "exclusiveBrands",
+      "sharedBrands",
+      "class (equal-interval 5)",
+      "leading-venue share"
+    ],
+    "inferred_outputs": [
+      "venue → CityMETER host crosswalk (name, alias, address or sole match; reviewed per venue, never nearest)",
+      "Locale membership (point-in-polygon on production Locale polygons; 33/33 Bangkok host points equal production locatePoint)",
+      "ranking",
+      "mostExclusive"
+    ],
+    "recommended_actions": [
+      "screen",
+      "compare",
+      "prioritize",
+      "export"
+    ],
+    "source_note": "official retailer locators, branch lists, brand locators, mall directories and retailer websites with per-row links; checked 2026-10-22; phone numbers removed from public files",
+    "calculation_note": "distinct banners counted separately from outlet rows; a co-branded storefront is one outlet with each counted banner; a store-type filter counts only that type's banners; equal-interval classes from the current maximum within the filter",
+    "inference_note": "Locales are production navigation and analysis units, not administrative areas or catchments; rankings help prioritise, not judge potential",
+    "confidence_note": "status, identity holds and coordinate precision stated per row; conflicting evidence kept and labelled, never merged or dropped",
+    "limitation_summary": "not a census; listed ≠ field-verified open; host point ≠ shop entrance; 26 outlets without coordinates; no store-banner logos collected; production Locales exist in Bangkok only; OSM heights may be defaults"
+  },
+  "known_limitations": [
+    "ไม่ใช่สำมะโน",
+    "พบในแหล่งข้อมูล ≠ เปิดจริง (ไม่ได้ตรวจหน้างาน)",
+    "จุดตัวแทนของศูนย์การค้า/ไฮเปอร์มาร์เก็ต ≠ ประตูร้าน",
+    "26 สาขายังไม่มีพิกัด: 15 รายการไม่มีสถานที่ host (ร้านริมถนน อาคาร หรือนัดหมาย; มีลิงก์แผนที่จากร้านเพียง 1 รายการ และลิงก์แผนที่ยังไม่ได้ตรวจตัวตนจึงไม่ถอดพิกัด) และ 11 สาขาใน 11 สถานที่ที่ยังจับคู่กับ host ของ CityMETER ไม่ได้",
+    "ยังไม่รวบรวมโลโก้ร้าน — หมุดแสดงชื่อร้านแทน",
+    "หน้าร้านหลายป้ายนับเป็นหนึ่งสาขาที่มีหลายร้าน",
+    "การปิดที่บันทึกมีระดับเครือร้านเท่านั้น (Eastbourne ปิดถาวร 2025-02-15)",
+    "สาขารอตรวจ 72 รายการ (รวมรายชื่อตัวแทนเดิมของ WORLD CAMERA 42 รายการจาก dealer list ของผู้ผลิต) และ 7 ชื่อร้านในคิวทบทวนยังไม่อยู่ในชุดข้อมูล",
+    "production มี Locale เฉพาะกรุงเทพฯ — ต่างจังหวัดอ่านที่ระดับสถานที่",
+    "ไม่มีเบอร์โทรศัพท์ในข้อมูลสาธารณะ",
+    "ความสูง OSM อาจเป็นค่า default"
+  ],
+  "methodology_note": "DATA_METHOD.md, docs/NEIGHBORHOOD_METHOD.md",
+  "example_use_cases": [
+    "คัดย่านสำหรับสาขาแรกในกรุงเทพฯ ของร้านกล้องมือสอง/ฟิล์ม",
+    "เทียบ tenant mix ร้านกล้องของศูนย์กับ Fortune Town หรือ MBK",
+    "หาจังหวัดที่พบเพียงเครือข่ายใหญ่ สำหรับวางแผน brand store ของผู้ผลิต",
+    "รายชื่อร้านเฉพาะย่านสำหรับ proposal"
+  ],
+  "hypotheses_to_validate": [
+    {
+      "hypothesis": "ผู้ใช้สี่กลุ่มถาม ‘ใครอยู่ข้างใคร’ และเริ่มจากย่าน",
+      "test": "สัมภาษณ์ 3–5 คนต่อกลุ่มด้วย demo 0.5",
+      "criterion": "≥ 3 ใน 4 กลุ่มยืนยัน trigger และใช้โปรไฟล์ย่านก่อนตาราง"
+    },
+    {
+      "hypothesis": "IT mall เป็นตัวทำนายการกระจุกของร้านเฉพาะทาง (observed: Fortune Town 13 ร้าน 17 สาขา มากที่สุดของทุกสถานที่; รองลงมา centralwOrld และ Siam Paragon 7 ร้าน)",
+      "test": "ติดป้าย IT mall ใน host ของ CityMETER แล้วเทียบร้านไม่ซ้ำต่อสถานที่กับศูนย์ขนาดเดียวกันในรอบวิจัยถัดไป",
+      "criterion": "IT mall มีค่ามัธยฐานร้านไม่ซ้ำต่อสถานที่สูงกว่าศูนย์ขนาดเดียวกันอย่างชัดเจน; ถ้าไม่ อธิบายการกระจุกด้วยย่าน ไม่ใช่ประเภทศูนย์"
+    },
+    {
+      "hypothesis": "ร้านแบรนด์ผู้ผลิตตามศูนย์การค้าขนาดใหญ่พิเศษ (observed: 17 จาก 29 สาขาของร้านแบรนด์ผู้ผลิตอยู่ใน host ประเภท Super-Regional Mall เทียบกับ 68 จาก 233 สาขาของทั้งชุด)",
+      "test": "ทำซ้ำเมื่อเพิ่มร้านแบรนด์ผู้ผลิตรายใหม่ และเทียบกับศูนย์ที่ใช้ร่วมกับ Luxury Brands",
+      "criterion": "สัดส่วนยังเกินครึ่งและต่างจากทั้งชุดชัดเจนหลังเพิ่มร้าน; ถ้าไม่ ถือเป็นผลจากร้านไม่กี่ร้าน"
+    },
+    {
+      "hypothesis": "การมีร้านกล้องในต่างจังหวัดนำโดยเครือข่ายใหญ่ (observed: BIG CAMERA พบในทั้ง 64 จังหวัด และเป็นร้านเดียวที่พบใน 55 จาก 63 จังหวัดนอกกรุงเทพฯ; นอกกรุงเทพฯ พบ 11 ร้าน เทียบกับ 36 ร้านในกรุงเทพฯ)",
+      "test": "สุ่มตรวจร้านอิสระใน 5 จังหวัดจาก Google Maps/โซเชียล และไล่ 7 ชื่อในคิวทบทวนของชีต research",
+      "criterion": "ถ้าพบร้านอิสระที่เข้าเกณฑ์ใน ≥ 3 จาก 5 จังหวัด ภาพ ‘นำโดยเครือข่าย’ เป็นช่องว่างของข้อมูล ไม่ใช่โครงสร้างตลาด และต้องขยายการเก็บ"
+    },
+    {
+      "hypothesis": "ภาพ 3D focus/quiet ถูกใช้ใน deck โดยไม่วาดใหม่",
+      "test": "ขอ screenshot ที่ใช้จริง",
+      "criterion": "≥ 1 กรณี (ไม่นับเป็น traction)"
+    },
+    {
+      "hypothesis": "เวลาจากคำถามถึงรายชื่อที่ส่งต่อได้ < 10 นาที",
+      "test": "จับเวลา 3 task",
+      "criterion": "มัธยฐาน < 10 นาที"
+    }
+  ],
+  "owner_team": "Landometer · CityMETER",
+  "last_reviewed": "2026-10-22"
+}

@@ -1,0 +1,77 @@
+{
+  "artifact": "CityMETER Camera Shops — 3D-first, neighborhood-first camera-shop presence map (same 0.5 architecture as CityMETER Luxury Brands)",
+  "productVersion": "0.5.0",
+  "updatedOn": "2026-10-22",
+  "ldsVersion": "0.9.7",
+  "release": "v0.9.7-owner.1",
+  "revision": "standalone-0.9.7-r1",
+  "colorSetId": "color-srgb-10",
+  "baseDocumentSha256": "d3085cbc0a50195f1cbf0c77b1d77c0d19b84364daf2948eb367348d65432d96",
+  "layoutReference": "https://landometer.com/v3/citymeter?d=shoppingCenter",
+  "fontRoles": {
+    "body": "Bai Jamjuree 400/600",
+    "thaiHeadings": "IBM Plex Sans Thai Looped 700",
+    "latinHeadings": "Arvo 700",
+    "dataAndMetrics": "JetBrains Mono 400; tabular numerals; normal tracking",
+    "navigation": "Material Symbols Rounded approved nav-7 subset; FILL 0 / wght 300 / GRAD 0 / opsz 24",
+    "pictograms": "Material Symbols Rounded 8-glyph pictogram subset (assets/icons/material-pictogram-300.woff2, 1,724 bytes, sha256 259de66e…edcb4); ร้าน = photo_camera U+E412; FILL 0 / wght 300 / GRAD 0 / opsz 24; test exception to nav-7 approved by the owner 2026-10-22"
+  },
+  "colors": {
+    "applied": "assets/theme.css — foundation pairs, semantic states, map roles (activeLayer, selectedStroke, markerHalo, markerStroke), data states (noData, zero), categorical series 1–10 (landometer-series-10-v8 soft), count classes, basemap-only tokens (--basemap-*) for the generated paper basemap and massing",
+    "analytical": "js/scales.js — count family, 41-sample LUT, scaleVersion 4ff5c1fb4be71ecd13c48685b38371b528bcd4ce369ce964a75354c2eb4d0980, identical HEX on both themes",
+    "notDistributed": "full LDS library, other analytical families, Location Intelligence profile scales"
+  },
+  "firstAha": "share of distinct shop banners (ร้าน) with an outlet in the top three CityMETER Locales, computed per selection (snapshot: 61% = 23 of 38, รัชดา-ตะวันตก · สยาม · ราชประสงค์); the map opens in the 3D city preset with those three areas focused automatically and the rest of the city quiet; where no Locale holds a row (provinces outside Bangkok) the finding moves to the leading venue",
+  "focusAndQuiet": {
+    "ownerInstruction": "2026-10-22: show detail only for the focused part; keep the rest quiet; the first view is 3D with the top-3 areas focused; style classy and simplified like an architectural model",
+    "implementation": "app.js focus modes (auto/explicit/none); map-layers.js filled/quiet properties; pins.js context pins; massing.js quiet city tier vs rounded focus tier; camera.js presets; venue-xray.js keeps the venue solid visible on top of the 3D pass; provinces.js frames below zoom 9; Camera: at venue level the detail rows come from the filtered scope (a venue outside the automatic top three keeps its detail)"
+  },
+  "geometryAndMetricContract": "outlet rows (สาขา), counted shop banners per row (brands + bannerSegments; a co-branded storefront is one outlet), source status and hold labels, CityMETER host representative geometry (Shopping Center or Grocery) and coordinate precision remain explicit; distinct banners never summed across areas; a segment filter projects rows to that segment's banners without mutating them",
+  "accessibility": [
+    "native form labels and disclosure",
+    "visible focus on every control including pins and chart marks",
+    "keyboard pin tour (arrow keys) excluding quiet context pins",
+    "reduced motion respected",
+    "table equivalent for every map view",
+    "empty, map-failure and load-error paths with actions"
+  ],
+  "validation": {
+    "status": "release 0.5.0 verification recorded in handoff/VERIFICATION.md",
+    "unitTests": 102,
+    "renderedHarness": "Playwright + vendored MapLibre 5.6.2 + stub TileJSON + synthetic OpenMapTiles-schema tiles generated per request; 1280×800 and 390×844; light and dark",
+    "liveChecks": "see handoff/VERIFICATION.md — byte attestation of the published files; the real-tile look needs a browser that reaches OpenFreeMap",
+    "scope": "Applied LDS assets, fonts and actual rendered interfaces. No blanket LDS, CVD, native-device or market-completeness claim."
+  },
+  "layoutContract": {
+    "headerPx": 48,
+    "readingPanelWidth": "min(max(300px, 28%), 440px)",
+    "map": "full remaining viewport below header",
+    "chartTray": "collapsible bottom overlay, 52 px collapsed, 360 px / ≤58% open",
+    "mobilePortrait": "full map, bottom sheet ≤ 64dvh with sticky close, compact Aha card on the map while the sheet is closed"
+  },
+  "mapContract": {
+    "basemap": "generated at runtime by js/map-style.js on https://tiles.openfreemap.org/planet (OpenMapTiles schema) with --basemap-* tokens; no hosted style URL; labels name:th first; no POI/housenumber/boundary labels; sky/fog fade the distance into the paper colour",
+    "layerOrder": "landcover/water → data fill (before waterway) → 2D footprints → roads → massing + host buildings (before water-name) → labels → outlines/pins/logos",
+    "massing": "city tier = native fill-extrusion from the building source-layer in --basemap-massing-quiet (3D only, zoom ≥ 13); focus tier = same tiles decoded, offset outward and corner-rounded so they enclose the original, in --basemap-massing-focus (display-only answer to maplibre-style-spec #1047); OSM twins of host buildings hidden by feature id",
+    "camera": "plan (pitch 0) · city (pitch 56, bearing 28) · model (pitch 60, FOV 14, near-axonometric) for a neighborhood, fitted to fill the frame · eye (pitch 75, FOV 24 = two-point perspective with the horizon kept outside the frame; MapLibre 5.6.2 draws fill-extrusion wrongly once the horizon enters) as the venue-level default, framed on the venue's host building; Camera Shops: on wide screens the overview fit never goes below zoom 13 (the massing tiers start there) and the pitched fit keeps the legend clear",
+    "choropleth": "count family, five equal-interval classes from the current maximum, fill-opacity 1 beneath the basemap's first line layer, off at zoom ≥ 14.5, EVID-05 measured / measured_zero / out_of_scope",
+    "pins": "one outlet row per pin; zoom tiers <12 / 12–14 / ≥14; context pins grey and label-less; screen displacement with leader lines, source coordinates unchanged",
+    "logos": "no store-banner logo is collected: focused pins at zoom ≥ 14 carry the banner name as a light text chip (BANNER_LABELS for names over 18 characters), ≤ 250, collision-managed",
+    "venues": "host footprints/parts with explicit height provenance in map.activeLayer — Luxury Brands 0.5 footprints for shared centres, CityMETER building V4 (point containment or OSM name match within 150 m) for the others; unknown heights use a marked 3 m display slab",
+    "neighborhoods": "CityMETER production Locales (27 in Bangkok holding a camera venue), ids = Locale uuids, membership equal to production base/locatePoint (33/33); no Locale outside Bangkok is invented",
+    "breadcrumb": "ประเทศไทย › จังหวัด › ย่าน › สถานที่; all 77 production province codes (base/info/lv0 abbrEn: BKK, CMI, NST, UTT …); ย่าน = production Locale (maps to /v3/citymeter/BKK/L/{uuid}); venue id = CityMETER host id (Shopping Center or Grocery); store is the heading, not a crumb",
+    "venueLevel": "only the venue's rows (taken from the filtered scope) carry detail (blue host, category pins, name chips); other venues' buildings fall back to quiet massing and their pins to grey context dots; SCENE.eye lowers massing opacity (city 0.16 / focus 0.62) and buildings standing between the camera and the venue are drawn at 0.14 opacity; the city tier is 0.22 elsewhere and fades to the ground tone by distance from the focus (500 → 2200 m)",
+    "areaLabels": "ink chips (--area-label-* tokens, display font, square area glyph, light count badge) clearly distinct from the light pin name chips; quiet labels at 72% opacity"
+  },
+  "chartContract": {
+    "matrix": "table-layout fixed with a colgroup; every cell the same size; caption says size carries no meaning; cell tint = count class"
+  },
+  "copy": "short natural Thai without on-screen caveats: ร้าน (distinct shop banner) / สาขา (one outlet) / สถานที่ / ย่าน — never แบรนด์ as a unit; legend symbols on metric tiles",
+  "countryView": "the 64 provinces holding camera shops are framed and filled by their own count classes below zoom 9 (data/provinces.geojson, OpenGISData-Thailand CC BY 4.0), with ink-chip labels and a panel list (ten rows, the rest folded); each is a drill-down into the จังหวัด filter",
+  "venueVisibility": "host extrusion installed before every massing tier (MapLibre depth order = draw order) and drawn again on top by the venue x-ray custom layer (scissored depth clear) — visible and clickable at any pan, pitch or zoom",
+  "venueLogos": "identity support from the research sheet tab 10_VENUE_LOGOS: 30 files (sha256 per the sheet; 23 shared with Luxury Brands, 7 from the sheet Drive files), 31 venue labels, 30 hosts — venue heading, venue rows and store facts; the venue name stays the record",
+  "storeIdentity": {
+    "status": "store-banner logos not collected (data/brand-logos.json meta.status not_collected)",
+    "fallback": "banner names on pins (text chips), in the panel, table and accessible labels; a name chip is never presented as a logo"
+  }
+}
