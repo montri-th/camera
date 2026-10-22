@@ -6,6 +6,7 @@
   "productVersion": "0.5.0",
   "updatedOn": "2026-10-22",
   "datasetCheckedOn": "2026-10-22",
+  "researchRevision": "2026-10-22T13:13:29Z (Drive modifiedTime of the research master revision the data was built from; meta.researchRevision)",
   "language": "th-TH",
   "productName": "CityMETER · Camera Shops",
   "repository": "https://github.com/montri-th/camera",
@@ -14,7 +15,7 @@
     "productId": "citymeter-luxury-brands",
     "version": "0.5.0",
     "liveUrl": "https://montri-th.github.io/luxurybrands/",
-    "relation": "same 0.5 architecture and screen contract (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops changes the dataset, the counting unit (ร้าน = shop banner), the ย่าน layer (production Locales), the host kinds and the items listed in changesSince"
+    "relation": "same 0.5 architecture and screen contract (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops changes the dataset, the counting unit (ร้าน = shop banner), the ย่าน layer (production Locales), the host source (the research master venue and building join) and the items listed in changesSince"
   },
   "productStatement": {
     "human": "../PRODUCT_STATEMENT.md",
@@ -32,7 +33,7 @@
     "เห็นข้อค้นพบระดับย่าน (Locale ของ CityMETER) ในเมือง 3 มิติที่โฟกัส 3 ย่านอันดับต้นแล้วทันที ไม่ต้องตั้งค่าตัวกรอง; ซูมออกทั้งประเทศแล้วเห็นกรอบ 64 จังหวัดที่มีร้านกล้อง กดเพื่อเจาะลง",
     "ขยายเป็นทุกย่านด้วยการกดครั้งเดียว (ดูทุกย่าน) หรือเจาะย่านจาก breadcrumb/ป้าย; จังหวัดที่ไม่มี Locale ให้ข้อค้นพบระดับสถานที่แทน",
     "เปิดโปรไฟล์ย่าน: ประเภทร้าน (ร้าน/สาขา) สถานที่ ร้านเฉพาะ/ร่วม และลิงก์ “ย่านนี้ใน CityMETER” ไปที่ Locale เดียวกันบน production",
-    "เจาะสถานที่ (ศูนย์การค้า/ไฮเปอร์มาร์เก็ต): เฉพาะอาคารและร้านของสถานที่นั้นมีสี อาคารของสถานที่มองเห็นเสมอ (x-ray) และกดได้ กล้องมุมสถาปนิกจัดกรอบทั้งอาคาร; เจาะร้าน อ่านสถานะ ที่อยู่ ร้านที่ร่วมหน้าร้าน หลักฐาน และระดับความแม่นของพิกัด",
+    "เจาะสถานที่ (host ของ CityMETER ที่ research master จับคู่): เฉพาะอาคารและร้านของสถานที่นั้นมีสี อาคารของสถานที่ (เมื่อ master ยอมรับอาคาร) มองเห็นเสมอ (x-ray) และกดได้ กล้องมุมสถาปนิกจัดกรอบทั้งอาคาร; เจาะร้าน อ่านสถานะ ที่อยู่ ร้านที่ร่วมหน้าร้าน หลักฐาน และระดับความแม่นของพิกัด",
     "เปรียบเทียบย่านด้วยกราฟและตารางช่องเท่ากัน แล้วคัดรายการไปสำรวจ"
   ],
   "changesSince": {
@@ -42,16 +43,20 @@
       "dataset: data/camera.json from “CityMETER Camera Shops Thailand — Research Master 2026-10-22” (one row = one outlet record; built by scripts/build-camera-data.py)",
       "counting unit ร้าน = distinct shop banner (bannersOf/brandSet); a co-branded storefront is one outlet with every counted banner; “แบรนด์” is never a unit on screen (it would read as camera makers)",
       "segment filter projects banners (projectSegment): an outlet stays when any of its banners is in the segment and only those banners count",
-      "ย่าน = CityMETER production Locales (27 in Bangkok, ids = Locale uuids, membership checked against production locatePoint); the neighborhood profile links to the same Locale on landometer.com",
-      "hosts: CityMETER Shopping Center records and, for 20 hypermarket hosts, CityMETER Grocery records (mallId = host record id, hostKind says which); street shops without a verified host keep no coordinate",
-      "venue level is fed from scopeRows (detailRows): a venue outside the automatic top-three areas still gets its pins, blue host and x-ray",
+      "ย่าน = CityMETER production Locales (26 in Bangkok, ids = Locale uuids, membership checked against production locatePoint 31/31); the neighborhood profile links to the same Locale on landometer.com",
+      "hosts: the research master venue join (07_VENUES / 02_STORES / 12_SPATIAL_JOIN) decides every host point — 106 CityMETER Shopping Center records, 179 outlets; the build re-reads each host from production and never adds, moves or upgrades a join (mallId = host record id, hostKind says which; the Grocery hypermarket kind stays supported but no row uses it); venues the master holds show พิกัดรอตรวจ and no point; outlets without a joined host keep no coordinate",
+      "venue level is fed from scopeRows (detailRows): a venue outside the automatic top-three areas still gets its pins, blue host and x-ray (when the master accepts a building for it)",
       "desktop 3D fits count the legend (pitchedPadding) and the 3D overview is never framed below zoom 13 (CITY_MASSING_ZOOM) so the city massing is on the first screen; phones keep the full fit",
       "provinces without a Locale get a venue-level first finding (share of banners at the leading venue) and no “0 ย่าน” tile",
       "province frames for all 64 provinces that hold an outlet; the panel lists ten and folds the rest in a native disclosure",
       "no store-banner logos are collected: pins carry text name chips (BANNER_LABELS for long names) under the same 250 ceiling from zoom 14",
       "pictogram role brand (ร้าน) = photo_camera U+E412 (Luxury Brands: diamond); subset rebuilt byte-reproducibly",
       "store facts add address, store format (FORMATS), linked banners (ร่วมกับ …), the retailer’s own map link and hold statuses; cohorts current / all / review",
-      "public files carry no phone numbers (build-time scrub) and no private Drive/Docs URLs"
+      "public files carry no phone numbers (build-time scrub) and no private Drive/Docs URLs",
+      "rebase 2026-10-22 on the research master revision 13:13 UTC (the first build used the 12:36 UTC export): host points and host buildings now come from the master’s own venue join and building join (13_BUILDINGS + its feature file); rows with a point 208 → 179, Locales 27 → 26, host buildings 136 → 103 features (69 footprints + 34 parts, 69 hosts, © OpenStreetMap contributors only); first finding 61% → 58% (22/38 ร้าน, 37/233 สาขา)",
+      "the app crosswalk (scripts/host-links/crosswalk_*.py) only proposes host links for venues the master has not joined — host_link_proposals.csv, 28 venues / 29 outlets (19 Big C / Lotus’s hypermarkets, 6 Robinson stores, 3 held venues) for the research team; never published",
+      "row field venueJoin (joined | held | awaiting_registry | no_venue) from the master venue_join_status; describeGeometry reads held as พิกัดรอตรวจ; the review cohort includes held rows (17)",
+      "venue-level finding names the leading venue that has a host point (venues without one stay in the venue list); ย่าน shows “—” for a row without a point (was “นอกย่าน”); the host-building legend key hides when no host building is displayed"
     ]
   },
   "rowScopes": {
@@ -119,15 +124,15 @@
     "filter": "js/area-insight.js#filterAreaRows",
     "fallbacks": {
       "noRows": "ไม่พบสาขาตามตัวกรองนี้ + clear filter action",
-      "rowsOutsideAllAreas": "no Locale holds a row (a province outside Bangkok — production has Locales in Bangkok only — or a filter): the finding moves to the venue level — “{share}% ของร้านกล้องมีสาขาที่ {leading venue}” = banners at the venue ranked first by rankVenues ÷ banners of the selection, with the next two venues and the actions ดูสถานที่นี้ / ดูสาขา; the ย่าน metric tile is omitted (out_of_scope, not zero). Snapshot: ?province=CMI → 80% at Central Chiangmai (4/5 ร้าน, 4/7 สาขา); ?province=PKT → 100% at Central Phuket (3/3 ร้าน)",
-      "noVenue": "only street shops without a venue: headline “{pos} สาขา · {brands} ร้าน” with ดูสาขา / ล้างตัวกรอง"
+      "rowsOutsideAllAreas": "no Locale holds a row (a province outside Bangkok — production has Locales in Bangkok only — or a filter): the finding moves to the venue level — “{share}% ของร้านกล้องมีสาขาที่ {leading venue}” = banners at the first venue in rankVenues that has a host point ÷ banners of the selection, with the next two such venues and the actions ดูสถานที่นี้ / ดูสาขา; a venue without a point (e.g. held by the research master) stays in the venue list but never carries the map finding; the ย่าน metric tile is omitted (out_of_scope, not zero). Snapshot: ?province=CMI → 80% at Central Chiangmai (4/5 ร้าน, 4/7 สาขา); ?province=PKT → 67% at Central Phuket (2/3 ร้าน, 1/5 สาขา; Central Phuket Floresta holds 2 ร้าน but is held by the research master and has no point)",
+      "noVenue": "no venue with a host point (only street shops without a venue, or venues the research master has not joined — e.g. ?province=TAK): headline “{pos} สาขา · {brands} ร้าน” with ดูสาขา / ล้างตัวกรอง"
     },
     "defaultSnapshot": {
       "cohort": "current",
       "areas": [
         "1d671f78-108c-4bcb-9da8-a29a3117e931",
-        "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
-        "228edb69-6e1a-42f7-8001-f3eed7ee016d"
+        "228edb69-6e1a-42f7-8001-f3eed7ee016d",
+        "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e"
       ],
       "areaRows": [
         {
@@ -137,37 +142,38 @@
           "pos": 17
         },
         {
-          "id": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
-          "name": "สยาม",
-          "brands": 9,
-          "pos": 12
-        },
-        {
           "id": "228edb69-6e1a-42f7-8001-f3eed7ee016d",
           "name": "ราชประสงค์",
           "brands": 8,
           "pos": 10
+        },
+        {
+          "id": "8d8ed740-cd31-4b6a-859f-096f1f3d0b0e",
+          "name": "สยาม",
+          "brands": 8,
+          "pos": 10
         }
       ],
-      "brands": 23,
+      "brands": 22,
       "totalBrands": 38,
-      "sharePercent": 60.5,
-      "sharePercentDisplayed": 61,
-      "pos": 39,
+      "sharePercent": 57.9,
+      "sharePercentDisplayed": 58,
+      "pos": 37,
       "totalPos": 233,
-      "assignedPos": 85,
-      "outsidePos": 148,
+      "assignedPos": 82,
+      "outsidePos": 151,
       "outsideBreakdown": {
-        "mappedOutsideLocales": 123,
-        "withoutCoordinate": 25
+        "mappedOutsideLocales": 97,
+        "withoutCoordinate": 54
       },
-      "areaCount": 27,
+      "areaCount": 26,
       "mostExclusive": {
         "id": "1d671f78-108c-4bcb-9da8-a29a3117e931",
         "name": "รัชดา-ตะวันตก",
         "exclusiveBrands": 9,
         "brands": 13
-      }
+      },
+      "researchRevision": "2026-10-22T13:13:29Z"
     },
     "requirements": [
       "No login, sharing or geolocation prerequisite",
@@ -185,7 +191,7 @@
         "quiet": "other Locales outline-only with quiet labels; outlets outside focus are grey context dots without labels; city massing in the quiet tone; no name chips below zoom 14"
       },
       "overviewAll": {
-        "focus": "all 27 Locales filled by distinct banners (count family, 5 equal-interval classes), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
+        "focus": "all 26 Locales filled by distinct banners (count family, 5 equal-interval classes), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
         "quiet": "pins are size-tiered dots; city massing only; no rounded focus massing"
       },
       "neighborhood": {
@@ -197,7 +203,7 @@
         "quiet": "inherits current focus"
       },
       "venue": {
-        "focus": "only the venue's own rows (from scopeRows): category pins, name chips, host building(s) in map.activeLayer drawn by the venue x-ray on top of every massing tier (always visible, clickable); camera = eye preset framed on the host footprint(s) and roof, or framePoint(zoom 16) on the host point when the host has no footprint (12 of the 20 hypermarket hosts and other hosts without an accepted building)",
+        "focus": "only the venue's own rows (from scopeRows): category pins, name chips, host building(s) in map.activeLayer drawn by the venue x-ray on top of every massing tier (always visible, clickable); camera = eye preset framed on the host footprint(s) and roof, or framePoint(zoom 16) on the host point when the host has no footprint (37 of the 106 hosts have no building accepted by the research master, e.g. Fortune Town); a venue without a host point opens its panel but does not move the camera",
         "quiet": "other venues' rows are grey context dots; their host buildings fall back to quiet/focus massing; SCENE.eye lowers massing opacity (city 0.16, focus 0.62) and buildings between the camera and the venue move to the 0.14-opacity occluder layer; the city tier fades to the ground tone with distance from the focus"
       },
       "countryAll": {
@@ -219,7 +225,7 @@
       "evidenceStates": {
         "measured": "class fill",
         "measured_zero": "lowest fill + zero outline",
-        "out_of_scope": "bare basemap (every place outside the 27 Locales, i.e. every province but Bangkok)"
+        "out_of_scope": "bare basemap (every place outside the 26 Locales, i.e. every province but Bangkok)"
       },
       "themePolicy": "identical light HEX on both themes; fill-opacity 1 inserted before the basemap's first line layer (waterway); hard switch off at zoom ≥ 14.5",
       "model": "js/map-layers.js#buildAreaModel, js/scales.js#buildCountClasses"
@@ -306,10 +312,10 @@
       "cacheKey": "regions + hosts + zoom bucket (full zoom level) + tile availability"
     },
     "hostTier": {
-      "source": "data/venue-buildings.geojson via js/buildings.js (controller exposes displayedFeatures()); features joined to outlets by outlet_ids, to hosts by mall_ids (Shopping Center or Grocery record ids)",
+      "source": "data/venue-buildings.geojson via js/buildings.js (controller exposes displayedFeatures()); features joined to outlets by outlet_ids, to hosts by mall_ids (the Shopping Center ids of the research master join; Grocery record ids supported); the features are the research master building join (13_BUILDINGS)",
       "colour": "map.activeLayer; outline map.selectedStroke",
       "visibility": "extrusion zoom ≥ 14, outline zoom ≥ 12, detail rows only; before MASSING_BEFORE",
-      "attribution": "source attribution “© OpenStreetMap contributors · Microsoft Global ML Building Footprints · CityMETER”; per-feature attribution / license on the CityMETER V4 footprints"
+      "attribution": "source attribution “© OpenStreetMap contributors · CityMETER”; every feature carries attribution “© OpenStreetMap contributors (ODbL 1.0)” and license ODbL-1.0 (OSM footprints and OSM-derived CityMETER building parts)"
     },
     "rounding": {
       "radiusMetres": "roundingRadiusM(zoom, lat) = clamp(4 px in metres at max(zoom, 14.5), 3, 12)",
@@ -402,7 +408,7 @@
       "ประเทศไทย",
       "จังหวัด (ชื่อไทย = the rows' province value; production code in the URL)",
       "ย่าน (CityMETER production Locale; from point-in-polygon on the venue's representative point when a venue is open — Bangkok only)",
-      "สถานที่ (venue: CityMETER host record id — Shopping Center id or Grocery record id — else plain venue label)"
+      "สถานที่ (venue: CityMETER host record id — the Shopping Center id the research master joined; a Grocery record id is supported — else plain venue label)"
     ],
     "productionPath": {
       "observed": "https://landometer.com/v3/citymeter/{PROVINCE_CODE} (codes = production base/info/lv0 abbrEn, e.g. BKK, CMI, NST, UTT); /v3/citymeter/BKK/L/{locale uuid}?d=shoppingCenter is a valid production route (checked 2026-10-22) and every ย่าน id of this product is a production Locale uuid",
@@ -556,7 +562,7 @@
       "STN",
       "TRG"
     ],
-    "dataBinding": "data/neighborhoods.geojson properties.provinceCode = BKK / provinceName = กรุงเทพมหานคร for all 27 Locales; rows carry the Thai province name",
+    "dataBinding": "data/neighborhoods.geojson properties.provinceCode = BKK / provinceName = กรุงเทพมหานคร for all 26 Locales; rows carry the Thai province name",
     "actions": [
       "crumb-country (clear province + area)",
       "crumb-province (clear area, keep province)",
@@ -566,10 +572,10 @@
     ],
     "documentTitle": "breadcrumbText(crumbs) · Camera Shops · CityMETER drives document.title",
     "venueRules": [
-      "a venue outside every Locale skips the ย่าน level (ประเทศไทย › ภูเก็ต › Central Phuket)",
+      "a venue outside every Locale, or without a host point, skips the ย่าน level (ประเทศไทย › ภูเก็ต › Central Phuket; ประเทศไทย › กรุงเทพมหานคร › Siam Square One)",
       "a store is never a crumb — the panel heading names it; the trail ends at its venue (or at ย่าน/จังหวัด for street shops)",
       "four or more levels fold the upper ones behind “…” on narrow screens (crumb-expand); the last two stay visible",
-      "venue ids come from data/camera.json centers[].id (Shopping Center: landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}; Grocery: the production grocery overlay record id)",
+      "venue ids come from data/camera.json centers[].id (Shopping Center: landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}; a Grocery record id is supported for hypermarket hosts but no row uses one in this release)",
       "never invent a Locale or municipality id: places outside Bangkok have no ย่าน level because production has no Locale there"
     ]
   },
@@ -610,8 +616,8 @@
       "units": "ร้าน = distinct shop banner · สาขา = outlet record · สถานที่ = venue (shopping centre, hypermarket or building) · ย่าน = CityMETER Locale; “แบรนด์” is not a unit",
       "metricTiles": "ร้าน (photo_camera) · สาขา (storefront) · สถานที่ (local_mall, distinct venue keys) · ย่าน (map, omitted when no Locale holds a row)",
       "statuses": "describeStatus: พบในแหล่งข้อมูล (listed) · ตัวตนหน้าร้านรอตรวจ / รวมรายการรอตรวจ / ที่ตั้งขัดกัน / ที่อยู่ติดต่อ (pending) · ปิดถาวร (closed, factual; none in this snapshot)",
-      "geometry": "describeGeometry: จุดตัวแทนอาคาร/ศูนย์การค้า · จุดตัวแทนไฮเปอร์มาร์เก็ต · ยังไม่มีพิกัด — never upgraded to a shopfront",
-      "storeFacts": "heading = primary banner; “ร่วมกับ …” lists linked banners as search buttons; facts สถานที่ (venue button, or channel for street shops) · ย่าน (or นอกย่าน) · รูปแบบ (channel + FORMATS label when it adds information) · ที่อยู่ · พิกัด (+ ร่วมพิกัดกับอีก n สาขา) · ตรวจเมื่อ; links หลักฐาน · สถานะ (only when different from หลักฐาน) · พิกัด · แผนที่ของร้าน (the retailer's own map link, never decoded into coordinates)",
+      "geometry": "describeGeometry: จุดตัวแทนอาคาร/ศูนย์การค้า · จุดตัวแทนไฮเปอร์มาร์เก็ต (supported, unused in this release) · พิกัดรอตรวจ (no point, venueJoin held — a venue the research master holds) · ยังไม่มีพิกัด — never upgraded to a shopfront",
+      "storeFacts": "heading = primary banner; “ร่วมกับ …” lists linked banners as search buttons; facts สถานที่ (venue button, or channel for street shops) · ย่าน (นอกย่าน when the point lies outside every Locale; “—” when the row has no point) · รูปแบบ (channel + FORMATS label when it adds information) · ที่อยู่ · พิกัด (+ ร่วมพิกัดกับอีก n สาขา) · ตรวจเมื่อ; links หลักฐาน · สถานะ (only when different from หลักฐาน) · พิกัด · แผนที่ของร้าน (the retailer's own map link, never decoded into coordinates)",
       "provinceList": "จังหวัดที่มีร้านกล้อง: first ten rows, the rest in <details class=\"province-more\"> “อีก n จังหวัด”; every row is a select-province button",
       "footer": "Camera Shops Thailand · ข้อมูล {asOf in Thai date}"
     },
@@ -619,11 +625,11 @@
   },
   "data": {
     "observationGrain": "one outlet record (point of sale, or a listed contact location) of a camera-shop banner; a co-branded storefront is one outlet with linked banners",
-    "core": "data/camera.json {meta, rows, centers, brands} built by scripts/build-camera-data.py from the research master tabs (02_STORES, 11_STORE_BRANDS, 01_BRANDS, 07_VENUES, 10_VENUE_LOGOS, 09_CLOSED_STORES) and the verified CityMETER host links",
-    "research": "CityMETER Camera Shops Thailand — Research Master 2026-10-22",
-    "rowFields": "id, brand, brands[], bannerSegments[], name, venue, venueId, province (Thai), segment, scope, channel, format, origin, status, identity, release, role, cameraSales, evidence, sourceType, source, statusSource, mapUrl, checkedOn (ISO), address, unit, operator, latitude, longitude, geometryRole, geometryStatus, coordinateSource, mallId, hostKind, dedupe, note",
-    "neighborhoods": "data/neighborhoods.geojson (metadata.version 2026-10-22-r1): 27 production Locales that hold a camera venue; ids = Locale uuids; 33/33 Bangkok host points: point-in-polygon on these polygons equals production base/locatePoint (checked 2026-10-22)",
-    "hostBuildings": "data/venue-buildings.geojson (136 features, 105 hosts, 176 matched outlet rows)",
+    "core": "data/camera.json {meta, rows, centers, brands} built by scripts/build-camera-data.py from the research master tabs (02_STORES, 11_STORE_BRANDS, 01_BRANDS, 07_VENUES, 12_SPATIAL_JOIN, 10_VENUE_LOGOS, 09_CLOSED_STORES): host points from the master venue join as verified by scripts/host-links/03_verify_master_join.py; host buildings from the master building feature file checked against 13_BUILDINGS",
+    "research": "CityMETER Camera Shops Thailand — Research Master 2026-10-22, revision 2026-10-22 13:13 UTC (meta.researchRevision)",
+    "rowFields": "id, brand, brands[], bannerSegments[], name, venue, venueId, province (Thai), segment, scope, channel, format, origin, status, identity, release, role, cameraSales, evidence, sourceType, source, statusSource, mapUrl, checkedOn (ISO), address, unit, operator, latitude, longitude, geometryRole, geometryStatus, venueJoin, coordinateSource, mallId, hostKind, dedupe, note",
+    "neighborhoods": "data/neighborhoods.geojson (metadata.version 2026-10-22-r2): 26 production Locales that hold a joined camera venue; ids = Locale uuids; 31/31 Bangkok host points: point-in-polygon on these polygons equals production base/locatePoint (checked 2026-10-22)",
+    "hostBuildings": "data/venue-buildings.geojson — the research master building join (13_BUILDINGS + its feature file): 103 features (69 footprints + 34 parts), 69 hosts, 119 matched outlet rows",
     "cityMassing": "OpenFreeMap vector tiles, building source-layer (context, not part of the dataset)",
     "brandLogos": "data/brand-logos.json — empty registry, meta.status not_collected; pins show name chips",
     "provinces": "data/provinces.geojson (metadata.version 2026-10-22-r1; 64 frames; OpenGISData-Thailand CC BY 4.0, commit fafcea1)",
@@ -641,8 +647,12 @@
         "banners": 39
       },
       "review": {
-        "rule": "isReview: role ≠ retail_outlet_listing or identity ≠ source_listed_not_field_verified",
-        "rows": 9
+        "rule": "isReview: role ≠ retail_outlet_listing, or identity ≠ source_listed_not_field_verified, or venueJoin = held (a venue the research master holds)",
+        "rows": 17,
+        "breakdown": {
+          "identityOrContact": 9,
+          "heldByMaster": 8
+        }
       }
     },
     "snapshot": {
@@ -656,16 +666,30 @@
       "provincesWithOutlets": 64,
       "bangkokRows": 101,
       "venues": 144,
-      "venuesWithHost": 133,
-      "hostRecords": 132,
-      "shoppingCenterHosts": 112,
-      "groceryHosts": 20,
-      "mappedRows": 208,
-      "rowsWithoutCoordinate": 26,
+      "venuesWithHost": 106,
+      "hostRecords": 106,
+      "shoppingCenterHosts": 106,
+      "groceryHosts": 0,
+      "mappedRows": 179,
+      "rowsWithoutCoordinate": 55,
       "rowsWithoutVenue": 15,
-      "rowsAtVenuesWithoutHost": 11,
-      "locales": 27,
-      "hostBuildingFeatures": 136,
+      "rowsAtVenuesWithoutHost": 40,
+      "venueJoin": {
+        "joined": 179,
+        "held": 8,
+        "awaiting_registry": 32,
+        "no_venue": 15
+      },
+      "heldVenues": 6,
+      "provincesWithMappedRows": 44,
+      "locales": 26,
+      "hostBuildingFeatures": 103,
+      "hostsWithBuilding": 69,
+      "hostLinkProposals": {
+        "venues": 28,
+        "outlets": 29,
+        "published": false
+      },
       "venueLogoFiles": 30,
       "storeLogos": 0,
       "channels": {
@@ -704,12 +728,12 @@
       }
     },
     "closurePolicy": "retain closure status factually; 1 brand-level closure (Eastbourne 2025-02-15) is recorded in meta.closedBrands, not as an outlet row; never delete to improve counts",
-    "coordinatePolicy": "coordinates only from a verified CityMETER host record (Shopping Center detail or the Grocery overlay tile record) and always the host point, never a shopfront or floor; missing stays null; no nearest-neighbour joins; the coordinates already present in the research sheet (74 rows) are identical to these host points; retailer map links are kept as links and never decoded",
+    "coordinatePolicy": "the research master decides: a row has a coordinate only when its venue_join_status is จับคู่ venue แล้ว, and the coordinate is the master’s copy of the CityMETER Shopping Center detail point, re-read from production by the build (106/106 venues exact, every point inside its production province polygon); always the host point, never a shopfront or floor; held and unjoined rows stay null (app crosswalk matches are proposals only, never a fallback); no nearest-neighbour joins; retailer map links are kept as links and never decoded",
     "privacy": "no phone numbers (scripts/build-camera-data.py no_phone scrubs names, addresses, units, operators and notes) and no private Drive/Docs/googleusercontent URLs (public_https) in any public file",
     "limitations": [
       "Listings are source observations, not field-verified operating status.",
-      "Coordinates are host points (shopping centre or hypermarket), not shop entrances or floors.",
-      "Street stores without a verified host keep missing coordinates.",
+      "Coordinates are shopping-centre host points from the research master venue join, not shop entrances or floors.",
+      "Outlets the research master has not joined to a host (held, awaiting a registry match, or without a venue) keep missing coordinates.",
       "Coverage is not a national census of camera retail.",
       "Do not infer sales, stock, spending or demographics from presence."
     ]
@@ -804,7 +828,7 @@
     },
     {
       "id": "INV04",
-      "rule": "Default first insight concerns neighborhoods (Locales), not venues; the venue-level finding appears only when no Locale holds a row"
+      "rule": "Default first insight concerns neighborhoods (Locales), not venues; the venue-level finding appears only when no Locale holds a row and names only a venue that has a host point"
     },
     {
       "id": "INV05",
@@ -896,7 +920,7 @@
     },
     {
       "id": "INV27",
-      "rule": "A coordinate is the point of a verified CityMETER host record (Shopping Center or Grocery) and is described as a host point; outlets without a verified host keep a null coordinate and stay in every count and the table"
+      "rule": "A coordinate is the point of the CityMETER host record the research master joined (a Shopping Center in this release; the Grocery kind is supported) and is described as a host point; the build never adds, moves or upgrades a master join; outlets without a joined host — held, awaiting a registry match or without a venue — keep a null coordinate and stay in every count and the table"
     },
     {
       "id": "INV28",
@@ -904,7 +928,7 @@
     },
     {
       "id": "INV29",
-      "rule": "Identity, unit and location holds stay in the default cohort with their own pending status; the listed contact location is outside the default and selectable (cohorts all / review)"
+      "rule": "Identity, unit and location holds — including venues the research master holds (venueJoin held, พิกัดรอตรวจ) — stay in the default cohort with their own pending status; the listed contact location is outside the default and selectable (cohorts all / review)"
     },
     {
       "id": "INV30",
@@ -972,14 +996,14 @@
     "test": "npm test",
     "handoff": "npm run handoff:bundle",
     "verifyLive": "npm run verify:live",
-    "dataBuild": "npm run data:build -- --research <tab CSVs> --build <verified host links> --lux-buildings <Luxury venue-buildings.geojson> --lux-logos <Luxury repo>; npm run data:provinces -- <OpenGISData provinces.geojson> --commit … --sha256 … --retrieved …",
+    "dataBuild": "scripts/host-links 01–04 (CAMERA_RESEARCH, CAMERA_WORK) then npm run data:build -- --research <tab CSVs> --build <CAMERA_WORK> --buildings <master CityMETER_Camera_Shops_Venue_Buildings_2026-10-22.geojson> --lux-logos <Luxury repo>; npm run data:provinces -- <OpenGISData provinces.geojson> --commit … --sha256 … --retrieved …",
     "localUrl": "http://127.0.0.1:4173/",
     "devHook": "window.__citymeter (state, map, update, fitMap, fitPitched, applyPreset, buildMapStyle) — console tuning only, not an API"
   },
   "venueXrayContract": {
     "module": "js/venue-xray.js#installVenueXray(map, {beforeId, toMercator, colors}) → {update(features, {colors}), setEnabled, hitTest(point), dispose, count, enabled, failed}",
     "layer": "venue-xray (type custom, renderingMode 3d), inserted before water-name after every fill-extrusion layer",
-    "input": "host features of the venue being looked at (mall_ids — Shopping Center or Grocery id — or venue_names match) with render_as = extrusion; display_base_m / display_height_m",
+    "input": "host features of the venue being looked at (mall_ids — the host’s Shopping Center id — or venue_names match) with render_as = extrusion; display_base_m / display_height_m",
     "geometry": "walls (two triangles per edge), roof via earcut (holes supported; js/vendor/earcut.js 3.2.4 ISC), edge lines; mercator coordinates relative to the centroid origin; z = MercatorCoordinate.z of the altitude",
     "matrix": "options.defaultProjectionData.mainMatrix (64-bit) × translate(origin) multiplied on the CPU, Float32 to the shader",
     "depth": "scissored depth clear inside the venue screen box (device pixels, padded 4 px), then LEQUAL read-write depth test against itself only; polygon offset keeps edges on top",
@@ -1064,7 +1088,7 @@
         "#FFFFFF": 3
       }
     },
-    "lookup": "mallId → centers link first, else exact normalized venue label (NFKC, trimmed, case-folded, whitespace collapsed); never fuzzy; canonical names are not lookup keys; hypermarket hosts have no logo link",
+    "lookup": "mallId → centers link first, else exact normalized venue label (NFKC, trimmed, case-folded, whitespace collapsed); never fuzzy; canonical names are not lookup keys; a hypermarket (Grocery) host, when the master joins one, has no logo link",
     "roles": {
       "venue_specific": "no caption",
       "parent_complex": "โลโก้โครงการแม่",
@@ -1191,73 +1215,86 @@
     }
   },
   "hostContract": {
+    "source": "the research master (revision 2026-10-22 13:13 UTC) decides every host point and host building: venue join in 07_VENUES / 02_STORES / 12_SPATIAL_JOIN (venue_join_status, citymeter_shopping_center_id, latitude/longitude, coordinate_source_url) and building join in 13_BUILDINGS with its feature file; scripts/host-links/03_verify_master_join.py and scripts/build-camera-data.py verify and map, never add, move or upgrade a join",
     "kinds": {
       "shopping_center": {
-        "records": 112,
-        "rows": 188,
+        "records": 106,
+        "rows": 179,
         "id": "CityMETER Shopping Center id (centers[].id; externalId SC-…)",
         "geometryRole": "host_complex_point_not_shopfront",
-        "coordinateSource": "https://landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}",
+        "coordinateSource": "https://landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id} (the master coordinate_source_url)",
         "panelLink": "ศูนย์การค้านี้ใน CityMETER"
       },
       "grocery": {
-        "records": 20,
-        "rows": 20,
-        "id": "CityMETER Grocery record id of a hypermarket (Big C, Lotus's)",
+        "records": 0,
+        "rows": 0,
+        "status": "supported in code (hostKind grocery, centers[].kind, describeGeometry จุดตัวแทนไฮเปอร์มาร์เก็ต); the master join covers Shopping Center records only, so no row uses it in this release",
+        "id": "CityMETER Grocery record id of a hypermarket (Big C, Lotus’s)",
         "geometryRole": "host_hypermarket_point_not_shopfront",
         "coordinateSource": "the production grocery overlay tile (z13, inTileType=SUBDISTRICT) in which the record was read",
         "panelLink": "none (no public page)"
       },
       "none": {
-        "rows": 26,
-        "meaning": "15 street or appointment shops without a venue and 11 outlets at venues without a verified CityMETER host: geometryRole not_collected, coordinate null"
+        "rows": 55,
+        "byVenueJoin": {
+          "no_venue": 15,
+          "awaiting_registry": 32,
+          "held": 8
+        },
+        "meaning": "15 street or appointment shops without a venue, 32 outlets at 32 venues the master has not matched to a registry record yet, and 8 outlets at 6 venues the master holds (shown as พิกัดรอตรวจ): geometryRole not_collected, coordinate null"
       }
     },
-    "fields": "rows.mallId = the host record id of either kind (named for compatibility with the 0.5 venue code); rows.hostKind = shopping_center | grocery; centers[].kind, type (production taxonomy: Neighborhood Center 15, Regional Mall 64, Super-Regional Mall 30, Airport Retail 1, Hypermarket 20, Market 2) → panel.js hostTypeLabel",
+    "fields": "rows.mallId = the host record id (named for compatibility with the 0.5 venue code); rows.hostKind = shopping_center for every row with a point (grocery supported); rows.venueJoin = joined | held | awaiting_registry | no_venue from the master venue_join_status (จับคู่ venue แล้ว · รอตรวจชื่อหรือขอบเขต · มีชื่อ venue รอตรวจทะเบียน · ไม่มี venue ที่ยืนยัน); rows.geometryStatus = the master geometry_status (citymeter_host_reference | unresolved); centers[].kind, type (production taxonomy: Regional Mall 59, Super-Regional Mall 29, Neighborhood Center 14, Market 3, Airport Retail 1) → panel.js hostTypeLabel",
     "join": {
-      "method": "reviewed crosswalk from the research venue label to one production record, basis recorded in centers[].match; no nearest-neighbour or radius join",
+      "method": "the research master venue join: a branch-specific name or alias and the province must match the registry; street, district or station names are never used as a building; no nearest-neighbour or radius join; centers[].match = the master venue_join_method",
       "basis": {
-        "shopping_center:name": 70,
-        "shopping_center:research_sheet_alias_crosswalk": 30,
-        "shopping_center:dup": 1,
-        "shopping_center:alias": 2,
-        "shopping_center:address": 3,
-        "grocery:address": 19,
-        "grocery:sole": 1,
-        "shopping_center:sole": 6
+        "unique_normalized_exact_curated_alias": 43,
+        "curated_distinctive_bilingual_or_official_host_alias": 33,
+        "existing_explicit_host_reference": 30
       },
       "basisCodes": {
-        "research_sheet_alias_crosswalk": "Shopping Center id already linked in the research sheet",
-        "name": "same centre, Thai/English spelling of one name after normalisation",
-        "alias": "documented alternate name of the same complex",
-        "dup": "production holds duplicate records at one point; the record whose name matches is used",
-        "sole": "the only centre of that operator in the province (grocery: the only Big C hypermarket in the province)",
-        "address": "house number / หมู่ / ตำบล of the production record equal to the outlet address"
+        "unique_normalized_exact_curated_alias": "one registry record whose normalised name equals a curated branch-specific alias of the venue",
+        "curated_distinctive_bilingual_or_official_host_alias": "a distinctive Thai/English or official host alias of the venue",
+        "existing_explicit_host_reference": "a host link already recorded in the master (alias crosswalk inherited from the Luxury Brands master)"
       },
-      "checks": "every host point lies in the production province polygon of its venue's province (decoded base/mvt/P); every Bangkok host point gets its Locale from production base/locatePoint and the shipped Locale polygons must agree (33/33, the build stops otherwise)",
-      "venues": "144 research venues → 133 with a host (132 host records: Central Phuket Festival and Central Phuket Floresta share the one Central Phuket record) and 11 without"
+      "checks": "per joined venue: the production Shopping Center detail exists; the master latitude/longitude equal the detail point (106/106 exact, tolerance 0.0005°); the point lies in the production province polygon of the venue’s province (decoded base/mvt/P); every Bangkok host point gets its Locale from production base/locatePoint and the shipped Locale polygons must agree (31/31); every outlet of a joined venue carries the same host id and point and no held or unjoined outlet carries one — the build stops otherwise",
+      "venues": "144 research venues → 106 joined (106 host records) · 32 named venues awaiting a registry match · 6 held: Siam Square One (CityMETER point and an unnamed underground polygon conflict with the official Fujifilm tenant map), Central Phuket Floresta (the other side from Festival), ท็อปส์ ซูเปอร์สโตร์ พะเยา, มาร์คโฟร์ แพร่, ไชยแสง สิงห์บุรี, ไอที พลาซ่า สำโรง",
+      "proposals": "the app’s own reviewed crosswalk (scripts/host-links/crosswalk_sc.py, crosswalk_grocery.py) proposes host records for venues the master has not joined — host_link_proposals.csv, 28 venues / 29 outlets: 19 Big C / Lotus’s hypermarkets (Grocery records; 18 address match, 1 sole), 6 Robinson stores (Shopping Center records named only “Robinson”; sole in the province), 3 held venues; internal, never published; a link appears in the app only after the master marks it joined. For venues the master joined, the crosswalk is a cross-check: it covers 74, agrees on 73 (โลตัส สุราษฎร์ธานี: the master uses Shopping Center 4c60b013, the review had a Grocery record)"
     },
     "geometry": {
       "point": "the host record point is the outlet coordinate for every row of that venue (co-located outlets keep separate pins via screen-space slots)",
-      "buildings": "data/venue-buildings.geojson: 136 features for 105 hosts and 176 outlet rows — 60 features (29 hosts) reused from Luxury Brands 0.5 for the same CityMETER center and re-keyed to camera outlets; 68 CityMETER building V4 footprints that contain the host point (area within 12 % of building/detail, plausibility rules against small unnamed buildings); 8 OSM-named buildings within 150 m whose name matches the venue (identity by name, never nearest); 8 of 20 hypermarket hosts carry a footprint",
+      "buildings": "data/venue-buildings.geojson = the research master building join: 103 features (69 footprints + 34 parts) for 69 hosts and 119 outlet rows; every feature equals its 13_BUILDINGS row (id, geometry sha256 of the compact JSON, heights, linked outlet count) and every linked outlet is a joined outlet of the feature’s host. Master rules: point containment and host-name identity are separate tests, candidates failing identity are held; no nearest-building substitution, rectangle/circle footprints or heights spread from the tallest part; parts only with a complete polygon inside a qualified parent, exact base/top kept. 37 of the 106 hosts have no accepted building (e.g. Fortune Town: framed on the host point, no x-ray)",
+      "joinMethods": {
+        "citymeter_osm_identity_named_host_and_point_containment": 33,
+        "existing_verified_host_identity_and_point_containment": 26,
+        "matching_retailer_banner_source_point_containment_and_retailer_admin": 7,
+        "existing_verified_named_host_context_point_outside": 3,
+        "parts (current_part_complete_polygon_within_verified_host / existing_source_part_to_verified_parent)": 34
+      },
       "heights": {
-        "unknown_display_fallback": 17,
-        "citymeter_part_height_source": 31,
-        "citymeter_model_estimate": 86,
-        "osm_published_height_not_survey_verified": 2
+        "citymeter_model_estimate": 56,
+        "citymeter_part_height_source": 34,
+        "unknown_display_fallback": 9,
+        "osm_published_height_not_survey_verified": 2,
+        "unknown_parent_height_parts_owned": 2
       },
       "renderAs": {
-        "outline": 6,
-        "extrusion": 130
+        "extrusion": 95,
+        "outline": 8
+      },
+      "renderMapping": {
+        "extrusion": "extrusion",
+        "outline": "outline",
+        "source_footprint": "extrusion; outline when height_status = unknown_parent_height_parts_owned (the parts carry the heights)",
+        "none (3 new CityMETER parts)": "extrusion between base_m and top_m of 13_BUILDINGS",
+        "kept as": "source_render_as"
       },
       "sources": {
-        "OpenStreetMap original geometry": 29,
+        "OpenStreetMap original geometry": 69,
         "CityMETER public building parts (OSM-derived)": 31,
-        "CityMETER building V4 (osm_geom)": 66,
-        "CityMETER building V4 (osm)": 3,
-        "CityMETER building V4 (globfp)": 7
+        "CityMETER original public building parts (OSM-derived)": 3
       },
-      "attribution": "Microsoft Global ML Building Footprints (ODbL 1.0); © OpenStreetMap contributors (ODbL 1.0)",
+      "attribution": "© OpenStreetMap contributors (ODbL 1.0) on every feature",
       "limits": "a footprint is the host building, not the shop unit; heights are source or model estimates (3 m display fallback when unknown)"
     }
   }
