@@ -66,4 +66,28 @@ Console: only Chromium software-WebGL notices and missing glyph/source-layer war
 
 ## Live checks — 0.5.0
 
-Recorded after publishing (see the next section of this file once filled, and `RELEASE_RECEIPT.json` in the bundle). The real-tile look needs a browser that reaches OpenFreeMap; the container verifies the published bytes and loads the live page against the synthetic tiles.
+GitHub Pages was switched on at 2026-10-22 17:29 UTC (2026-10-23 00:29 Asia/Bangkok) in the owner's Chrome with the owner's go-ahead (Settings → Pages → Deploy from a branch → `main` / root); the Pages API is not reachable from the build container. Live URL: https://montri-th.github.io/camera/.
+
+### Live byte attestation
+
+| Commit | Pages run | Result |
+|---|---|---|
+| `fe58fda` (first deployment) | `pages build and deployment` 39823074930 — success | `npm run verify:live`: 116 of 116 published files equal the manifest (2026-10-22 17:30 UTC) |
+| `a0b9c66` (41-sample colour scale, cache tag `20261023-c2`) | 39827085255 — success (`89030f3` was superseded and cancelled) | 116 of 116 (17:58 UTC) |
+
+The attestation of the final commit (the one that adds this section) is recorded in `RELEASE_RECEIPT.json` and `evidence/live-attestation-<commit>.json` in the bundle; a file cannot carry the hash of its own commit.
+
+### Browser on real tiles
+
+Chrome 155 on macOS (the owner's browser through Claude in Chrome), viewport 1710×853 CSS px, DPR 2, system dark scheme; the theme control was set to Light for the light-theme checks and returned to Auto afterwards. The page loaded the real OpenFreeMap tiles and glyphs and the pinned MapLibre 5.6.2 from unpkg.
+
+| Commit | Flow | Result |
+|---|---|---|
+| `a0b9c66` | first paint (dark and light): city preset z13 / pitch 56 / bearing 28, real massing decoded (7,939 features), auto focus รัชดา-ตะวันตก · ราชประสงค์ · สยาม, Aha “58% … 22 จาก 38 ร้าน · 37 จาก 233 สาขา”, legend “ย่าน · จำนวนร้าน” as the 41-sample ramp 1 · 7 · 13; `fetch(js/scales.js, {cache: 'reload'})` serves the 41-sample code and every entry file carries `?v=20261023-c2` | pass |
+| `a0b9c66` | charts → บุคลิกของย่าน: 60 cells on the 41-sample scale, ramp 1 · 6 · 10, five equal 213-px columns | pass |
+| `a0b9c66` | country view (light): z4.85, legend “จังหวัด · จำนวนร้าน” ramp 1 · 19 · 36, 21 province chips after collision at this viewport | pass |
+| `a0b9c66` | MBK CENTER (light) and `fe58fda` (dark): eye preset z17.59 / pitch 75 / FOV 24, outline footprint + two blue master parts (34.3 m, 23.1 m) over the real massing, name chips FOTOFILE / BIG CAMERA, crumbs ประเทศไทย › กรุงเทพมหานคร › สยาม › MBK CENTER | pass |
+| `fe58fda` | Fortune Town: eye preset at the host point z16 / pitch 75 / FOV 24, no host building, the legend's building key hidden, name chips Snapshot Camera / Pix-One | pass |
+| `fe58fda` | FUJIFILM House of Photography Bangkok (Siam Square One, held): ย่าน “—”, พิกัด “ยังไม่มีพิกัด · พิกัดรอตรวจ”, crumbs ประเทศไทย › กรุงเทพมหานคร › Siam Square One | pass |
+
+Not verified on the live site: a narrow screen (`resize_window` reported success but the viewport stayed 1710 px wide, so 390 px is covered by the harness only), the keyboard tour (harness only), Safari and Firefox, and the native `file:` entry.
