@@ -8,22 +8,22 @@ import {filterAreaRows,summarizeAreaInsight} from '../js/area-insight.js';
 const data=JSON.parse(readFileSync(new URL('../data/camera.json',import.meta.url)));
 const geo=JSON.parse(readFileSync(new URL('../data/neighborhoods.geojson',import.meta.url)));
 const current=filterRows(data.rows,{cohort:'current'});
-// Production Locale uuids: รัชดา-ตะวันตก (Fortune Town), สยาม, ราชประสงค์.
-const topIds=['1d671f78-108c-4bcb-9da8-a29a3117e931','8d8ed740-cd31-4b6a-859f-096f1f3d0b0e','228edb69-6e1a-42f7-8001-f3eed7ee016d'];
+// Production Locale uuids: รัชดา-ตะวันตก (Fortune Town), ราชประสงค์, สยาม (tie 8/10 with ราชประสงค์).
+const topIds=['1d671f78-108c-4bcb-9da8-a29a3117e931','228edb69-6e1a-42f7-8001-f3eed7ee016d','8d8ed740-cd31-4b6a-859f-096f1f3d0b0e'];
 
-// Snapshot fixture (research 2026-10-22): a regression check, never a UI constant.
-test('default top Locales hold 23 of 38 shop banners in 39 of 233 outlets',()=>{
+// Snapshot fixture (research master revision 2026-10-22 13:13 UTC): a regression check, never a UI constant.
+test('default top Locales hold 22 of 38 shop banners in 37 of 233 outlets',()=>{
  const insight=summarizeAreaInsight(current,geo);
  assert.deepEqual(insight.areaIds,topIds);
  assert.deepEqual(insight.areas.map(area=>[area.name,area.brands,area.pos]),[
-  ['รัชดา-ตะวันตก',13,17],['สยาม',9,12],['ราชประสงค์',8,10],
+  ['รัชดา-ตะวันตก',13,17],['ราชประสงค์',8,10],['สยาม',8,10],
  ]);
- assert.equal(insight.brands,23);
+ assert.equal(insight.brands,22);
  assert.equal(insight.totalBrands,38);
- assert.equal(insight.share,23/38*100);
- assert.equal(insight.pos,39);
+ assert.equal(insight.share,22/38*100);
+ assert.equal(insight.pos,37);
  assert.equal(insight.totalPos,233);
- assert.equal(insight.assignedPos,85);
+ assert.equal(insight.assignedPos,82);
 });
 
 test('area selection preserves row identity, order and geographic evidence',()=>{
@@ -31,8 +31,8 @@ test('area selection preserves row identity, order and geographic evidence',()=>
  const selected=filterAreaRows(Object.freeze([...current]),geo,new Set(topIds));
  const expected=current.filter(row=>topIds.includes(assignNeighborhood(row,geo)?.id));
  assert.deepEqual(selected,expected);
- assert.equal(selected.length,39);
- assert.equal(countBrands(selected),23);
+ assert.equal(selected.length,37);
+ assert.equal(countBrands(selected),22);
  assert(selected.every(row=>current.includes(row)));
  assert.deepEqual(pointFeatures(selected).features.map(feature=>feature.id),selected.map(row=>row.id));
  assert.equal(JSON.stringify({rows:current,geo}),before);

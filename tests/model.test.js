@@ -17,6 +17,8 @@ test('default cohort = retail outlet listings; all adds the contact location; re
   assert.deepEqual(filterRows(rows, {cohort: 'review'}).map(r => r.id), ['c', 'd']);
   assert.equal(isReview(rows[0]), false);
   assert.equal(isReview(rows[2]), true, 'an identity hold stays in the default view but is reviewable');
+  assert.equal(isReview({...rows[0], latitude: null, longitude: null, venueJoin: 'held'}), true, 'a venue whose location the research master holds is a location review');
+  assert.equal(isReview({...rows[0], latitude: null, longitude: null, venueJoin: 'awaiting_registry'}), false, 'awaiting a registry match is not a hold');
 });
 
 test('ร้าน (distinct banners) differ from สาขา (outlets); a co-branded outlet counts each banner once; missing geometry stays in the denominator', () => {

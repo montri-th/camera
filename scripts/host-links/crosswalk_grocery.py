@@ -1,4 +1,6 @@
 # Reviewed crosswalk: research venue label -> CityMETER production Grocery record (hypermarket host).
+# Proposals only since the research master revision 2026-10-22 13:13 UTC (see crosswalk_sc.py): the master
+# marks these venues 'มีชื่อ venue รอตรวจทะเบียน' and its join covers Shopping Center records.
 # Used only where the Shopping Center layer has no record of the host (Big C hypermarkets and three
 # Lotus's hypermarkets). Basis "address": the production grocery address (house number, หมู่, ตำบล)
 # equals the store address in 02_STORES. Coordinates are decoded from the production grocery overlay

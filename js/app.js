@@ -480,7 +480,7 @@ function renderTable() {
     const area = assignNeighborhood(r, state.neighborhoods);
     return `<tr><td><button type="button" class="row-name brand-row" data-id="${esc(r.id)}">${brandLogoMarkup(r.brand)}<span>${esc(bannersOf(r).join(' · '))}</span></button><small>${esc(r.name)}</small></td>
       <td>${r.venue ? esc(r.venue) : `<span class="hint">${esc(CHANNELS[r.channel] || 'ไม่มีสถานที่')}</span>`}<small>${esc(provinceByName(r.province)?.th || r.province)}</small></td>
-      <td>${area ? esc(area.properties.name) : '<span class="hint">นอกย่าน</span>'}</td>
+      <td>${area ? esc(area.properties.name) : `<span class="hint">${hasPoint(r) ? 'นอกย่าน' : '—'}</span>`}</td>
       <td>${statusPill(describeStatus(r))}</td>
       <td><small class="data-number">${hasPoint(r) ? r.latitude.toFixed(5) + ', ' + r.longitude.toFixed(5) : 'ไม่มีพิกัด'}</small></td>
       <td class="links">${link(r.source, 'รายการ')}${r.statusSource !== r.source ? link(r.statusSource, 'สถานะ') : ''}${link(r.coordinateSource, 'พิกัด')}</td></tr>`;
@@ -581,6 +581,8 @@ function updateSpatialLayers() {
   state.provinceLabels?.update(pm ? pm.provinces : [], {selectedId: code, visible: true, LngLatBounds: maplibregl.LngLatBounds});
   if (pm) renderLegend();
   state.buildings?.update({rows: detailRows(), enabled: true, theme: theme()});
+  // The host-building key only when a host building is on the map (many hosts have no accepted footprint).
+  document.querySelector('.map-panel').classList.toggle('no-host-buildings', !(state.buildings?.displayedFeatures() || []).length);
   const selectedId = areaKey(feature);
   const model = state.areaLayers?.update({rows: state.scopeRows, selectedId, visible: state.showNeighborhoods, focusIds: state.focusIds});
   state.labels?.update(model ? model.areas : [], {selectedId, visible: state.showNeighborhoods, LngLatBounds: maplibregl.LngLatBounds});

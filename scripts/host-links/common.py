@@ -1,9 +1,8 @@
-"""Shared paths and helpers for the host-link builders (Camera Shops data pipeline, step 1).
+"""Shared paths and helpers for the host-link steps (Camera Shops data pipeline, step 1).
 
 Environment:
   CAMERA_RESEARCH  directory of the research master tab CSVs (02_STORES.csv, 07_VENUES.csv, …)   default ./work/research
   CAMERA_WORK      working/cache directory for production responses and outputs                   default ./work/build
-  LUXURY_REPO      checkout of montri-th/luxurybrands (shared host footprints)                      default ../luxurybrands
 
 All production calls go to the public CityMETER API (landometer.com) with curl and are cached under CAMERA_WORK,
 so a rerun on the same cache is deterministic. Outputs feed scripts/build-camera-data.py (--build CAMERA_WORK).
@@ -14,7 +13,6 @@ from pathlib import Path
 API = 'https://landometer.com/api/v2/citymeter-v3'
 RESEARCH = Path(os.environ.get('CAMERA_RESEARCH', 'work/research')).resolve()
 WORK = Path(os.environ.get('CAMERA_WORK', 'work/build')).resolve()
-LUXURY = Path(os.environ.get('LUXURY_REPO', '../luxurybrands')).resolve()
 WORK.mkdir(parents=True, exist_ok=True)
 
 def tile(lng, lat, z):

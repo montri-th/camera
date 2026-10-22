@@ -88,10 +88,11 @@ export function renderOverview({insight, overview, summary, focusMode = 'auto', 
   if (!count && !summary.pos) {
     aha = `<section class="aha" aria-label="ข้อค้นพบ"><p class="eyebrow">ข้อค้นพบแรก</p><h2>ไม่พบสาขาตามตัวกรองนี้</h2>
       <div class="aha-actions"><button type="button" data-action="clear-filter" data-id="all" class="btn">ล้างตัวกรอง</button></div></section>`;
-  } else if (!count && venues.length) {
+  } else if (!count && venues.some(v => v.mallId)) {
     // No Locale holds a row (a province outside Bangkok, or a filter): the finding moves to the venue level —
-    // the share of the selection's shop banners present at its leading venue.
-    const [lead, ...next] = venues;
+    // the share of the selection's shop banners present at its leading venue on the map (a venue without a
+    // host point stays in the venue list but cannot carry the map finding).
+    const [lead, ...next] = venues.filter(v => v.mallId);
     const venueShare = summary.brands ? Math.round((lead.brands / summary.brands) * 100) : 0;
     aha = `<section class="aha" aria-label="ข้อค้นพบ"><p class="eyebrow">ข้อค้นพบแรก</p>
       <h2><span class="aha-number data-number">${num(venueShare)}%</span><span class="aha-headline">ของร้านกล้องมีสาขาที่ ${esc(lead.name)}</span></h2>
@@ -227,7 +228,7 @@ export function renderStore(d) {
       <p class="store-status">${statusPill(d.status)}</p>
       <dl class="facts">
         <dt>สถานที่</dt><dd class="fact-venue">${venueFact}</dd>
-        <dt>ย่าน</dt><dd>${d.area ? `<button type="button" class="link-button" data-action="select-area" data-id="${esc(d.area.id)}">${esc(d.area.name)}</button>` : 'นอกย่าน'}</dd>
+        <dt>ย่าน</dt><dd>${d.area ? `<button type="button" class="link-button" data-action="select-area" data-id="${esc(d.area.id)}">${esc(d.area.name)}</button>` : (hasPoint(r) ? 'นอกย่าน' : '—')}</dd>
         <dt>รูปแบบ</dt><dd>${esc(d.channel)}${formatLabel(r) && formatLabel(r) !== d.channel ? `<br><span class="hint">${esc(formatLabel(r))}</span>` : ''}</dd>
         ${r.address || r.unit ? `<dt>ที่อยู่</dt><dd>${esc(r.address || r.unit)}</dd>` : ''}
         <dt>พิกัด</dt><dd><span class="data-number">${esc(coords)}</span><br><span class="hint" title="${esc(d.geometry.note)}">${esc(d.geometry.label)}${d.coLocated ? ` · ร่วมพิกัดกับอีก ${num(d.coLocated)} สาขา` : ''}</span></dd>

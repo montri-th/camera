@@ -277,6 +277,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
 .legend-massing.is-quiet { background: var(--basemap-massing-quiet); }
 .legend-massing-item { gap: 5px; }
 .map-panel:not(.is-3d) .legend-massing-item.is-quiet-item { display: none; }
+.map-panel.no-host-buildings .legend-building-item { display: none; }
 #category-key summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 24px; display: inline-flex; align-items: center; }
 #category-key > div { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding-top: 8px; }
 #category-key span { display: inline-flex; align-items: center; gap: 6px; }

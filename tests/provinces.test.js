@@ -140,3 +140,25 @@ test('a province without Locales moves the first finding to its leading venue (s
   assert.ok(!html.includes('pic-area'), 'no "0 ย่าน" tile where production has no Locale');
   assert.ok(!html.includes('ย่านของกรุงเทพฯ'));
 });
+
+test('the venue-level finding names the leading venue that has a host point; a held venue stays in the list only', () => {
+  // Phuket shape after the 13:13 master: Central Phuket Floresta (2 banners) is held, so it has no host point.
+  const venues = [{key: 'venue:Floresta', mallId: '', name: 'Central Phuket Floresta', venue: 'Central Phuket Floresta', brands: 2, pos: 2},
+    {key: 'p1', mallId: 'p1', name: 'Central Phuket', venue: 'Central Phuket Festival', brands: 1, pos: 1}];
+  const html = renderOverview({
+    insight: {areas: [], brands: 0, totalBrands: 3, share: 0, pos: 0, totalPos: 5},
+    overview: {ranking: [], areaCount: 0, mostExclusive: null, outsidePos: 5},
+    summary: {brands: 3, pos: 5, centers: [], venues: 2}, areaModel: {areas: []}, asOf: '2026-10-22', venues,
+  });
+  assert.ok(html.includes('33%') && html.includes('ของร้านกล้องมีสาขาที่ Central Phuket'));
+  assert.ok(!html.includes('ของร้านกล้องมีสาขาที่ Central Phuket Floresta'));
+  assert.ok(html.includes('data-action="select-venue" data-id="p1"'));
+  assert.ok(html.includes('Central Phuket Floresta'), 'the held venue is still listed');
+  const unmapped = renderOverview({
+    insight: {areas: [], brands: 0, totalBrands: 1, share: 0, pos: 0, totalPos: 2},
+    overview: {ranking: [], areaCount: 0, mostExclusive: null, outsidePos: 2},
+    summary: {brands: 1, pos: 2, centers: [], venues: 1}, areaModel: {areas: []}, asOf: '2026-10-22', venues: [venues[0]],
+  });
+  assert.ok(!unmapped.includes('ของร้านกล้องมีสาขาที่'), 'no map finding without a venue on the map');
+  assert.ok(unmapped.includes('2 สาขา · 1 ร้าน'));
+});

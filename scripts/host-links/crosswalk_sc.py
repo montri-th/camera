@@ -6,12 +6,12 @@
 #   dup   CityMETER holds duplicate records at one point; the record whose name matches is used
 #   sole  the only centre of that operator in the province (e.g. "ROBINSON" in Chachoengsao)
 #
-# Every match is re-checked in build_crosswalk.py: the production detail coordinates must fall inside
-# the production polygon of the research province. No nearest-centre matching; unresolved labels stay
-# unmatched and keep missing coordinates.
-#
-# Source of the 30 pre-existing links: the research sheet's own citymeter_shopping_center_id column
-# (alias crosswalk inherited from the Luxury Brands master). They are kept as-is and re-verified.
+# Role since the research master revision 2026-10-22 13:13 UTC: the master's own venue join (07_VENUES,
+# 02_STORES, 12_SPATIAL_JOIN) is the source of record and 03_verify_master_join.py publishes only that join.
+# This crosswalk is the app's independent review: for venues the master has not joined it becomes a proposal
+# (host_link_proposals.csv, checked against the production polygon of the research province, never published);
+# for venues the master has joined it is a cross-check (73 of the 74 it covers agree; โลตัส สุราษฎร์ธานี is joined
+# by the master to a Shopping Center record where this review had a Grocery record). No nearest-centre matching.
 
 SC = {
     # Bangkok
@@ -100,15 +100,15 @@ SC = {
     'เทอร์มินอล21 โคราช': ('dca79d47-f819-48ba-ba71-afaa3e12596b', 'name', 'เทอมินอล 21 โคราช (spelling used in the store address)'),
 }
 
-# Labels reviewed and left unmatched (no CityMETER record that identifies the same place):
+# Labels this review left unmatched (no CityMETER record found that identifies the same place). The master later
+# joined two labels this review had missed — Ayutthaya Park → Ayutthaya City Park (477fed7e) and
+# แจ่มฟ้าช้อปปิ้งมอลล์ → Jampha Shopping Mall Lamphun (b125fd95) — so they are no longer listed here.
 UNMATCHED = {
     'Lit Bangkok Hotel': 'hotel, not a CityMETER shopping centre',
     'Maneeya Center North': 'office building, not a CityMETER shopping centre',
     'Panasiri Resident': 'residential building, not a CityMETER shopping centre',
     'The Rich Biz Home': 'building, not a CityMETER shopping centre (เดอะริช พลาซ่า is a different place)',
     'แพชชั่น ระยอง': 'no Passione / แหลมทอง record in ระยอง',
-    'แจ่มฟ้าช้อปปิ้งมอลล์': 'no matching record in ลำพูน',
-    'Ayutthaya Park': 'no matching record in พระนครศรีอยุธยา',
     'ไอที พลาซ่า สำโรง': 'no IT Plaza record; Imperial World Samrong (4ac671fa) has no address to confirm the same building',
     'เม-ญ่า ไลฟ์สไตล์ เชียงใหม่': 'only a tenant record (Tops Wine Cellar Maya) exists; tenant points are not used as the venue',
     'เจียง-ฟิวเจอร์ หนองคาย': 'no matching record in หนองคาย',

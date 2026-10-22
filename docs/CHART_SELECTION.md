@@ -32,4 +32,4 @@
 
 ## การตรวจ
 
-`tests/chart-model.test.js` ตรวจค่าจริงเริ่มต้น 233 สาขา / 38 ร้าน, 27 ย่าน, 85 สาขาในย่าน; อันดับต้น รัชดา-ตะวันตก 13 ร้าน / 17 สาขา, สยาม 9 / 12, ราชประสงค์ 8 / 10; สาขาซ้ำ, หน้าร้านร่วมแบรนด์ในช่องประเภท, union/overlap ก่อนตัดอันดับ, ทุกช่องรวม zero, nonmutation; `tests/scales.test.js` ตรวจ LUT, thresholds และ contrast ผลหน้าจอจริงบันทึกใน `handoff/VERIFICATION.md`
+`tests/chart-model.test.js` ตรวจค่าจริงเริ่มต้น 233 สาขา / 38 ร้าน, 26 ย่าน, 82 สาขาในย่าน; อันดับต้น รัชดา-ตะวันตก 13 ร้าน / 17 สาขา, ราชประสงค์ 8 / 10, สยาม 8 / 10; สาขาซ้ำ, หน้าร้านร่วมแบรนด์ในช่องประเภท, union/overlap ก่อนตัดอันดับ, ทุกช่องรวม zero, nonmutation; `tests/scales.test.js` ตรวจ LUT, thresholds และ contrast ผลหน้าจอจริงบันทึกใน `handoff/VERIFICATION.md`

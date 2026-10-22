@@ -108,8 +108,8 @@ export const hasPoint = r => Number.isFinite(r.latitude) && Number.isFinite(r.lo
 
 /** Closures stay factual; the 2026-10-22 research has no closed outlet row (Eastbourne closed at brand level). */
 export const isClosed = r => r.status === 'permanently_closed' || r.status === 'permanently closed';
-/** Identity, unit or location holds, or a listed contact location (not a point of sale). */
-export const isReview = r => r.role !== 'retail_outlet_listing' || (Boolean(r.identity) && r.identity !== 'source_listed_not_field_verified');
+/** Identity, unit or location holds (including venues whose location the research master holds), or a listed contact location (not a point of sale). */
+export const isReview = r => r.role !== 'retail_outlet_listing' || (Boolean(r.identity) && r.identity !== 'source_listed_not_field_verified') || r.venueJoin === 'held';
 
 /**
  * Map-chip labels for long banner names (display only: rows, search and counts

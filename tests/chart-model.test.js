@@ -12,9 +12,9 @@ const RATCHADA_WEST='1d671f78-108c-4bcb-9da8-a29a3117e931',SIAM='8d8ed740-cd31-4
 // Snapshot fixture (research 2026-10-22): regression values, never UI constants.
 test('neighborhood ranking uses distinct banners and conserves selected outlet scope',()=>{
  const m=buildNeighborhoodChartModel(rows,geo,segments);
- assert.equal(m.totalPos,233);assert.equal(m.totalBrands,38);assert.equal(m.areaCount,27);
- assert.deepEqual(m.areas.slice(0,3).map(a=>[a.id,a.brands,a.pos]),[[RATCHADA_WEST,13,17],[SIAM,9,12],[RATCHAPRASONG,8,10]]);
- assert.equal(m.assignedPos,85);assert.equal(m.outsidePos,148);assert.equal(m.assignedPos+m.outsidePos,m.totalPos);
+ assert.equal(m.totalPos,233);assert.equal(m.totalBrands,38);assert.equal(m.areaCount,26);
+ assert.deepEqual(m.areas.slice(0,3).map(a=>[a.id,a.brands,a.pos]),[[RATCHADA_WEST,13,17],[RATCHAPRASONG,8,10],[SIAM,8,10]]);
+ assert.equal(m.assignedPos,82);assert.equal(m.outsidePos,151);assert.equal(m.assignedPos+m.outsidePos,m.totalPos);
  for(const a of m.areas)assert.equal(a.exclusiveBrands+a.sharedBrands,a.brands);
 });
 

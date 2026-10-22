@@ -34,6 +34,8 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 | `scripts/build-camera-data.py` | research CSVs + host links ที่ตรวจแล้ว → `data/camera.json`, `data/neighborhoods.geojson` (+ ตรวจ membership กับ `locatePoint`), `data/venue-buildings.geojson`, `data/brand-logos.json`, `data/venue-logos.json` + `assets/venue-logos/` + manifest | ไม่มีเบอร์โทร (`no_phone`), ไม่มี URL ส่วนตัว (`public_https`); พิกัดเฉพาะจุด host; hypermarket อ้าง tile ของ production |
 | `scripts/extract-provinces.mjs` | `data/provinces.geojson` เฉพาะจังหวัดที่มีสาขา จาก OpenGISData-Thailand | provenance (commit, sha256, วันที่); ปัด 5 ตำแหน่ง; ตัด ring ที่เหลือ < 4 จุด |
 | `scripts/build-pictogram-font.py` | ฟอนต์ pictogram 8 glyph + manifest | byte-reproducible (timestamp จากต้นฉบับ); ตรวจว่า codepoint คือไอคอนตามชื่อ |
+| `scripts/host-links/` (`01`–`05`, `crosswalk_sc.py`, `crosswalk_grocery.py`) | ขั้นต้นน้ำ: อ้างอิง production (จังหวัด, lv1), ผู้สมัคร Grocery, crosswalk ที่ทบทวนแล้ว → `venues_resolved.json`, Locale → `locales.geojson`, การตัดสิน footprint → `host_buildings_citymeter.json` | ไม่จับคู่ด้วยระยะ; ทุก host ตรวจจังหวัด; cache ทุก response → ทำซ้ำได้ byte-for-byte |
+| `scripts/build-asset-manifest.py` | `assets/manifest.json` (ทะเบียน asset สาธารณะของ LDS) จาก bytes จริง | ห้ามแก้ hash ด้วยมือ |
 | `scripts/build-handoff.mjs`, `scripts/verify-live.mjs` | manifest + ZIP, live byte attestation (`https://montri-th.github.io/camera/`) | hash จาก bytes จริง; ตรวจ live ก่อนอ้างว่าเผยแพร่ |
 
 ถอดออกจากชุด Luxury: `data/luxury.json`, `data/legacy-audit.json`, `assets/brand-logos.svg`, `assets/brand-logos-manifest.json`, `scripts/build-venue-logos.py` (แทนด้วย `build-camera-data.py`)

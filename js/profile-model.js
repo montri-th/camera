@@ -34,6 +34,7 @@ export function segmentMixOf(members = []) {
 /** Thai reading of the geometry role carried by a row; never upgrades precision. */
 export function describeGeometry(row = {}) {
   const role = text(row.geometryRole), status = text(row.geometryStatus);
+  if (!hasPoint(row) && row.venueJoin === 'held') return {level: 'review', label: 'พิกัดรอตรวจ', note: 'ชื่อหรือขอบเขตของสถานที่ยังรอตรวจ จึงยังไม่วางจุด'};
   if (!hasPoint(row)) return {level: 'none', label: 'ยังไม่มีพิกัด', note: 'รายการยังอยู่ในตารางและจำนวน แต่ไม่สร้างตำแหน่งขึ้นใหม่'};
   if (/host_hypermarket/.test(role)) return {level: 'host', label: 'จุดตัวแทนไฮเปอร์มาร์เก็ต', note: 'ไม่ใช่ประตูร้านหรือชั้นที่ตั้ง'};
   if (/host_complex|host_building|host_hotel|representative|shared_building|other_tenant/.test(role) || /representative/.test(status)) {

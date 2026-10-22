@@ -56,12 +56,17 @@ test('exclusive/shared reference is the whole selection, so a single-area select
 
 test('store detail reads geometry and status from the row without upgrading them', () => {
   const mall = rows.find(r => r.geometryRole === 'host_complex_point_not_shopfront');
-  const hyper = rows.find(r => r.geometryRole === 'host_hypermarket_point_not_shopfront');
   const street = rows.find(r => !r.venue);
+  const held = rows.find(r => r.venueJoin === 'held' && r.venue === 'Siam Square One');
+  // A hypermarket host (CityMETER Grocery record) stays a supported host kind; the current master joins Shopping Centers only.
+  const hyper = {...mall, id: 'fixture-hyper', geometryRole: 'host_hypermarket_point_not_shopfront', hostKind: 'grocery'};
   assert.equal(describeGeometry(mall).level, 'host');
   assert.equal(describeGeometry(hyper).level, 'host');
   assert.equal(describeGeometry(hyper).label, 'จุดตัวแทนไฮเปอร์มาร์เก็ต');
   assert.equal(describeGeometry(street).level, 'none');
+  assert.equal(held.latitude, null, 'the master holds Siam Square One: no point is published');
+  assert.equal(describeGeometry(held).label, 'พิกัดรอตรวจ', 'a held venue keeps its hold, not a generic missing point');
+  assert.equal(describeGeometry({...held, venueJoin: 'awaiting_registry'}).label, 'ยังไม่มีพิกัด');
   const d = buildStoreDetail(mall, {rows, geojson, centers: data.centers});
   assert.equal(d.row, mall);
   assert.equal(d.presence.brand, mall.brand);
@@ -82,10 +87,12 @@ test('venue profile and banner presence count distinct banners separately from o
   assert.equal(v.area.id, ratchadaWest.id);
   const presence = buildBrandPresence(rows, 'BIG CAMERA', geojson);
   assert.ok(presence.pos >= 140 && presence.venues >= 100, 'linked banners count: the Insta360 store also carries BIG CAMERA');
-  const hyper = rows.find(r => r.hostKind === 'grocery');
-  const hv = buildVenueProfile(rows, {mallId: hyper.mallId, centers: data.centers, geojson});
+  const hyperCenter = {id: 'fixture-grocery-host', name: 'BigC fixture', type: 'Hypermarket', kind: 'grocery', latitude: 13.7188, longitude: 100.5689};
+  const hyperRow = {...rows.find(r => r.mallId), id: 'fixture-hyper-row', mallId: hyperCenter.id, hostKind: 'grocery', latitude: 13.7188, longitude: 100.5689};
+  const hv = buildVenueProfile([...rows, hyperRow], {mallId: hyperCenter.id, centers: [...data.centers, hyperCenter], geojson});
   assert.equal(hv.kind, 'grocery');
   assert.equal(hv.type, 'Hypermarket');
+  assert.equal(hv.pos, 1);
 });
 
 test('street shops without a venue never form a venue group', () => {

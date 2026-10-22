@@ -26,7 +26,8 @@
       "pictogramFont": "python3 scripts/build-pictogram-font.py \"MaterialSymbolsRounded[FILL,GRAD,opsz,wght].ttf\"",
       "handoffManifest": "npm run handoff:manifest",
       "handoffBundle": "npm run handoff:bundle",
-      "verifyLive": "npm run verify:live"
+      "verifyLive": "npm run verify:live",
+      "assets:manifest": "python3 scripts/build-asset-manifest.py"
     },
     "libraries": {
       "maplibre": "5.6.2",
@@ -188,6 +189,14 @@
       {
         "path": "scripts/verify-live.mjs",
         "role": "live byte attestation against https://montri-th.github.io/camera/"
+      },
+      {
+        "path": "scripts/host-links/",
+        "role": "upstream data steps 01–05 (production reference layers, Grocery candidates, reviewed crosswalks crosswalk_sc.py / crosswalk_grocery.py, venue → host resolution with province check and Bangkok locatePoint, Locale decoding, host-building decisions); every production response cached under CAMERA_WORK; reproduced the release inputs byte-for-byte on 2026-10-22"
+      },
+      {
+        "path": "scripts/build-asset-manifest.py",
+        "role": "refreshes assets/manifest.json (public LDS asset registry: path, sha256, bytes, scope) from the bytes on disk"
       }
     ]
   },

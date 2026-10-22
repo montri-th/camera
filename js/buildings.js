@@ -1,11 +1,11 @@
 /**
- * Venue presence on original building footprints and CityMETER building parts.
+ * Venue presence on original building footprints and CityMETER building parts —
+ * the research master's building join (tab 13_BUILDINGS), mapped by the data build.
  * Source semantics: CityMETER production CmDatasetBuilding3dPlugin (baseM/topM;
  * 3 m display fallback), https://landometer.com/api/v2/citymeter-v3/building.
- * Original polygons © OpenStreetMap contributors, ODbL 1.0
- * (https://www.openstreetmap.org/copyright); seven CityMETER V4 footprints come
- * from Microsoft Global ML Building Footprints (ODbL 1.0) where OSM has no
- * polygon — per feature `attribution`.
+ * Original polygons and CityMETER parts (OSM-derived) © OpenStreetMap
+ * contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright) — per feature
+ * `attribution`.
  * No generated footprints, nearest-building joins, sales or measured-height claims.
  */
 const SOURCE = 'camera-venue-buildings';
@@ -41,12 +41,15 @@ export function buildingHeightLabel(properties = {}) {
   if (properties.height_status === 'model_height_review') {
     return 'ความสูงแบบจำลองรอตรวจ · 3 ม. เพื่อแสดงรูปทรง';
   }
+  if (properties.height_status === 'unknown_parent_height_parts_owned') {
+    return 'ความสูง footprint ไม่ระบุ · ส่วนอาคารใช้ baseM/topM จากแหล่งข้อมูล';
+  }
   if (properties.height_status === 'unknown_display_fallback') {
     return properties.render_as === 'outline'
       ? 'ความสูง footprint ไม่ระบุ · ส่วนอาคารใช้ baseM/topM จากแหล่งข้อมูล'
       : 'ไม่มีข้อมูลความสูง · 3 ม. เป็นความสูงแสดงผลเท่านั้น';
   }
-  const top = Number(properties.height_m);
+  const top = properties.height_m == null || properties.height_m === '' ? NaN : Number(properties.height_m);
   const base = Number(properties.base_m) || 0;
   if (!Number.isFinite(top)) return 'ไม่มีข้อมูลความสูง';
   const label = new Intl.NumberFormat('th-TH', {maximumFractionDigits: 2});
@@ -77,7 +80,7 @@ export function installVenueBuildings(map, geojson, options = {}) {
 
   map.addSource(SOURCE, {
     type: 'geojson', data: {type: 'FeatureCollection', features: []},
-    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · Microsoft Global ML Building Footprints · CityMETER',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · CityMETER',
   });
   const palette = colors(theme);
   map.addLayer({

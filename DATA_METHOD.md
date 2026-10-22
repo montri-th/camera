@@ -1,7 +1,7 @@
 # Data and method
 
 **Dataset:** CityMETER Camera Shops Thailand  
-**Snapshot date:** 2026-10-22 (Asia/Bangkok)  
+**Snapshot date:** 2026-10-22 (Asia/Bangkok) — research master revision 2026-10-22 13:13 UTC (20:13 น.)  
 **Record grain:** one outlet (point of sale, or one listed contact location) of a camera-shop banner  
 **Release level:** exploratory public demo; not a complete market census
 
@@ -9,12 +9,14 @@
 
 ## แหล่งข้อมูล
 
-- **Research master:** “CityMETER Camera Shops Thailand — Research Master 2026-10-22” (Google Sheets, internal working reference) แท็บ `01_BRANDS` (43 ชื่อร้านที่อนุมัติ), `02_STORES` (234 สาขา), `07_VENUES` (144 สถานที่), `09_CLOSED_STORES`, `10_VENUE_LOGOS`, `11_STORE_BRANDS` (การเชื่อมร้าน–สาขา) ตรวจเมื่อ 2026-10-22 ทุกแถว แหล่งหลักคือ official retailer locator / branch list / website ของร้าน (147 แถวจาก locator ทางการ) และ mall directory ส่วนน้อย
-- **CityMETER production (public API, ดึง 2026-10-22):** Shopping Center (`shopping-center/detail/{id}`, overlay tiles), Grocery (`grocery/overlayMvt`), Locale และขอบเขตการปกครอง (`base/info/lv0`, `base/info/lv1`, `base/mvt/{P|S|ML}`, `base/locatePoint`) และอาคาร (`building/detail`, `building/detailMvt` V4)
+- **Research master:** “CityMETER Camera Shops Thailand — Research Master 2026-10-22” (Google Sheets, internal working reference) revision 2026-10-22 13:13 UTC แท็บ `01_BRANDS` (43 ชื่อร้านที่อนุมัติ), `02_STORES` (234 สาขา), `07_VENUES` (144 สถานที่), `09_CLOSED_STORES`, `10_VENUE_LOGOS`, `11_STORE_BRANDS` (การเชื่อมร้าน–สาขา), `12_SPATIAL_JOIN` (ผล venue join และ building join หนึ่งแถวต่อสาขา) และ `13_BUILDINGS` (รูปทรงอาคาร 103 แถว) พร้อมไฟล์ feature ของ building join (`CityMETER_Camera_Shops_Venue_Buildings_2026-10-22.geojson`) ตรวจเมื่อ 2026-10-22 ทุกแถว แหล่งหลักคือ official retailer locator / branch list / website ของร้าน (147 แถวจาก locator ทางการ) และ mall directory ส่วนน้อย
+- **CityMETER production (public API, ดึง 2026-10-22):** Shopping Center (`shopping-center/detail/{id}`) สำหรับตรวจ host ทุกแห่ง, Locale และขอบเขตการปกครอง (`base/info/lv0`, `base/info/lv1`, `base/mvt/{P|S|ML}`, `base/locatePoint`); Grocery (`grocery/overlayMvt`) ใช้เฉพาะข้อเสนอ host link ที่ไม่เผยแพร่
 - **ขอบเขตจังหวัด:** OpenGISData-Thailand `provinces.geojson` commit `fafcea179cda88b689f5697c3866a449e79cd298` (sha256 `310c3adf…d011c0`, CC BY 4.0, อ้างอิงกรมการปกครอง)
-- **Luxury Brands 0.5:** footprint อาคารและไฟล์โลโก้สถานที่ที่ตรวจแล้ว สำหรับสถานที่ที่สองชุดข้อมูลใช้ร่วมกัน (ศูนย์การค้า CityMETER id เดียวกัน / sha256 เดียวกัน)
+- **Luxury Brands 0.5:** ไฟล์โลโก้สถานที่ที่ตรวจแล้ว สำหรับสถานที่ที่สองชุดข้อมูลใช้ร่วมกัน (sha256 เดียวกับชีต)
 
-ไฟล์สาธารณะ (`data/camera.json` ฯลฯ) สร้างด้วย `scripts/build-camera-data.py` จาก CSV ของแต่ละแท็บและผลจับคู่สถานที่ ไฟล์ทำงานภายในเหล่านั้นไม่อยู่ใน repository
+ไฟล์สาธารณะ (`data/camera.json` ฯลฯ) สร้างด้วย `scripts/build-camera-data.py` จาก CSV ของแต่ละแท็บ ไฟล์อาคารของ master และผลตรวจของ `scripts/host-links/` ไฟล์ทำงานภายในเหล่านั้นไม่อยู่ใน repository
+
+> ประวัติ: build แรกของ 0.5.0 (commit `cfb2ed4`) ใช้ snapshot เวลา 12:36 UTC ซึ่งยังไม่มี venue join ของ master จึงจับคู่ host เอง (208 แถวมีพิกัด) master revision 13:13 UTC เพิ่ม venue join, building join และการพักพิกัด 6 สถานที่ release นี้จึง build ใหม่ให้ตรงกับ master — ลดลง 31 สาขาใน 29 สถานที่ (ไฮเปอร์มาร์เก็ต 19, โรบินสัน 6, สถานที่ที่ master พัก 4 แห่ง 6 สาขา) เพิ่ม 2 (Ayutthaya City Park, แจ่มฟ้า ลำพูน) และเปลี่ยน record ของ host 1 (โลตัส สุราษฎร์ธานี)
 
 ## หน่วยนับ: ร้าน กับ สาขา
 
@@ -27,30 +29,36 @@
 ## สถานะ
 
 - ทุกแถวเป็น `source_listed_not_field_verified`: พบในแหล่งทางการ ณ วันที่ตรวจ ไม่ใช่การยืนยันเปิดจริงด้วยการลงพื้นที่ บนจอแสดง “พบในแหล่งข้อมูล”
-- สถานะรอตรวจคงไว้ในค่าเริ่มต้นพร้อมป้าย (ไม่ลบ ไม่รวมแถว): **ตัวตนหน้าร้านรอตรวจ** 6 แถว — DJI Experience Store กับ Phantom Thailand ที่ centralwOrld, Central Hat Yai และ Megabangna (เบอร์/ป้ายต่างกัน ยังไม่ยืนยันว่าเป็นหน้าร้านเดียวกัน); **รวมรายการรอตรวจ** 1 แถว — BIG CAMERA The Mall Bangkae (สองรายการชี้ห้องเดียวกัน รวมชั่วคราว); **ที่ตั้งขัดกัน** 1 แถว — UNIT CAMERA SHOP สยาม (Lido Connect กับ Siam Square Soi 2 — ไม่สร้างสองสาขาและไม่เลือกพิกัด); **ที่อยู่ติดต่อ** 1 แถว — World Camera ดูรวมได้ที่ชุดข้อมูล “รอตรวจตัวตน / ที่ตั้ง”
+- สถานะรอตรวจคงไว้ในค่าเริ่มต้นพร้อมป้าย (ไม่ลบ ไม่รวมแถว): **ตัวตนหน้าร้านรอตรวจ** 6 แถว — DJI Experience Store กับ Phantom Thailand ที่ centralwOrld, Central Hat Yai และ Megabangna (เบอร์/ป้ายต่างกัน ยังไม่ยืนยันว่าเป็นหน้าร้านเดียวกัน); **รวมรายการรอตรวจ** 1 แถว — BIG CAMERA The Mall Bangkae (สองรายการชี้ห้องเดียวกัน รวมชั่วคราว); **ที่ตั้งขัดกัน** 1 แถว — UNIT CAMERA SHOP สยาม (Lido Connect กับ Siam Square Soi 2 — ไม่สร้างสองสาขาและไม่เลือกพิกัด); **ที่อยู่ติดต่อ** 1 แถว — World Camera ดูรวมได้ที่ชุดข้อมูล “รอตรวจตัวตน / ที่ตั้ง” (17 แถว: 9 แถวข้างต้นและ 8 สาขาของสถานที่ที่ research master พักพิกัด — ดู “พิกัด” ด้านล่าง)
 - ปิดถาวร: `09_CLOSED_STORES` มีเพียง Eastbourne ระดับร้าน (ปิด 15 ก.พ. 2568) ไม่มีแถวสาขา จึงอยู่ใน `meta.closedBrands` ไม่อยู่บนแผนที่
 - ไม่รวม: `03_BRANCH_REVIEW` 72 แถว (รวมรายชื่อตัวแทนจำหน่ายเดิมของ WORLD CAMERA 42 แถว) และ `05_REVIEW_QUEUE` 7 ชื่อที่ยังไม่อยู่ในขอบเขต
 
-## พิกัด: สถานที่ host ของ CityMETER
+## พิกัด: venue join ของ research master
 
-พิกัดมาจาก **record ของ CityMETER production เท่านั้น** และเป็น **จุดตัวแทนสถานที่ (host-complex point)** ไม่ใช่ประตูร้านหรือชั้นที่ตั้ง (`geometryRole` `host_complex_point_not_shopfront` หรือ `host_hypermarket_point_not_shopfront`, `coordinateSource` = URL ของ record)
+research master revision 13:13 UTC มี venue join ของตัวเอง (`07_VENUES`, `02_STORES`, `12_SPATIAL_JOIN`) และเป็นผู้ตัดสินว่าสาขาใดมีจุด host — build ตรวจและแปลงเท่านั้น ไม่เพิ่ม ไม่ย้าย ไม่ยกระดับการจับคู่ (`venueJoin` ของแถว: `joined` · `held` · `awaiting_registry` · `no_venue`)
 
-- **Shopping Center** 112 record: 30 เชื่อมไว้แล้วในชีต (alias crosswalk จาก Luxury Brands) และ 82 ที่จับคู่ด้วยการทบทวนรายชื่อ — ชื่อเดียวกันหลัง normalize (name) 70, alias ที่ระบุ parent complex เดียวกัน 2, ที่อยู่ตรงกับ record (address) 3, เป็นศูนย์เดียวของชื่อ/ประเภทนั้นในพื้นที่ (sole) 6 และสถานที่ที่ชีตแยกเป็นสองชื่อแต่เป็น record เดียว (dup) 1 (ดู `centers[].match`) ไม่มีการจับคู่ด้วย “ศูนย์ที่ใกล้ที่สุด”
-- **Grocery (ไฮเปอร์มาร์เก็ต)** 20 record: สาขา BIG CAMERA ใน Big C / Lotus's ที่ Shopping Center ไม่มี record ของ host จับคู่ด้วยเลขที่ หมู่ และตำบลในที่อยู่ของร้านกับ record ของ CityMETER Grocery (address 19; บิ๊กซี ศรีสะเกษ เป็น Big C ไฮเปอร์มาร์เก็ตแห่งเดียวในจังหวัดและตำบลตรงกับที่อยู่ร้าน — sole 1) พิกัดถอดจาก overlay tile z13 (ความละเอียดราว 1 ม.) `coordinateSource` ชี้ tile ที่อ่าน record นั้น
-- ทุกจุดตรวจว่าอยู่ในจังหวัดเดียวกับที่ research ระบุ (polygon จังหวัดของ production) และจุดที่ชีตมีพิกัดอยู่แล้ว 74 แถวตรงกับ production
-- `mallId` ของแถวคือ id ของ host (Shopping Center หรือ Grocery; `hostKind` บอกชนิด) สถานที่ 133 จาก 144 แห่งมี host (132 record — สองชื่อสถานที่ใช้ record เดียว) → **208/234 แถวมีพิกัด**
-- **ยังไม่มีพิกัด 26 แถว:** ร้านริมถนน/อาคารที่ไม่มีสถานที่ (host) 15 แถว — ไม่ geocode ที่อยู่ และไม่ถอด lat/lng จากลิงก์แผนที่ (ลิงก์แผนที่ทางการ 143 ลิงก์ในชีตอยู่ในสถานะ “ยังไม่ได้ตรวจตัวตน”; ใน 15 แถวนี้มีลิงก์เพียง 1 แถว); และ 11 สถานที่ที่ยังไม่พบ record ที่ยืนยันได้ใน CityMETER (Lit Bangkok Hotel, Maneeya Center North, Panasiri Resident, The Rich Biz Home, แพชชั่น ระยอง, แจ่มฟ้าช้อปปิ้งมอลล์, Ayutthaya Park, ไอที พลาซ่า สำโรง, เม-ญ่า ไลฟ์สไตล์ เชียงใหม่, เจียง-ฟิวเจอร์ หนองคาย, ไชยแสง สิงห์บุรี) แถวเหล่านี้ยังอยู่ในตาราง จำนวน และตัวหาร ไม่ใช้จุดกึ่งกลางย่าน จังหวัด หรือร้านข้างเคียงแทน
+- **จับคู่ venue แล้ว** 179 สาขา / 106 สถานที่ → 106 record Shopping Center ของ CityMETER (`citymeter_shopping_center_id`) วิธีของ master คือชื่อหรือ alias เฉพาะสาขาและจังหวัดที่ตรงทะเบียน (`existing_explicit_host_reference`, `unique_normalized_exact_curated_alias`, `curated_distinctive_bilingual_or_official_host_alias`) ไม่ใช้ชื่อถนนหรือย่านเป็นอาคาร และไม่เลือก venue ที่ใกล้ที่สุด จุดเป็น **จุดตัวแทนสถานที่ (host-complex point)** จาก `shopping-center/detail` ไม่ใช่ประตูร้านหรือชั้น (`geometryRole` `host_complex_point_not_shopfront`, `geometryStatus` `citymeter_host_reference`, `coordinateSource` = URL ของ detail)
+- `scripts/host-links/03_verify_master_join.py` อ่าน detail ของทุก host จาก production อีกครั้ง: lat/lng ของ master ตรงกับ detail ทั้ง 106 แห่ง (ตรงทุกหลัก), จุดอยู่ใน polygon จังหวัดของ production ตรงกับจังหวัดใน research, ทุกสาขาของสถานที่ที่จับคู่ใช้ host และจุดเดียวกัน และสาขาที่ยังไม่จับคู่ไม่มีจุดใด — ไม่ตรงคือหยุด build
+- **รอตรวจชื่อหรือขอบเขต** (master พักพิกัด) 8 สาขาใน 6 สถานที่: Siam Square One (จุดของ CityMETER และ polygon ใต้ดินที่ไม่มีชื่อขัดกับแผนผังผู้เช่าทางการของ Fujifilm), Central Phuket Floresta (คนละฝั่งกับ Festival), ท็อปส์ ซูเปอร์สโตร์ พะเยา, มาร์คโฟร์ แพร่, ไชยแสง สิงห์บุรี และไอที พลาซ่า สำโรง — ไม่มีจุด รายละเอียดสาขาแสดง “พิกัดรอตรวจ”
+- **มีชื่อ venue รอตรวจทะเบียน** 32 สาขา และ **ไม่มี venue ที่ยืนยัน** 15 สาขา (ร้านริมถนน/อาคาร) — ไม่มีจุด ไม่ geocode ที่อยู่ และไม่ถอด lat/lng จากลิงก์แผนที่ (ลิงก์แผนที่ทางการ 143 ลิงก์ในชีตอยู่ในสถานะ “ยังไม่ได้ตรวจตัวตน”)
+- รวม **179/234 แถวมีพิกัด** อีก 55 แถวยังอยู่ในตาราง จำนวน และตัวหาร ไม่ใช้จุดกึ่งกลางย่าน จังหวัด หรือร้านข้างเคียงแทน
+- `mallId` ของแถวคือ id ของ Shopping Center ที่ master จับคู่ (`hostKind: shopping_center`) โค้ดยังรองรับ host ชนิด Grocery (ไฮเปอร์มาร์เก็ต, `centers[].kind`) แต่ revision นี้ไม่มีแถวใดใช้
+- **ข้อเสนอ host link (ไม่เผยแพร่):** การทบทวนรายชื่อของ app (`scripts/host-links/crosswalk_sc.py`, `crosswalk_grocery.py`) เสนอ host ให้ 28 สถานที่ / 29 สาขาที่ master ยังไม่จับคู่ — Big C / Lotus's 19 แห่ง (record Grocery ของ CityMETER: ที่อยู่ตรงกับที่อยู่ร้าน 18, เป็นแห่งเดียวในจังหวัด 1), โรบินสัน 6 แห่ง (record Shopping Center ที่ชื่อเพียง “Robinson” เป็นแห่งเดียวในจังหวัด) และ 3 สถานที่ที่ master พักไว้ ทุกข้อเสนอตรวจ polygon จังหวัดแล้ว ส่งเป็น `host_link_proposals.csv` ให้ทีม research เมื่อ master เปลี่ยนเป็น “จับคู่ venue แล้ว” build ครั้งถัดไปจะรับเอง สำหรับสถานที่ที่ master จับคู่แล้ว การทบทวนของ app ครอบคลุม 74 จาก 106 แห่งและตรงกัน 73 (โลตัส สุราษฎร์ธานี: master ใช้ record Shopping Center ส่วนการทบทวนของ app ใช้ record Grocery)
 - ลิงก์ “แผนที่ของร้าน” ในรายละเอียดสาขาเป็นลิงก์ที่ร้านเผยแพร่เอง แสดงเพื่อเปิดดู ไม่ได้ใช้เป็นพิกัด
 
 ข้อมูล Shopping Center เป็นของ production: ชนิดสถานที่ (`supMallType`), GLA พร้อม `glaSource`/`glaConfidence` ไม่สรุปเป็นขนาดตลาดที่วัดยืนยันแล้ว
 
 ## ย่าน = Locale ของ CityMETER production
 
-ย่านไม่ได้วาดขึ้นใหม่: ใช้ **Locale** ของ CityMETER production (Locale Insight) ที่มีสถานที่ของร้านกล้องอย่างน้อยหนึ่งแห่ง — 27 Locale ในกรุงเทพฯ (production ยังไม่มี Locale นอกกรุงเทพฯ) id ของ feature คือ uuid ของ Locale และ `productionUrl` คือหน้า `/v3/citymeter/BKK/L/{uuid}?d=shoppingCenter` รูปทรงถอดจาก vector tile `base/mvt/ML` ที่ z15 รวมชิ้นของ Locale เดียวกัน และลดจุดราว 0.5 ม. (เพื่อแสดงผล) การจับสาขาเข้าย่านใช้ point-in-polygon ของจุด host ไม่ใช้ชื่อ ไม่ใช้ย่านที่ใกล้ที่สุด และ build ตรวจว่าผลตรงกับ `base/locatePoint` ของ production ทุกจุดในกรุงเทพฯ (33/33) — ไม่ตรงคือหยุด build รอยต่อระหว่าง Locale ข้างเคียงอาจซ้อนกันเป็นแถบแคบกว่า 1 ม. จากการลดจุด ใช้ลำดับ id คงที่ตัดสิน รายละเอียดใน [docs/NEIGHBORHOOD_METHOD.md](docs/NEIGHBORHOOD_METHOD.md)
+ย่านไม่ได้วาดขึ้นใหม่: ใช้ **Locale** ของ CityMETER production (Locale Insight) ที่มีสถานที่ของร้านกล้อง (ที่ master จับคู่แล้ว) อย่างน้อยหนึ่งแห่ง — 26 Locale ในกรุงเทพฯ (production ยังไม่มี Locale นอกกรุงเทพฯ) id ของ feature คือ uuid ของ Locale และ `productionUrl` คือหน้า `/v3/citymeter/BKK/L/{uuid}?d=shoppingCenter` รูปทรงถอดจาก vector tile `base/mvt/ML` ที่ z15 รวมชิ้นของ Locale เดียวกัน และลดจุดราว 0.5 ม. (เพื่อแสดงผล) การจับสาขาเข้าย่านใช้ point-in-polygon ของจุด host ไม่ใช้ชื่อ ไม่ใช้ย่านที่ใกล้ที่สุด และ build ตรวจว่าผลตรงกับ `base/locatePoint` ของ production ทุกจุดในกรุงเทพฯ (31/31) — ไม่ตรงคือหยุด build รอยต่อระหว่าง Locale ข้างเคียงอาจซ้อนกันเป็นแถบแคบกว่า 1 ม. จากการลดจุด ใช้ลำดับ id คงที่ตัดสิน รายละเอียดใน [docs/NEIGHBORHOOD_METHOD.md](docs/NEIGHBORHOOD_METHOD.md)
 
 ## อาคารของสถานที่
 
-`data/venue-buildings.geojson` 136 features ของ 105 host (176 สาขา): (1) footprint/parts ของ Luxury Brands 0.5 สำหรับศูนย์การค้าที่ใช้ CityMETER id เดียวกัน (60 features ของ 29 host / 30 ชื่อสถานที่) และ (2) อาคาร CityMETER V4 ที่ **ครอบจุด host** และพื้นที่ตรงกับ `building/detail` ภายใน 12% (68) หรือ อาคาร OSM ที่ **ชื่อตรงกับสถานที่** ภายใน 150 ม. เมื่อจุด host ไม่อยู่บนอาคารใด (8, เช่น Fortune Town) อาคารที่เล็ก/เตี้ยเกินกว่าจะเป็น host และไม่มีชื่อตรง ถูกปฏิเสธ (ไม่มี footprint ดีกว่าผิดหลัง) — อีก 27 host (ศูนย์การค้า 15, ไฮเปอร์มาร์เก็ต 12) จึงยังไม่มีอาคาร และกล้องจัดกรอบที่จุด host แทน ความสูงจาก CityMETER (แบบจำลอง/แท็ก OSM) ไม่ใช่ผลรังวัด; ค่า 3.5 ม. ของ production ถือว่าไม่ทราบ → แสดง 3 ม. เพื่อรูปทรง (`unknown_display_fallback`) แหล่งรูปทรง: © OpenStreetMap contributors (ODbL) และ Microsoft Global ML Building Footprints (ODbL, 7 features) ระบุราย feature ใน `attribution`
+`data/venue-buildings.geojson` คือ building join ของ research master — แท็บ `13_BUILDINGS` และไฟล์ feature `CityMETER_Camera_Shops_Venue_Buildings_2026-10-22.geojson` ที่ README ของ master ระบุไว้สำหรับใช้งานต่อ: 103 features (footprint 69 + parts 34) ของ 69 host / 119 สาขา กฎของ master: การครอบจุด (point containment) กับตัวตนของ host (ชื่อ/ที่อยู่) ทดสอบแยกกัน อาคารที่ไม่ผ่านตัวตนถูกพักเป็น candidate; ไม่ใช้อาคารที่ใกล้ที่สุด ไม่สร้างรูปสี่เหลี่ยม/วงกลม ไม่กระจายความสูงของหอคอยสูงสุดไปทั้งอาคาร; parts รับเมื่อ polygon อยู่ใน parent ที่ผ่านเกณฑ์ทั้งชิ้นและคงฐาน/ยอดตามต้นทาง สถานะ building join ต่อสาขา: เชื่อมอาคารแล้ว 116, อาคารบริบทจากชื่อ venue 3 (มีตัวตน แต่จุดอยู่นอก polygon), ยังไม่มีอาคารที่ยืนยัน 94, รอตรวจตัวตนอาคาร 21
+
+build ตรวจทุก feature กับแถวของ `13_BUILDINGS` (id, sha256 ของ geometry, ความสูง, จำนวนสาขาที่เชื่อม) และทุกสาขาที่เชื่อมต้องเป็นสาขาที่จับคู่กับ host ของอาคารนั้น แล้วแปลงโหมดแสดงผลของ master เป็นสองแบบของ app: `extrusion` → extrusion, `outline` → outline, `source_footprint` → extrusion (เป็น outline เมื่อ `height_status` = `unknown_parent_height_parts_owned` เพราะ parts เป็นตัวถือความสูง เช่น MBK CENTER), parts ที่ยังไม่ระบุโหมด (3 parts ใหม่ของ CityMETER) → extrusion ระหว่าง `base_m` กับ `top_m` ผลคือ extrusion 95 และ outline 8
+
+host 37 จาก 106 แห่งยังไม่มีอาคาร (เช่น Fortune Town) กล้องจัดกรอบที่จุด host แทน และคำอธิบาย “อาคารของสถานที่” ในแผนที่ซ่อนเมื่อไม่มีอาคารแสดง ความสูงเป็นค่าจากแหล่งหรือแบบจำลองของ CityMETER ไม่ใช่ผลรังวัด; 3 ม. เป็นความสูงแสดงผลเมื่อไม่ทราบ (`unknown_display_fallback`) แหล่งรูปทรง: © OpenStreetMap contributors (ODbL 1.0) — footprint ต้นฉบับของ OSM และ building parts ของ CityMETER ที่มาจาก OSM
 
 ## กรอบจังหวัด
 
@@ -71,4 +79,5 @@
 - เป็น source observations ไม่ใช่สถานะเปิดที่ตรวจภาคสนาม และไม่ใช่สำมะโนร้านกล้องทั้งประเทศ (ร้านอิสระขนาดเล็ก ร้านออนไลน์ และตัวแทนจำหน่ายที่ไม่มี locator ไม่ครบ)
 - จุดเป็นตัวแทนสถานที่ ไม่บอกชั้น ห้อง หรือทางเข้า
 - จำนวนร้านไม่ใช่ส่วนแบ่งตลาด ยอดขาย สต็อก กำลังซื้อ หรือข้อมูลประชากร
-- ย่านครอบคลุมเฉพาะ Locale ในกรุงเทพฯ ที่มีสถานที่ของร้านกล้อง นอกนั้นเป็น “นอกย่าน”
+- ย่านครอบคลุมเฉพาะ Locale ในกรุงเทพฯ ที่มีสถานที่ของร้านกล้อง จุดนอกนั้นเป็น “นอกย่าน” ส่วนแถวที่ไม่มีจุดแสดง “—”
+- จุดและอาคารตามสถานะของ research master ณ revision ที่ระบุ สาขาที่ master ยังไม่จับคู่จะไม่ขึ้นแผนที่จนกว่า master จะยืนยัน

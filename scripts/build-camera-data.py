@@ -1,28 +1,30 @@
 #!/usr/bin/env python3
-"""Build the CityMETER · Camera Shops demo data from the research master and verified CityMETER links.
+"""Build the CityMETER · Camera Shops demo data from the research master.
 
-  python3 scripts/build-camera-data.py --research <dir of tab CSVs> --build <dir of verified host links>
+  python3 scripts/build-camera-data.py --research <dir of tab CSVs> --build <CAMERA_WORK of scripts/host-links> \
+      --buildings <master venue-buildings geojson> --lux-logos <montri-th/luxurybrands checkout>
 
 Inputs (not committed — internal working references):
-  research/   one CSV per tab of “CityMETER Camera Shops Thailand — Research Master 2026-10-22”
-              (00_README … 99_APPROVED_SCOPE)
-  build/      venues_resolved.json   (venue → CityMETER host, verified by build-host-links)
-              host_buildings_citymeter.json (CityMETER building footprints accepted per venue)
-              locales.geojson        (CityMETER production Locales that hold a camera venue)
-              venue-logos-dl/        (venue-logo files downloaded from the sheet's Drive links)
-  --lux-buildings / --lux-logos  the Luxury Brands 0.5 host footprints and verified logo files
-              (same OSM ways / same sheet sha256), reused for venues both datasets share
+  research/    one CSV per tab of “CityMETER Camera Shops Thailand — Research Master 2026-10-22”, revision
+               2026-10-22 13:13 UTC (00_README … 13_BUILDINGS, 99_APPROVED_SCOPE)
+  build/       venues_resolved.json  the master's venue join, every host re-read from production (host-links 03)
+               locales.geojson       CityMETER production Locales that hold a joined Bangkok venue (host-links 04)
+               venue-logos-dl/       venue-logo files downloaded from the sheet's Drive links
+  --buildings  the master's building join, “CityMETER_Camera_Shops_Venue_Buildings_2026-10-22.geojson” (the file the
+               master's README names for further use); every feature is checked against tab 13_BUILDINGS
+  --lux-logos  the Luxury Brands 0.5 verified venue-logo files (same sheet sha256), reused where both datasets share a venue
 
 Outputs:
   data/camera.json, data/neighborhoods.geojson, data/venue-buildings.geojson, data/brand-logos.json,
   data/venue-logos.json, assets/venue-logos/*, assets/venue-logos-manifest.json
 
-Rules carried from the Luxury Brands contract: one row = one outlet record and is never merged or
-dropped to improve counts; coordinates come only from a verified host (CityMETER Shopping Center or
-Grocery record) and stay host-complex points, never shopfronts; missing stays missing (null); no
-nearest-neighbour joins; no private (Drive) URLs in public files.
+Rules carried from the Luxury Brands contract: one row = one outlet record and is never merged or dropped to improve
+counts. The research master decides which outlets have a host point (venue_join_status = จับคู่ venue แล้ว) and which
+host building they belong to; this build verifies and maps, it never adds, moves or upgrades a join. Host points are
+CityMETER Shopping Center detail points, never shopfronts; missing stays missing (null); no nearest-neighbour joins;
+no private (Drive) URLs and no phone numbers in public files.
 """
-import argparse, csv, hashlib, json, math, re, shutil
+import argparse, csv, hashlib, json, re, shutil
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -30,7 +32,11 @@ ROOT = Path(__file__).resolve().parent.parent
 API = 'https://landometer.com/api/v2/citymeter-v3'
 AS_OF = '2026-10-22'
 SHEET = 'CityMETER Camera Shops Thailand — Research Master 2026-10-22'
+RESEARCH_REVISION = '2026-10-22T13:13:29Z'  # Drive modifiedTime of the exported revision
 PRIVATE = re.compile(r'(^|\.)(drive\.google\.com|docs\.google\.com|drive\.usercontent\.google\.com|googleusercontent\.com)$')
+# The master's venue_join_status (12_SPATIAL_JOIN, 02_STORES) → the row's venueJoin code.
+VENUE_JOIN = {'จับคู่ venue แล้ว': 'joined', 'รอตรวจชื่อหรือขอบเขต': 'held',
+              'มีชื่อ venue รอตรวจทะเบียน': 'awaiting_registry', 'ไม่มี venue ที่ยืนยัน': 'no_venue'}
 
 def public_https(value):
     value = (value or '').strip()
@@ -50,27 +56,8 @@ def iso(value):
     m = re.match(r'^(\d{1,2})/(\d{1,2})/(\d{4})$', value)
     return f'{m.group(3)}-{int(m.group(1)):02d}-{int(m.group(2)):02d}' if m else value
 
-def tile_xy(lng, lat, z):
-    n = 2 ** z; lr = math.radians(lat)
-    return int((lng + 180) / 360 * n), int((1 - math.log(math.tan(lr) + 1 / math.cos(lr)) / math.pi) / 2 * n)
-
-def grocery_tile_sources(build, hosts):
-    """The production Grocery overlay tile (z13) in which each hypermarket host record was read: the coordinate source."""
-    import mapbox_vector_tile as mvt
-    out = {}
-    for v in hosts:
-        x, y = tile_xy(v['longitude'], v['latitude'], 13)
-        for fn in sorted((build / 'grocery').glob(f'*_13_{x}_{y}.pbf')):
-            data = fn.read_bytes()
-            if not data or data[:1] == b'{':
-                continue
-            if any(f['properties'].get('id') == v['hostId'] for layer in mvt.decode(data).values() for f in layer['features']):
-                sub = fn.name.split('_13_')[0]
-                out[v['hostId']] = f'{API}/grocery/overlayMvt/13/{x}/{y}?inTileId={sub}&inTileType=SUBDISTRICT'
-                break
-        if v['hostId'] not in out:
-            raise SystemExit(f"grocery host {v['label']} ({v['hostId']}) not found in the cached overlay tiles")
-    return out
+def num(value):
+    return None if value in ('', None) else float(value)
 
 def read(dir_, name):
     return list(csv.DictReader(open(Path(dir_) / f'{name}.csv', encoding='utf-8')))
@@ -79,7 +66,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--research', required=True)
     ap.add_argument('--build', required=True)
-    ap.add_argument('--lux-buildings', required=True)
+    ap.add_argument('--buildings', required=True, help='the master venue-buildings geojson (13_BUILDINGS as features)')
     ap.add_argument('--lux-logos', required=True, help='Luxury Brands repo root (data/venue-logos.json + assets/venue-logos/)')
     a = ap.parse_args()
     build = Path(a.build)
@@ -92,8 +79,8 @@ def main():
     review_queue = read(a.research, '05_REVIEW_QUEUE')
     branch_review = read(a.research, '03_BRANCH_REVIEW')
     closed = read(a.research, '09_CLOSED_STORES')
+    joins = {r['outlet_id']: r for r in read(a.research, '12_SPATIAL_JOIN')}
     resolved = {v['venueId']: v for v in json.load(open(build / 'venues_resolved.json'))}
-    grocery_tiles = grocery_tile_sources(build, [v for v in resolved.values() if v.get('host') == 'citymeter_grocery'])
 
     brand_by_id = {b['brand_id']: b for b in brands}
     segment_of = {b['brand_name']: b['segment'] for b in brands}
@@ -108,17 +95,19 @@ def main():
 
     rows = []
     for s in stores:
-        v = resolved.get(s['venue_id']) if s['venue_id'] else None
-        has_point = bool(v and v.get('latitude') is not None)
-        host_kind = (v or {}).get('host') or ''
+        j = joins[s['outlet_id']]
+        join = VENUE_JOIN[j['venue_join_status']]  # an unknown status stops the build
+        if s['venue_join_status'] != j['venue_join_status']:
+            raise SystemExit(f"{s['outlet_id']}: venue_join_status differs between 02_STORES and 12_SPATIAL_JOIN")
+        point = None
+        if join == 'joined':
+            v = resolved.get(s['venue_id'])
+            point = (float(s['latitude']), float(s['longitude']))
+            if not v or v.get('hostId') != s['citymeter_shopping_center_id'] or (v['latitude'], v['longitude']) != point:
+                raise SystemExit(f"{s['outlet_id']}: host point differs from the verified venue join")
+        elif s['latitude'] or s['longitude'] or s['citymeter_shopping_center_id']:
+            raise SystemExit(f"{s['outlet_id']}: an outlet the master has not joined carries a host point")
         names = [s['brand_name']] + [b for b in banners.get(s['outlet_id'], []) if b != s['brand_name']]
-        role = 'not_collected'; status = 'unresolved'; coord_src = ''
-        if has_point and host_kind == 'citymeter_shopping_center':
-            role, status = 'host_complex_point_not_shopfront', 'citymeter_shopping_center_host'
-            coord_src = f"{API}/shopping-center/detail/{v['hostId']}"
-        elif has_point and host_kind == 'citymeter_grocery':
-            role, status = 'host_hypermarket_point_not_shopfront', 'citymeter_grocery_host'
-            coord_src = grocery_tiles[v['hostId']]
         rows.append({
             'id': s['outlet_id'],
             'brand': s['brand_name'],
@@ -147,14 +136,15 @@ def main():
             'address': no_phone(s['address']),
             'unit': no_phone(s['unit_floor']),
             'operator': no_phone(s['operator_name']),
-            'latitude': v['latitude'] if has_point else None,
-            'longitude': v['longitude'] if has_point else None,
-            'geometryRole': role,
-            'geometryStatus': status,
-            'coordinateSource': coord_src,
-            # CityMETER host record id: Shopping Center id, or the Grocery record id of a hypermarket host (hostKind says which).
-            'mallId': v['hostId'] if has_point else '',
-            'hostKind': {'citymeter_shopping_center': 'shopping_center', 'citymeter_grocery': 'grocery'}.get(host_kind, ''),
+            'latitude': point[0] if point else None,
+            'longitude': point[1] if point else None,
+            'geometryRole': s['geometry_role'] or 'not_collected',
+            'geometryStatus': s['geometry_status'] or 'unresolved',
+            'venueJoin': join,
+            'coordinateSource': public_https(s['coordinate_source_url']) if point else '',
+            # CityMETER Shopping Center id of the host the master joined (hostKind says which registry).
+            'mallId': s['citymeter_shopping_center_id'] if point else '',
+            'hostKind': 'shopping_center' if point else '',
             'dedupe': s['dedupe_status'],
             'note': no_phone(s['notes']),
         })
@@ -165,18 +155,13 @@ def main():
         if v.get('latitude') is None or v['hostId'] in seen:
             continue
         seen.add(v['hostId'])
-        if v['host'] == 'citymeter_shopping_center':
-            cached = build / 'cm' / 'detail' / f"{v['hostId']}.json"
-            det = (json.load(open(cached)).get('value') or {}) if cached.exists() else {}
-            centers.append({'id': v['hostId'], 'externalId': v.get('externalId'), 'name': v.get('hostName') or v['label'],
-                            'nameTh': v.get('hostNameTh') or '', 'latitude': v['latitude'], 'longitude': v['longitude'],
-                            'type': v.get('hostType') or '', 'gla': v.get('gla'), 'glaSource': det.get('glaSource') or '',
-                            'glaConfidence': det.get('glaConfidence') or '', 'kind': 'shopping_center',
-                            'source': v['source'], 'match': v['basis']})
-        else:
-            centers.append({'id': v['hostId'], 'externalId': None, 'name': v.get('hostName') or v['label'], 'nameTh': '',
-                            'latitude': v['latitude'], 'longitude': v['longitude'], 'type': 'Hypermarket', 'gla': None,
-                            'kind': 'grocery', 'sourceDataset': v.get('sourceDataset'), 'source': '', 'match': v['basis']})
+        cached = build / 'cm' / 'detail' / f"{v['hostId']}.json"
+        det = (json.load(open(cached)).get('value') or {}) if cached.exists() else {}
+        centers.append({'id': v['hostId'], 'externalId': v.get('externalId'), 'name': v.get('hostName') or v['label'],
+                        'nameTh': v.get('hostNameTh') or '', 'latitude': v['latitude'], 'longitude': v['longitude'],
+                        'type': v.get('hostType') or '', 'gla': v.get('gla'), 'glaSource': det.get('glaSource') or '',
+                        'glaConfidence': det.get('glaConfidence') or '', 'kind': 'shopping_center',
+                        'source': v['source'], 'match': v['basis']})
 
     # ---- brand registry ----
     outlets_by_brand = Counter()
@@ -195,25 +180,24 @@ def main():
     meta = {
         'asOf': AS_OF, 'checkedOn': AS_OF,
         'grain': 'one outlet record (point of sale, or a listed contact location) of a camera-shop banner; a co-branded storefront is one outlet with linked banners',
-        'research': SHEET,
+        'research': SHEET, 'researchRevision': RESEARCH_REVISION,
         'outlets': len(rows), 'defaultOutlets': sum(1 for r in rows if r['role'] == 'retail_outlet_listing'),
         'brandsApproved': len(brands), 'brandsWithOutlets': sum(1 for b in registry if b['outlets']),
         'linkedBannerRecords': sum(len(r['brands']) for r in rows),
         'venues': len(venues_tab), 'venuesWithHost': sum(1 for v in resolved.values() if v.get('latitude') is not None),
-        'hostShoppingCenters': sum(1 for c in centers if c['kind'] == 'shopping_center'),
-        'hostGrocery': sum(1 for c in centers if c['kind'] == 'grocery'),
+        'hostShoppingCenters': len(centers),
         'rowsWithCoordinates': len(mapped),
         'rowsWithoutCoordinates': len(rows) - len(mapped),
         'rowsWithoutVenue': sum(1 for r in rows if not r['venueId']),
-        'researchSheetCoordinates': sum(1 for s in stores if s['latitude']),
+        'venueJoin': {k: sum(1 for r in rows if r['venueJoin'] == k) for k in VENUE_JOIN.values()},
+        'heldVenues': sorted({r['venue'] for r in rows if r['venueJoin'] == 'held'}),
         'reviewQueueNames': len(review_queue), 'branchReviewRows': len(branch_review),
         'closedBrands': [{'brand': c['brand_name'], 'status': c['operating_status'], 'closedOn': iso(c['closure_date']), 'source': public_https(c['source_url'])} for c in closed],
-        'shoppingCenterSource': 'CityMETER Shopping Center public production API (detail/{id})',
-        'grocerySource': 'CityMETER Grocery public production dataset (overlay tiles; Big C and Lotus\'s store locators as recorded by production)',
+        'hostSource': 'Research master venue join (07_VENUES, 02_STORES, 12_SPATIAL_JOIN); every host re-read from the CityMETER Shopping Center public production API (detail/{id})',
         'limitations': [
             'Listings are source observations, not field-verified operating status.',
-            'Coordinates are host points (shopping centre or hypermarket), not shop entrances or floors.',
-            'Street stores without a verified host keep missing coordinates.',
+            'Coordinates are shopping-centre host points from the research master venue join, not shop entrances or floors.',
+            'Outlets the research master has not joined to a host (held, awaiting a registry match, or without a venue) keep missing coordinates.',
             'Coverage is not a national census of camera retail.',
             'Do not infer sales, stock, spending or demographics from presence.',
         ],
@@ -239,7 +223,7 @@ def main():
             'sourceURLs': [f'https://landometer.com/v3/citymeter/BKK/L/{lid}?d=shoppingCenter'],
         }})
     # Membership check: point-in-polygon on these display polygons must equal production base/locatePoint
-    # (recorded per Bangkok venue by build-host-links) for every Bangkok host point.
+    # (recorded per Bangkok venue by host-links 03) for every Bangkok host point.
     from shapely.geometry import shape as _shape, Point as _Point
     polys = [(f['id'], _shape(f['geometry'])) for f in feats]
     agree = total = 0
@@ -253,76 +237,88 @@ def main():
         else:
             raise SystemExit(f"Locale membership differs from production locatePoint for {v['label']}: {hits} vs {v.get('locale')}")
     json.dump({'type': 'FeatureCollection', 'name': 'CityMETER production Locales holding camera venues',
-               'metadata': {'version': f'{AS_OF}-r1', 'checkedOn': AS_OF, 'methodURL': 'docs/NEIGHBORHOOD_METHOD.md',
+               'metadata': {'version': f'{AS_OF}-r2', 'checkedOn': AS_OF, 'methodURL': 'docs/NEIGHBORHOOD_METHOD.md',
                             'crs': 'OGC:CRS84 / WGS84 longitude, latitude',
-                            'coverage': 'Bangkok Locales of CityMETER production that contain at least one camera venue host point. Production has no Locales outside Bangkok.',
+                            'coverage': 'Bangkok Locales of CityMETER production that contain at least one joined camera venue host point. Production has no Locales outside Bangkok.',
                             'membership': 'Point-in-polygon on the host point, independent of filters; no nearest fallback.',
                             'membershipCheck': f'{agree}/{total} Bangkok host points: point-in-polygon on these polygons equals production base/locatePoint (checked {AS_OF})',
                             'source': f'{API}/base/mvt/ML/{{z}}/{{x}}/{{y}} (production Locale tiles); ids equal production Locale uuids',
                             'provinceCodes': 'provinceCode = CityMETER production province path code'},
                'features': feats}, open(ROOT / 'data' / 'neighborhoods.geojson', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 
-    # ---- host buildings ----
-    rows_by_host = defaultdict(list)
-    for r in rows:
-        if r['mallId']:
-            rows_by_host[r['mallId']].append(r)
-    lux = json.load(open(a.lux_buildings))
-    out_feats, covered = [], set()
-    for f in lux['features']:
-        mids = [m for m in (f['properties'].get('mall_ids') or []) if m in rows_by_host]
-        if not mids:
-            continue
-        p = dict(f['properties'])
-        rs = [r for m in mids for r in rows_by_host[m]]
-        p['outlet_ids'] = sorted(r['id'] for r in rs)
-        p['mall_ids'] = mids
-        p['venue_names'] = sorted({r['venue'] for r in rs})
-        p['join_method'] = 'luxury_brands_host_footprint_same_citymeter_center'
-        out_feats.append({'type': 'Feature', 'id': f.get('id') or p['host_id'], 'geometry': f['geometry'], 'properties': p})
-        covered.update(mids)
-    cm = json.load(open(build / 'host_buildings_citymeter.json'))
-    attribution = {'osm_geom': '© OpenStreetMap contributors (ODbL 1.0)', 'osm': '© OpenStreetMap contributors (ODbL 1.0)',
-                   'globfp': 'Microsoft Global ML Building Footprints (ODbL 1.0)', 'ob_v3_supplement': 'Google Open Buildings v3 (CC BY 4.0 / ODbL 1.0)'}
-    for d in cm:
-        if not d['decision'].startswith('accepted') or d['hostId'] in covered:
-            continue
-        det = d.get('detail') or {}
-        rs = rows_by_host.get(d['hostId'], [])
-        if not rs:
-            continue
-        h = det.get('heightM')
-        unknown = h is None or abs(float(h) - 3.5) < 1e-9
-        src = det.get('source') or ''
-        host_id = f"{det.get('osmType') or 'cm'}/{det.get('osmId') or d['hostId'][:8]}"
-        out_feats.append({'type': 'Feature', 'id': host_id, 'geometry': d['geometry'], 'properties': {
-            'host_id': host_id, 'osm_type': det.get('osmType'), 'osm_id': str(det.get('osmId') or '') or None,
-            'source_url': f"https://www.openstreetmap.org/{det['osmType']}/{det['osmId']}" if det.get('osmId') and det.get('osmType') else f"{API}/building/detail?lng={d['longitude']}&lat={d['latitude']}",
-            'geometry_source': f"CityMETER building V4 ({src})", 'attribution': attribution.get(src, 'CityMETER building'),
-            'geometry_role': 'host_building_footprint_not_shop_unit',
-            'join_method': 'citymeter_building_contains_host_point' if d['decision'] == 'accepted' else 'citymeter_building_named_like_venue_within_150m',
-            'outlet_ids': sorted(r['id'] for r in rs), 'mall_ids': [d['hostId']],
+    # ---- host buildings = the research master's building join ----
+    master = json.load(open(a.buildings))
+    tab = {r['geometry_sha256']: r for r in read(a.research, '13_BUILDINGS')}
+    by_id = {r['id']: r for r in rows}
+    out_feats, matched, hosts = [], set(), set()
+    for f in master['features']:
+        p = f['properties']
+        t = tab.get(hashlib.sha256(json.dumps(f['geometry'], separators=(',', ':')).encode()).hexdigest())
+        if not t or t['building_id'] != f['id']:
+            raise SystemExit(f"building {f['id']}: no 13_BUILDINGS row with the same id and geometry sha256")
+        outs = sorted(p.get('camera_outlet_ids') or [])
+        mids = list(p.get('source_citymeter_venue_ids') or [])
+        if int(t['linked_outlet_count'] or 0) != len(outs):
+            raise SystemExit(f"building {f['id']}: linked outlet count differs from 13_BUILDINGS")
+        for o in outs:
+            r = by_id.get(o)
+            if not r or r['venueJoin'] != 'joined' or r['mallId'] not in mids:
+                raise SystemExit(f"building {f['id']}: outlet {o} is not a joined outlet of the building's host")
+        part = p['geometry_role'] == 'host_building_part_not_shop_unit'
+        status = p.get('height_status')
+        # Display mapping (documented in DATA_METHOD.md): the master's render_as → the app's two modes.
+        mode = p.get('render_as')
+        if mode == 'source_footprint':
+            mode = 'outline' if status == 'unknown_parent_height_parts_owned' else 'extrusion'
+        elif mode is None and part:
+            mode = 'extrusion'
+        if mode not in ('extrusion', 'outline'):
+            raise SystemExit(f"building {f['id']}: unknown render_as {p.get('render_as')!r}")
+        if part:
+            base, top = num(t['base_m']) or 0.0, num(t['top_m'])
+            height_m, base_m = top, base
+            disp_h = num(p.get('display_height_m')) if p.get('display_height_m') is not None else top
+            disp_b = num(p.get('display_base_m')) if p.get('display_base_m') is not None else base
+        else:
+            height_m, base_m = num(p.get('height_m')), num(p.get('base_m')) or 0.0
+            disp_h, disp_b = num(p.get('display_height_m')), num(p.get('display_base_m')) or 0.0
+        if num(t['display_height_m']) not in (None, disp_h) or (not part and num(t['height_m']) != height_m) or t['height_status'] != status:
+            raise SystemExit(f"building {f['id']}: heights differ from 13_BUILDINGS")
+        if mode == 'extrusion' and disp_h is None:
+            raise SystemExit(f"building {f['id']}: extruded without a display height")
+        rs = [by_id[o] for o in outs]
+        matched.update(outs)
+        hosts.update(mids)
+        out_feats.append({'type': 'Feature', 'id': f['id'], 'geometry': f['geometry'], 'properties': {
+            'host_id': p['host_id'], 'building_id': f['id'], 'parent_building_id': t['parent_building_id'] or None,
+            'osm_type': p.get('osm_type'), 'osm_id': p.get('osm_id'), 'osm_version': p.get('osm_version'),
+            'osm_timestamp': p.get('osm_timestamp'), 'citymeter_building_id': p.get('citymeter_building_id'),
+            'source_url': public_https(p.get('source_url')), 'raw_source_url': public_https(p.get('raw_source_url')) or None,
+            'citymeter_source_url': public_https(p.get('citymeter_source_url')) or None,
+            'geometry_source': p.get('geometry_source'), 'geometry_role': p['geometry_role'],
+            'attribution': f"{t['attribution']} ({t['license'].replace('-', ' ')})", 'license': t['license'],
+            'join_method': '; '.join(p.get('camera_join_methods') or []),
+            'outlet_ids': outs, 'mall_ids': mids, 'venue_ids': list(p.get('camera_venue_ids') or []),
             'venue_names': sorted({r['venue'] for r in rs}),
-            'source_names': [n for n in (det.get('osmNameTh'), det.get('osmNameEn')) if n],
-            'retrieved_on': AS_OF, 'license': attribution.get(src, ''),
-            'citymeter_source_url': f"{API}/building/detail?lng={d['longitude']}&lat={d['latitude']}",
-            'height_m': None if unknown else round(float(h), 2), 'base_m': 0,
-            'display_height_m': 3 if unknown else round(float(h), 2), 'display_base_m': 0,
-            'height_status': 'unknown_display_fallback' if unknown else 'citymeter_model_estimate',
-            'render_as': 'extrusion',
-            'height_note': 'ไม่มีข้อมูลความสูง ใช้ความสูงแสดงผล 3 ม. ไม่ใช่ความสูงจริง' if unknown else 'ความสูงจาก CityMETER building (แบบจำลอง/แท็ก OSM) ไม่ใช่ผลรังวัด',
+            'source_names': list(dict.fromkeys(p.get('source_names') or [])),
+            'retrieved_on': p.get('retrieved_on'),
+            'height_m': height_m, 'base_m': base_m, 'display_height_m': disp_h, 'display_base_m': disp_b,
+            'height_status': status, 'height_note': p.get('height_note'),
+            'render_as': mode, 'source_render_as': p.get('render_as'),
         }})
-        covered.add(d['hostId'])
-    matched = {i for f in out_feats for i in f['properties']['outlet_ids']}
+    if len(out_feats) != len(tab):
+        raise SystemExit(f'{len(out_feats)} building features vs {len(tab)} rows in 13_BUILDINGS')
     json.dump({'type': 'FeatureCollection', 'metadata': {
         'as_of': AS_OF, 'scope': 'Host buildings of camera-shop outlets (a footprint is the host building, not the shop unit)',
-        'sources': ['Luxury Brands 0.5 host footprints (OpenStreetMap API geometry, CityMETER building parts) for shared centres',
-                    f'{API}/building/detail + building/detailMvt (V4) for the others'],
-        'attribution': '; '.join(sorted({f['properties'].get('attribution') or '© OpenStreetMap contributors (ODbL 1.0)' for f in out_feats})),
-        'rows': len(rows), 'mapped_rows': len(mapped), 'matched_rows': len(matched), 'host_venues': len(covered), 'features': len(out_feats),
-        'limitations': ['Original footprints only; no rectangles, circles or nearest-building replacements.',
-                        'Point containment (or an OSM name equal to the venue within 150 m) is the only join; it does not prove floor, unit or entrance.',
-                        'Heights are source or model estimates; 3 m is a display fallback when none is known.']},
+        'source': f'{SHEET} (revision {RESEARCH_REVISION}): building join, tab 13_BUILDINGS and its feature file CityMETER_Camera_Shops_Venue_Buildings_2026-10-22.geojson; every feature equals its 13_BUILDINGS row (id, geometry sha256, heights, linked outlets)',
+        'attribution': '© OpenStreetMap contributors (ODbL 1.0)', 'license': master['metadata'].get('license'),
+        'rules': master['metadata'].get('rules', []),
+        'renderMapping': {'extrusion': 'extrusion', 'outline': 'outline', 'source_footprint': 'extrusion (outline when height_status is unknown_parent_height_parts_owned: the parts carry the heights)',
+                          'none (building part)': 'extrusion between base_m and top_m of 13_BUILDINGS'},
+        'rows': len(rows), 'mapped_rows': len(mapped), 'matched_rows': len(matched), 'host_venues': len(hosts), 'features': len(out_feats),
+        'limitations': ['Original footprints and parts only; no rectangles, circles or nearest-building replacements.',
+                        'A building is the host building of the joined venue (point containment and host identity tested separately by the research master); it does not prove floor, unit or entrance.',
+                        'Heights are source or model estimates, not surveys; 3 m is a display fallback when none is known.']},
         'features': out_feats}, open(ROOT / 'data' / 'venue-buildings.geojson', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 
     # ---- brand logos: not collected for this dataset (sheet columns prepared, no files) ----
@@ -400,7 +396,7 @@ def main():
               open(ROOT / 'assets' / 'venue-logos-manifest.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
     print(json.dumps(meta, ensure_ascii=False, indent=1))
-    print('centers', len(centers), 'neighborhoods', len(feats), 'host features', len(out_feats), 'host venues', len(covered), 'matched rows', len(matched))
+    print('centers', len(centers), 'neighborhoods', len(feats), 'host features', len(out_feats), 'host venues', len(hosts), 'matched rows', len(matched))
     print('venue logos', len(assets), 'labels with logo', reg['meta']['counts']['labels_with_logo'], 'centers', len(center_entries), 'issues', issues)
 
 if __name__ == '__main__':

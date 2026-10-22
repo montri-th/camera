@@ -6,9 +6,9 @@
 
 เข้าโฟลเดอร์ `source` แล้วรัน `npm test` และ `npm start` เปิด http://127.0.0.1:4173/
 
-ชุดนี้มี source code (ES modules มีคอมเมนต์สัญญาทุกโมดูล), datasets, verified assets, 102 unit tests, JSON Schema 1.4.0, acceptance criteria, สคริปต์สร้างข้อมูล (`scripts/build-camera-data.py`, `scripts/extract-provinces.mjs`, `scripts/build-pictogram-font.py`), สร้าง manifest/bundle และตรวจ live bytes อ่าน `source/AGENTS.md` ก่อนแก้ไข
+ชุดนี้มี source code (ES modules มีคอมเมนต์สัญญาทุกโมดูล), datasets, verified assets, 106 unit tests, JSON Schema 1.4.0, acceptance criteria, สคริปต์สร้างข้อมูล (`scripts/host-links/`, `scripts/build-camera-data.py`, `scripts/extract-provinces.mjs`, `scripts/build-pictogram-font.py`), สร้าง manifest/bundle และตรวจ live bytes อ่าน `source/AGENTS.md` ก่อนแก้ไข
 
-หน่วยบนจอ: **ร้าน** = ชื่อร้านไม่ซ้ำ (BIG CAMERA, Sony Store …) · **สาขา** = หนึ่งแถว/หนึ่งจุดขาย · **สถานที่** = host ของ CityMETER (Shopping Center หรือ Grocery) · **ย่าน** = Locale ของ CityMETER production
+หน่วยบนจอ: **ร้าน** = ชื่อร้านไม่ซ้ำ (BIG CAMERA, Sony Store …) · **สาขา** = หนึ่งแถว/หนึ่งจุดขาย · **สถานที่** = host ของ CityMETER ที่ research master จับคู่ (Shopping Center) · **ย่าน** = Locale ของ CityMETER production
 
 เว็บจริง: https://montri-th.github.io/camera/
 Repository: https://github.com/montri-th/camera
