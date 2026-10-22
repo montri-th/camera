@@ -64,7 +64,7 @@
     },
     "coreDataTimeoutMs": 12000,
     "optionalVendorTimeoutMs": 20000,
-    "versionToken": "?v=20261022-c1 on every entry file in index.html",
+    "versionToken": "?v=20261023-c2 on every entry file in index.html",
     "modules": [
       {
         "path": "js/app.js",
@@ -690,7 +690,7 @@
     },
     {
       "id": "P18",
-      "title": "Release 0.5.0 on GitHub Pages: asset manifest from final bytes, ?v=20261022-c1, push montri-th/camera main, branch deploy",
+      "title": "Release 0.5.0 on GitHub Pages: asset manifest from final bytes, ?v=20261023-c2, push montri-th/camera main, branch deploy",
       "dependsOn": [
         "P15",
         "P16",

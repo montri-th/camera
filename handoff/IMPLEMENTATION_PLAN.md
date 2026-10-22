@@ -10,7 +10,7 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 
 | ไฟล์ | หน้าที่ | ข้อต่อที่ต้องรักษา |
 |---|---|---|
-| `index.html` | โครงหน้าจอ: header + toolbar (3D, มุมสถาปนิก), map panel + chrome, ถาดกราฟ, ตาราง, แผงอ่านข้อมูล (breadcrumb บนสุด), help dialog, launch overlay | DOM IDs ที่ `app.js`/`navigation.js` ใช้; `?v=20261022-c1` บน entry files; ตัวเลือก cohort `current`/`all`/`review`; ไม่มี CSV/caveat UI |
+| `index.html` | โครงหน้าจอ: header + toolbar (3D, มุมสถาปนิก), map panel + chrome, ถาดกราฟ, ตาราง, แผงอ่านข้อมูล (breadcrumb บนสุด), help dialog, launch overlay | DOM IDs ที่ `app.js`/`navigation.js` ใช้; `?v=20261023-c2` บน entry files; ตัวเลือก cohort `current`/`all`/`review`; ไม่มี CSV/caveat UI |
 | `js/launch.js` | boot script, file bridge, loading/slow/error fallback | events `citymeter:ready`, `citymeter:load-error`; public origin `https://montri-th.github.io/camera/` |
 | `js/app.js` | state, สามขอบเขตข้อมูล + focus mode, panel modes + back stack, breadcrumb, URL state, map lifecycle, กล้อง, ติดตั้งชั้น spatial | `update()` จุดเดียวที่คำนวณ selection; `detailRows()` ระดับสถานที่ = แถวของสถานที่จาก `scopeRows`; `pitchedPadding()` นับ legend บนจอกว้าง; `CITY_MASSING_ZOOM = 13` เป็นพื้นของ city fit บน desktop; ซ่อนคีย์ “อาคารของสถานที่” เมื่อไม่มีอาคารของสถานที่บนแผนที่; ตารางแสดงย่าน “—” เมื่อไม่มีจุด |
 | `js/model.js` | 5 segments (กลุ่ม A–E ของ research), 4 channels, cohorts (`isReview` รวมสาขาที่ master พักพิกัด `venueJoin = held`), `FORMATS`, `PROVINCES` 77 จังหวัด (รหัส production + DOPA), `bannersOf`/`bannerSegmentsOf`/`brandSet`/`countBrands`/`projectSegment`, `BANNER_LABELS`, ตัวกรองร่วม, summaries | ไม่แก้แถวต้นทาง (segment filter คืนสำเนา); ร้าน กับ สาขา นับแยก; operator ไม่ใช่ banner; รหัสจังหวัดตรง production |
@@ -73,7 +73,7 @@ Static HTML/CSS และ JavaScript ES modules ไม่มี build step ไ�
 | P15 | Unit tests บนข้อมูล Camera Shops | done | `npm test` 106/106 (รวม `tests/data-contract.test.js`) |
 | P16 | Rendered harness: desktop/mobile × light/dark, a11y, states | done (scoped) | `VERIFICATION.md`; รันซ้ำหลัง rebase (0 app errors); basemap สังเคราะห์ — ยืนยันรูปจาก tile จริงที่ N02 |
 | P17 | เอกสารและ machine contracts 0.5.0 (statement, brief, plan, schema 1.4.0, DATA_METHOD, NEIGHBORHOOD_METHOD, README, AGENTS) | done | ajv 8.17.1 (draft 2020-12) ก่อน release commit |
-| P18 | Release 0.5.0: `assets/manifest.json` จาก bytes จริง, `?v=20261022-c1`, push `montri-th/camera` main, Pages branch deploy | pending | run `pages-build-deployment` |
+| P18 | Release 0.5.0: `assets/manifest.json` จาก bytes จริง, `?v=20261023-c2`, push `montri-th/camera` main, Pages branch deploy | pending | run `pages-build-deployment` |
 | P19 | Live attestation + bundle (manifest บน commit ที่ push, `verify:live`, bundle พร้อม receipt/evidence) | pending | `RELEASE_RECEIPT.json` |
 | P20 | Resilience จาก Luxury (launch overlay, file bridge, vendor retry) | retained, source-checked | file: ไปที่ `https://montri-th.github.io/camera/`; ไม่ได้ทำ fault injection ซ้ำ |
 | P21 | Rebase บน research master ฉบับ 13:13 UTC: จุด host และอาคารที่ตั้งจาก venue join / building join ของ master; สาขามีจุด 208 → 179, ย่าน 27 → 26, อาคาร 136 → 103 features, ข้อค้นพบแรก 61% → 58%; ถอด `03_build_crosswalk.py` และ `05_build_host_buildings.py` | done | `tests/data-contract.test.js`; `scripts/host-links/README.md`; harness รันซ้ำ |
