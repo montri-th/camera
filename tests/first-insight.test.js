@@ -12,18 +12,18 @@ const topIds=[
  '49b5afdc-2436-48bc-8a89-007ac5541d98',
 ];
 
-// Snapshot fixture (research 2026-10-22): a regression check, never a UI constant.
-test('retained host Aha counts 22 unique banners in 32 of 233 selected outlets',()=>{
+// Snapshot fixture (research 2026-10-23): a regression check, never a UI constant.
+test('retained host Aha counts 22 unique banners in 32 of 252 selected outlets',()=>{
  const first=summarizeFirstInsight(current,data.centers);
  assert.deepEqual(first.centerIds,topIds);
  assert.deepEqual(first.centers.map(c=>[c.name,c.brands,c.pos]),[
   ['Fortune Town',13,17],['centralwOrld',7,9],['Siam Paragon',7,6],
  ]);
  assert.equal(first.brands,22);
- assert.equal(first.totalBrands,38);
- assert.equal(first.share,22/38*100);
+ assert.equal(first.totalBrands,39);
+ assert.equal(first.share,22/39*100);
  assert.equal(first.pos,32);
- assert.equal(first.totalPos,233);
+ assert.equal(first.totalPos,252);
 });
 
 test('multi-host action selects the same rows, banners and mapped feature identities',()=>{
@@ -86,7 +86,7 @@ test('no verified host keeps selected denominators instead of implying no shop p
  assert.equal(first.totalBrands,countBrands(withoutHost));
  assert.equal(first.totalPos,withoutHost.length);
  const missingRegistry=summarizeFirstInsight(current,[]);
- assert.equal(missingRegistry.totalPos,233);
+ assert.equal(missingRegistry.totalPos,252);
  assert.equal(missingRegistry.centers.length,0);
 });
 

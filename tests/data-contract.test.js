@@ -9,38 +9,48 @@ const buildings = JSON.parse(readFileSync(new URL('../data/venue-buildings.geojs
 const centers = new Map(data.centers.map(c => [c.id, c]));
 const byId = new Map(data.rows.map(r => [r.id, r]));
 
-test('host points come only from the master venue join, each with its CityMETER Shopping Center detail', () => {
+test('source points and accepted host joins are independent, with no invented host IDs', () => {
   const joinCodes = ['joined', 'held', 'awaiting_registry', 'no_venue'];
   for (const r of data.rows) {
     assert.ok(joinCodes.includes(r.venueJoin), r.id);
     if (r.latitude != null) {
+      assert.ok(Number.isFinite(r.latitude) && Number.isFinite(r.longitude), r.id);
+      assert.match(r.coordinateSource, /^https:\/\//, r.id);
+      assert.ok(r.geometryRole && r.geometryRole !== 'not_collected', r.id);
+    } else {
+      assert.equal(r.longitude, null);
+      assert.equal(r.coordinateSource, '');
+    }
+    if (r.mallId) {
       assert.equal(r.venueJoin, 'joined', r.id);
       assert.equal(r.hostKind, 'shopping_center');
       assert.ok(centers.has(r.mallId), r.id);
-      assert.equal(r.coordinateSource, `https://landometer.com/api/v2/citymeter-v3/shopping-center/detail/${r.mallId}`);
-      assert.equal(r.geometryRole, 'host_complex_point_not_shopfront');
       const c = centers.get(r.mallId);
-      assert.deepEqual([r.latitude, r.longitude], [c.latitude, c.longitude], 'the outlet sits on its host point');
+      assert.equal(c.source, `https://landometer.com/api/v2/citymeter-v3/shopping-center/detail/${r.mallId}`);
+      if (r.geometryRole === 'host_complex_point_not_shopfront') {
+        assert.deepEqual([r.latitude, r.longitude], [c.latitude, c.longitude], 'a host-reference point retains its own verified coordinates');
+      }
     } else {
-      assert.notEqual(r.venueJoin, 'joined', r.id);
-      assert.equal(r.mallId, '');
-      assert.equal(r.longitude, null);
+      assert.equal(r.hostKind, '');
     }
   }
   const counts = data.meta.venueJoin;
   assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), data.meta.outlets);
-  assert.equal(counts.joined, data.meta.rowsWithCoordinates);
+  assert.equal(data.rows.filter(r => r.latitude != null).length, data.meta.rowsWithCoordinates);
+  assert.ok(data.rows.some(r => r.latitude != null && !r.mallId && !r.venueId), 'verified standalone source pins survive without a venue');
+  assert.ok(data.rows.some(r => r.latitude != null && r.venueJoin === 'held' && !r.mallId), 'a held host identity does not erase a separately sourced store point');
   assert.equal(data.meta.hostShoppingCenters, data.centers.length);
   assert.ok(data.centers.every(c => c.kind === 'shopping_center'));
 });
 
-test('venues the master holds keep no point (Siam Square One, Central Phuket Floresta and four more)', () => {
+test('held venue identities receive no CityMETER host or building from their source store pins', () => {
   const held = [...new Set(data.rows.filter(r => r.venueJoin === 'held').map(r => r.venue))].sort();
   assert.deepEqual(held, [...data.meta.heldVenues].sort());
   for (const v of ['Siam Square One', 'Central Phuket Floresta']) {
     const rs = data.rows.filter(r => r.venue === v);
     assert.ok(rs.length >= 2, v);
-    assert.ok(rs.every(r => r.venueJoin === 'held' && r.latitude === null), v);
+    assert.ok(rs.every(r => r.venueJoin === 'held' && !r.mallId), v);
+    assert.ok(buildings.features.every(f => !f.properties.outlet_ids.some(id => rs.some(r => r.id === id))), v);
   }
 });
 

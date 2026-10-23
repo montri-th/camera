@@ -11,9 +11,9 @@
  * - segment mixes count (outlet × banner) pairs by each banner's own segment
  * - exclusive/shared compare ALL assigned neighborhoods in the selection, never a top-N
  */
-import {SEGMENTS, CHANNELS, hasPoint, isClosed, bannersOf, bannerSegmentsOf} from './model.js';
-import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js';
-import {buildNeighborhoodChartModel} from './chart-model.js';
+import {SEGMENTS, CHANNELS, hasPoint, isClosed, bannersOf, bannerSegmentsOf} from './model.js?v=20261023-camera-r2';
+import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
+import {buildNeighborhoodChartModel} from './chart-model.js?v=20261023-camera-r2';
 
 const text = value => String(value ?? '').trim();
 const areaId = feature => feature?.properties?.id ?? feature?.id;
@@ -37,10 +37,10 @@ export function describeGeometry(row = {}) {
   if (!hasPoint(row) && row.venueJoin === 'held') return {level: 'review', label: 'พิกัดรอตรวจ', note: 'ชื่อหรือขอบเขตของสถานที่ยังรอตรวจ จึงยังไม่วางจุด'};
   if (!hasPoint(row)) return {level: 'none', label: 'ยังไม่มีพิกัด', note: 'รายการยังอยู่ในตารางและจำนวน แต่ไม่สร้างตำแหน่งขึ้นใหม่'};
   if (/host_hypermarket/.test(role)) return {level: 'host', label: 'จุดตัวแทนไฮเปอร์มาร์เก็ต', note: 'ไม่ใช่ประตูร้านหรือชั้นที่ตั้ง'};
-  if (/host_complex|host_building|host_hotel|representative|shared_building|other_tenant/.test(role) || /representative/.test(status)) {
+  if (/host_complex|host_building|host_hotel|host_reference|official_venue_event_reference|representative|shared_building|other_tenant/.test(role) || /representative/.test(status)) {
     return {level: 'host', label: 'จุดตัวแทนอาคาร/ศูนย์การค้า', note: 'ไม่ใช่ประตูร้านหรือชั้นที่ตั้ง'};
   }
-  if (/official_store_locator|official_published|official_linked_store/.test(role) || /official_published|official_linked_place/.test(status)) {
+  if (/official_store_locator|official_published|official_linked_store|official_retailer_location_pin|retailer_published_|store_source_point/.test(role) || /official_published|official_linked_place/.test(status)) {
     return {level: 'official', label: 'จุดร้านจากแหล่งทางการของแบรนด์', note: 'ตำแหน่งตามที่แบรนด์เผยแพร่'};
   }
   if (/unresolved|held/.test(status) || /unresolved/.test(role)) {

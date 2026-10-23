@@ -8,8 +8,8 @@
  * including rows outside every Locale and rows without a coordinate. Snapshot
  * values in the handoff JSON are regression fixtures, never UI constants.
  */
-import {hasPoint, countBrands} from './model.js';
-import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js';
+import {hasPoint, countBrands} from './model.js?v=20261023-camera-r2';
+import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
 
 const safeRows = rows => (Array.isArray(rows) ? rows : []);
 const safeGeoJSON = geojson => (geojson?.type === 'FeatureCollection' && !Array.isArray(geojson.features) ? null : geojson);

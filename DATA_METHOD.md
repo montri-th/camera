@@ -1,3 +1,43 @@
+# Data and method — 0.5.1 refresh
+
+**Snapshot:** 2026-10-23 (Asia/Bangkok). Public research demo; source listings are not field-verified operation or a market census. The refreshed master is projected by `scripts/refresh-camera-master.py`; the host-only 0.5.0 pipeline below is historical.
+
+## Current units and coverage
+
+- 253 canonical outlet records: 252 retail outlet listings in the default view and one World Camera contact-location record.
+- 44 approved shop banners; 40 appear in all public rows and 39 in the default retail view. Pixpros House, Naituanoi Store, BaNANA and Studio7 have no qualified outlet row. Approval alone does not imply branch coverage.
+- 147 persistent named venues. Public data has 260 counted retail/host-counter associations; native `11_STORE_BRANDS` has 261 including one operator-only link. Shared host/coordinates never merge independent outlets.
+- 236 selected source/reference points; 17 rows remain without coordinates. There are 129 accepted host-building contexts: 125 inside a qualified footprint and four named-host contexts with an outside point. The 103 source features (69 footprints + 34 parts) are preserved; no new building geometry was acquired.
+- Figures are computed from `data/camera.json` and the refreshed join. The 1,411 private network candidates do not enter public rows, counters or denominators.
+
+## Camera-selling qualification
+
+The latest scope requires evidence about the named physical branch. A chain-wide camera catalog, generic locator, pickup workflow, CCTV/webcam/phone-camera merchandise, marketplace seller or empty branch-stock response does not qualify its whole network. A stock response of zero/empty is not proof that a branch never sells cameras.
+
+Sixteen additional Power Buy outlets qualify through the current retailer branch identity intersected with Canon's camera-category sales-stockist listing. Name/branch qualifier, leading address number and province/district must agree; the manufacturer's publication date is unknown and current stock/models remain unconfirmed. Five already recorded Power Mall counters have direct named camera-counter evidence. Central and Robinson outlets at Future Park keep distinct identities even though they share a parent complex.
+
+AV VALUE is the only new approved banner (CAM-B044): its official contact identifies the Vanilla Moon 4F camera/lens/video-camera showroom. The separately labelled HQ at 65 Soi Chan 33 is an operator-address observation, not the showroom address. Advice/JIB and other unqualified networks remain research candidates. Existing 72 branch-review rows and seven pending banners retain their identity and approval state.
+
+## Independent identity, point and building decisions
+
+A selected point can be an official retailer coordinate, a named business-map destination, a host reference or an explicitly retained cross-dataset reference. Keep source URL, role, period and precision. Read named place-target coordinates, not viewport centres. A valid business point does not establish a venue; a venue identity does not establish a footprint. Never copy a business point to a venue, choose a nearest host, or fill missing positions with an administrative centroid.
+
+UNIT's walk-in host is Lido Connect 2F; company address 236/11 Siam Square Soi 2 remains separate evidence. Lido's point comes from official published event-location records and represents the host, not the UNIT unit/entrance. Central Chidlom's host reference is retained from 21 October evidence; its provider returned 403 on 23 October, so it is not freshly revalidated. Chidlom's dated 2024 camera-assortment note/hold remains alongside additional undated manufacturer evidence.
+
+Containment uses the actual selected point and the known qualified host feature. Leica Siam Paragon's new official point is outside its former footprint; preserve named-host context and exclude it from inside totals. No new complete-polygon/part-coverage certification is implied. Retain source/modeled/unknown height separately from display fallback and never spread a tower's height across a parent.
+
+## Locale, privacy and assets
+
+Refresh data holds 36 production Bangkok Locales; metadata records agreement with `base/locatePoint` for 48/48 Bangkok points. No nearest-boundary/name fallback or invented Locale outside Bangkok. Locale Insight is context, not population, eligibility, statutory boundary, risk or actual behavior evidence.
+
+Public projection strips phones and private Drive/Docs links. Research candidates, raw observations and reviewer material remain private. Logo files are joined by stable identity/exact accepted labels, preserve original artwork and hashes, and state venue-specific/corporate/parent roles. Read current coverage/missing lists from the logo registries after the final asset patch; collecting artwork does not grant trademark rights. Build, unit, browser, live and visual checks remain separate evidence levels.
+
+---
+
+## Historical method — 0.5.0, 22 October 2026
+
+The retained record below describes that snapshot only. Its host-only coordinate gate, counts, empty brand-logo registry and old held cases are superseded by the refresh contract above; it is not the current build command.
+
 # Data and method
 
 **Dataset:** CityMETER Camera Shops Thailand  

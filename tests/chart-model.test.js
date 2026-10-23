@@ -9,12 +9,12 @@ const geo=JSON.parse(fs.readFileSync(new URL('../data/neighborhoods.geojson',imp
 const rows=filterRows(source.rows),segments=Object.entries(SEGMENTS).map(([id,name])=>({id,name}));
 const RATCHADA_WEST='1d671f78-108c-4bcb-9da8-a29a3117e931',SIAM='8d8ed740-cd31-4b6a-859f-096f1f3d0b0e',RATCHAPRASONG='228edb69-6e1a-42f7-8001-f3eed7ee016d';
 
-// Snapshot fixture (research 2026-10-22): regression values, never UI constants.
+// Snapshot fixture (research 2026-10-23): regression values, never UI constants.
 test('neighborhood ranking uses distinct banners and conserves selected outlet scope',()=>{
  const m=buildNeighborhoodChartModel(rows,geo,segments);
- assert.equal(m.totalPos,233);assert.equal(m.totalBrands,38);assert.equal(m.areaCount,26);
- assert.deepEqual(m.areas.slice(0,3).map(a=>[a.id,a.brands,a.pos]),[[RATCHADA_WEST,13,17],[RATCHAPRASONG,8,10],[SIAM,8,10]]);
- assert.equal(m.assignedPos,82);assert.equal(m.outsidePos,151);assert.equal(m.assignedPos+m.outsidePos,m.totalPos);
+ assert.equal(m.totalPos,252);assert.equal(m.totalBrands,39);assert.equal(m.areaCount,36);
+ assert.deepEqual(m.areas.slice(0,3).map(a=>[a.id,a.brands,a.pos]),[[RATCHADA_WEST,13,17],[SIAM,10,12],[RATCHAPRASONG,8,10]]);
+ assert.equal(m.assignedPos,101);assert.equal(m.outsidePos,151);assert.equal(m.assignedPos+m.outsidePos,m.totalPos);
  for(const a of m.areas)assert.equal(a.exclusiveBrands+a.sharedBrands,a.brands);
 });
 
@@ -86,6 +86,6 @@ test('bubble circle area, rather than radius, is proportional to distinct banner
 test('missing/empty geometry and rows produce explicit finite empty models',()=>{
  const m=buildNeighborhoodChartModel(null,null,null);assert.equal(m.totalPos,0);assert.equal(m.areaCount,0);assert.equal(m.outsidePos,0);
  assert.deepEqual(neighborhoodMatrix(m).cells,[]);assert.equal(neighborhoodMatrix(m).maxBrands,0);
- const noGeometry=buildNeighborhoodChartModel(rows,undefined,segments);assert.equal(noGeometry.areaCount,0);assert.equal(noGeometry.outsidePos,233);
+ const noGeometry=buildNeighborhoodChartModel(rows,undefined,segments);assert.equal(noGeometry.areaCount,0);assert.equal(noGeometry.outsidePos,252);
  assert.deepEqual(neighborhoodMatrix(buildNeighborhoodChartModel(rows,geo,segments),{areaLimit:0,segmentLimit:0}).cells,[]);
 });

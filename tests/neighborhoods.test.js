@@ -71,7 +71,7 @@ test('published ย่าน are CityMETER production Locales: production ids, p
   assert.equal(name([100.5347125, 13.7465615]), 'สยาม', 'Siam Paragon');
   assert.equal(name([100.5388752, 13.7470012]), 'ราชประสงค์', 'centralwOrld');
   assert.equal(assignNeighborhood([98.3923, 7.8906], geo), null, 'production has no Locale outside Bangkok');
-  assert.match(geo.metadata.membershipCheck, /^(\d+)\/\1 Bangkok host points/);
+  assert.match(geo.metadata.membershipCheck, /^(\d+)\/\1 Bangkok points/);
   for (const feature of geo.features) {
     assert.match(feature.id, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
     assert.equal(feature.properties.id, feature.id);

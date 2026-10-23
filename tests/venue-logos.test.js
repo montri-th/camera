@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {configureVenueLogos, getVenueLogo, venueLogoMarkup, normalizeVenueLabel, ROLE_LABELS} from '../js/venue-logos.js';
+import {configureVenueLogos, getVenueLogo, venueLogoMarkup, normalizeVenueLabel, ROLE_LABELS} from '../js/venue-logos.js?v=20261023-camera-r2';
 import {renderVenue} from '../js/panel.js';
 
 const catalog = {

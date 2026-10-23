@@ -45,6 +45,9 @@ export const FORMATS = Object.freeze({
   multibrand_concept_store: 'คอนเซปต์สโตร์หลายแบรนด์', hotel_or_appointment: 'นัดหมาย / โรงแรม', in_store_brand_format: 'มุมแบรนด์ในร้าน',
   co_branded_store: 'ร้านร่วมแบรนด์', brand_store_experience_center: 'ร้านแบรนด์และศูนย์ประสบการณ์', building_showroom: 'โชว์รูมในอาคาร',
   appointment_showroom: 'โชว์รูมแบบนัดหมาย', downtown_travel_retail: 'ดิวตี้ฟรีในเมือง', adjacent_retail_channel_store: 'ร้านช่องทางขายเสริม',
+  category_killer_electronics_store: 'ร้านเครื่องใช้ไฟฟ้า',
+  electronics_and_appliance_camera_showroom: 'โชว์รูมเครื่องใช้ไฟฟ้าและกล้อง',
+  standalone_camera_and_electronics_store: 'ร้านกล้องและเครื่องใช้ไฟฟ้าแบบเดี่ยว',
 });
 /** The format line of an outlet, or '' when it only repeats the banner name. */
 export const formatLabel = r => {

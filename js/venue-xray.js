@@ -24,7 +24,7 @@
  * Colours: map.activeLayer (faces) and map.selectedStroke (edges) from
  * assets/theme.css — the host building is map context, never an analytical scale.
  */
-import earcut from './vendor/earcut.js';
+import earcut from './vendor/earcut.js?v=20261023-camera-r2';
 
 export const XRAY_LAYER = 'venue-xray';
 export const XRAY_MIN_ZOOM = 13;

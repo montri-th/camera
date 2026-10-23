@@ -1,8 +1,8 @@
 # CityMETER Camera Shops — Product Brief
 
-รุ่นส่งต่อ 0.5 · ปรับเอกสาร 22 ตุลาคม 2569 · ข้อมูลตรวจถึง 22 ตุลาคม 2569 (research master ฉบับแก้ไข 13:13 UTC) · ใช้คู่กับ [product-brief.json](product-brief.json) (schema 1.4.0)
+รุ่นส่งต่อ0.5.1 ·ปรับเอกสาร23ตุลาคม2569 ·ข้อมูลตรวจถึง23ตุลาคม2569 · ใช้คู่กับ [product-brief.json](product-brief.json) (schema 1.4.0)
 
-เอกสารนี้กำหนดประสบการณ์ที่ทีมพัฒนาต้องรักษาและต่อยอด เจตนาผลิตภัณฑ์และ winning strategy อยู่ใน [PRODUCT_STATEMENT.md](../PRODUCT_STATEMENT.md) (+ [product-statement.json](product-statement.json)); brief ฉบับนี้คือสัญญาของหน้าจอรุ่นปัจจุบัน หาก machine contract กับเอกสารนี้ขัดกัน ให้ถือ JSON เป็นหลักและแก้ทั้งสองฉบับพร้อมกัน ตัวเลขทุกตัวในเอกสารนี้เป็น snapshot ของ research master ฉบับ 22 ต.ค. 2569 13:13 UTC (`meta.researchRevision`; fixture สำหรับทดสอบ) ไม่ใช่ค่าคงที่ของหน้าจอ
+เอกสารนี้กำหนดประสบการณ์ที่ทีมพัฒนาต้องรักษาและต่อยอด เจตนาผลิตภัณฑ์และ winning strategy อยู่ใน [PRODUCT_STATEMENT.md](../PRODUCT_STATEMENT.md) (+ [product-statement.json](product-statement.json)); brief ฉบับนี้คือสัญญาของหน้าจอรุ่นปัจจุบัน หาก machine contract กับเอกสารนี้ขัดกัน ให้ถือ JSON เป็นหลักและแก้ทั้งสองฉบับพร้อมกัน ตัวเลขปัจจุบันเป็นsnapshotของrefresh23ต.ค.2569;ประวัติ0.5.0อยู่ในVERIFICATION (`meta.researchRevision`; fixture สำหรับทดสอบ) ไม่ใช่ค่าคงที่ของหน้าจอ
 
 ## สร้างบนสถาปัตยกรรม Luxury Brands 0.5
 
@@ -14,13 +14,13 @@ Camera Shops ใช้สถาปัตยกรรมและสัญญา�
 |---|---|---|
 | หน่วยนับ | **ร้าน** = ชื่อร้าน (shop banner) ไม่ซ้ำ เช่น BIG CAMERA, Sony Store · **สาขา** = หนึ่งแถว (จุดขาย หรือที่อยู่ติดต่อที่ประกาศไว้) · หน้าร้านร่วมแบรนด์ยังเป็น 1 สาขาที่มีหลายร้าน (`brands[]`) — 7 สาขาในชุดนี้: BIG CAMERA + Power Mall 5 สาขา, DJI Experience Store + Hasselblad Bangkok Store, Insta360 Experience Store by BIG Camera + BIG CAMERA; ผู้ดำเนินการ (WORLD CAMERA ของ Canon Image Square) ไม่นับเป็นร้าน; คำว่า “แบรนด์” ไม่ใช้เป็นหน่วยบนจอเพราะจะอ่านเป็นแบรนด์กล้อง | `js/model.js` (`bannersOf`, `bannerSegmentsOf`, `brandSet`, `countBrands`) และทุกตัวนับ |
 | ตัวกรองประเภทร้าน | สาขาอยู่ในผลกรองเมื่อมีร้านใดร้านหนึ่งในประเภทนั้น และนับเฉพาะร้านของประเภทนั้น (`projectSegment` คืนสำเนา ไม่แก้แถวต้นทาง ไม่ย้ายพิกัด) | `js/model.js#projectSegment`, `filterRows` |
-| ย่าน | **Locale ของ CityMETER production** 26 แห่งในกรุงเทพฯ ที่มีสถานที่ของร้านกล้อง id = Locale uuid ของ production; สมาชิกภาพตรวจกับ `base/locatePoint` ของ production ครบ 31/31 จุด; โปรไฟล์ย่านลิงก์ไป `/v3/citymeter/BKK/L/{uuid}` | `data/neighborhoods.geojson`, `js/panel.js#renderNeighborhood`, `scripts/build-camera-data.py` |
-| Host ของพิกัด | **venue join ของ research master** ตัดสินทุกจุด: ศูนย์การค้า (CityMETER Shopping Center 106 ระเบียน, 179 สาขา) — build ตรวจซ้ำกับ production และไม่เพิ่ม ย้าย หรือยกระดับการจับคู่; ชนิดไฮเปอร์มาร์เก็ต (CityMETER Grocery) รองรับในโค้ดแต่ไม่มีสาขาใดใช้ในรุ่นนี้; `mallId` = id ของ host `hostKind` บอกชนิด `venueJoin` บอกสถานะการจับคู่; สถานที่ที่ master พักไว้แสดง “พิกัดรอตรวจ” ไม่มีจุด | `data/camera.json` (`centers[].kind`, `rows[].venueJoin`), `scripts/host-links/03_verify_master_join.py`, `js/profile-model.js`, `js/panel.js` |
+| ย่าน |36productionBangkokLocales;uuidคงproduction;48/48selected-point membershipsตรงlocatePoint | `data/neighborhoods.geojson`, `scripts/refresh-camera-master.py` |
+| พิกัดและhost |236selectedsourcepointsแยกจาก107acceptedhostrecords;businesspointอาจไม่มีhostjoinได้ ไม่อ่านviewportหรือเลือกhostใกล้ที่สุด | `geometryRole`, `coordinateSource`, `venueJoin`, refreshadapter |
 | ระดับสถานที่ | แถวของสถานที่มาจาก `scopeRows` — สถานที่นอก 3 ย่าน auto focus ยังได้หมุดสี อาคารสีน้ำเงิน และ x-ray (เมื่อ master ยอมรับอาคารนั้น) | `js/app.js#detailRows` |
 | กรอบภาพแรก | padding ของ fit แบบ 3D บนเดสก์ท็อปนับ legend ด้วย และภาพรวม 3D ไม่ต่ำกว่า zoom 13 (`CITY_MASSING_ZOOM`) เพื่อให้เห็นมวลอาคาร แม้ย่านโฟกัสอยู่ห่างกัน (รัชดา ↔ สยาม ~2 กม.); มือถือยัง fit เต็ม | `js/app.js#pitchedPadding`, `fitMap` |
 | จังหวัดที่ไม่มี Locale | ข้อค้นพบแรกย้ายไประดับสถานที่: “{n}% ของร้านกล้องมีสาขาที่ {สถานที่อันดับแรกที่มีจุด host}”; สถานที่ที่ไม่มีจุดอยู่ในรายการสถานที่เท่านั้น; ไม่มีสถานที่ใดมีจุด → “{สาขา} สาขา · {ร้าน} ร้าน”; ไม่มีช่อง “0 ย่าน” | `js/panel.js#renderOverview` |
 | กรอบจังหวัด | 64 จังหวัดที่มีสาขา; รายการในแผงแสดง 10 แถว ที่เหลือพับใน `<details>` | `data/provinces.geojson`, `js/panel.js` |
-| ป้ายบนหมุด | ยังไม่มีโลโก้ร้าน → ป้ายชื่อร้าน (text chip) ภายใต้เพดาน 250 ตั้งแต่ zoom 14 เฉพาะใน focus; ชื่อยาวใช้ `BANNER_LABELS` | `js/pins.js`, `js/model.js#bannerLabel`, `styles.css` |
+| ป้ายบนหมุด |43verifiedstoremarks/44approved;ขาดCameraExchangeใช้namefallback ไม่แทนด้วยmanufacturerlogo | `data/brand-logos.json`, existinglogo/pincomponents |
 | Pictogram | บทบาท “ร้าน” ใช้ `photo_camera` (U+E412) แทน diamond; subset สร้างซ้ำได้ byte ต่อ byte | `assets/icons/material-pictogram-300.woff2`, `js/navigation.js`, `styles.css`, `scripts/build-pictogram-font.py` |
 | รายละเอียดร้าน | ที่อยู่, รูปแบบร้าน (`FORMATS`), ร้านที่ร่วมหน้าร้าน, ลิงก์แผนที่ของร้าน, สถานะรอตรวจตัวตน/ที่ตั้ง; cohort `current` / `all` / `review` | `js/panel.js#renderStore`, `js/profile-model.js#describeStatus`, `js/model.js` |
 | ความเป็นส่วนตัว | ไฟล์สาธารณะไม่มีเบอร์โทร (ล้างตอน build) และไม่มีลิงก์ Drive/Docs ส่วนตัว | `scripts/build-camera-data.py` (`no_phone`, `public_https`) |
@@ -40,19 +40,19 @@ Camera Shops ใช้สถาปัตยกรรมและสัญญา�
 
 ## สิ่งที่อยู่ในขอบเขต
 
-ข้อมูลครอบคลุมร้านกล้องในประเทศไทยจากชีต “CityMETER Camera Shops Thailand — Research Master 2026-10-22” ร้านที่อนุมัติ 43 ร้าน (มีสาขาในชุดนี้ 39 ร้าน) ใน 5 ประเภทตามลำดับ series: กล้องหลายแบรนด์ · มือสองและฟิล์ม · ร้านแบรนด์ผู้ผลิต · โดรนและอุปกรณ์ภาพ · ช่องทางขายเสริม หน่วยข้อมูลคือ **สาขา (outlet record)**: 234 แถว ใน 64 จังหวัด (กรุงเทพฯ 101; มีจุด host 179 แถวใน 44 จังหวัด) หนึ่งแถวต่อหนึ่งหมุด ไม่รวมหมุด สถานะ หลักฐาน วันที่ และพิกัดต้นทางคงเดิมเสมอ
+ข้อมูลrefresh23ต.ค.2569:44approvedชื่อ,40ที่มีแถว/39default;253outletsใน64จังหวัด(กรุงเทพฯ110),236selectedpointsใน63จังหวัด,147namedvenues. ก่อนเพิ่มcategory-killerต้องมีbranch-specificcamera evidence;1,411private network candidatesไม่อยู่ในpubliccounts
 
 | ชั้นข้อมูล | ไฟล์ | บทบาท |
 |---|---|---|
 | ร้าน–สาขา | `data/camera.json` (`rows`, `centers`, `brands`, `meta`) | ตัวตน ร้านที่ร่วมหน้าร้าน สถานะ วันที่ แหล่งข้อมูล ที่อยู่ พิกัด host |
-| ย่าน | `data/neighborhoods.geojson` | Locale ของ CityMETER production 26 แห่ง (id = uuid ของ production) |
+| ย่าน |36productionBangkokLocales;uuidคงproduction;48/48selected-point membershipsตรงlocatePoint | `data/neighborhoods.geojson`, `scripts/refresh-camera-master.py` |
 | อาคารที่ตั้ง | `data/venue-buildings.geojson` | building join ของ research master: 103 รูปทรง (footprint 69 + ส่วนอาคาร 34) ของ 69 host (119 สาขา) พร้อมที่มาความสูงและ attribution |
 | กรอบจังหวัด | `data/provinces.geojson` | 64 จังหวัดที่มีสาขา (OpenGISData-Thailand, CC BY 4.0) |
 | มวลอาคารเมือง | OpenFreeMap tiles (`building` source-layer) | บริบท 3 มิติทั้งเมือง (quiet) และวัตถุดิบของอาคารมุมโค้งในย่านโฟกัส; ไม่ใช่ข้อมูลของชุดนี้ |
 | อัตลักษณ์ร้าน | `data/brand-logos.json` | ทะเบียนว่าง (`meta.status = not_collected`) — หมุดแสดงป้ายชื่อแทน |
 | อัตลักษณ์สถานที่ | `data/venue-logos.json`, `assets/venue-logos/` | 30 ไฟล์ · 31 ชื่อสถานที่ · 30 ลิงก์ host พร้อมบทบาท; ไม่เปลี่ยนตัวตนหรือข้อมูลร้าน |
 
-Cohort ค่าเริ่มต้นคือ `current` = รายการขายปลีก (`role = retail_outlet_listing`) 233 สาขา 38 ร้าน; สาขาที่ตัวตนหรือที่ตั้งรอตรวจยังอยู่ในค่าเริ่มต้นพร้อมป้ายสถานะของตัวเอง `all` เพิ่มที่อยู่ติดต่อที่ประกาศไว้ 1 แห่ง (234 สาขา 39 ร้าน) และ `review` แสดง 17 รายการที่รอตรวจ (`isReview`: ที่อยู่ติดต่อหรือตัวตนรอตรวจ 9 + สาขาในสถานที่ที่ master พักพิกัด `venueJoin = held` 8) ร้านที่ปิดในชุดนี้มีระดับร้านเท่านั้น (Eastbourne ปิด 15 ก.พ. 2568 บันทึกใน `meta.closedBrands`) รายการที่ไม่มีพิกัด (55 สาขา: 15 ร้านริมถนน/นัดหมายที่ไม่มีสถานที่, 32 สาขาในสถานที่ที่ master ยังรอจับคู่ทะเบียน และ 8 สาขาในสถานที่ที่ master พักไว้ซึ่งแสดง “พิกัดรอตรวจ”) อยู่ในตารางและจำนวน แต่ไม่สร้างตำแหน่งขึ้นใหม่
+Cohort `current`=252retailrows/39ร้าน; `all`=253rows/40ร้าน รวมWorldCamera contact1; `review`=17recordsตามmodel.17rowsไม่มีพิกัดแต่คงในตาราง/ตัวหาร. พิกัดของbusiness/hostอ้างอิงไม่ยืนยันหน้าร้าน/การเปิดจริง และไม่สร้างhostjoinอัตโนมัติ
 
 ## ขอบเขตข้อมูลสามชั้นที่ทุกมุมมองต้องใช้ร่วมกัน
 
@@ -82,9 +82,9 @@ Snapshot ค่าเริ่มต้น (fixture, `tests/area-insight.test.js
 
 | | ค่า |
 |---|---|
-| ย่าน | รัชดา-ตะวันตก (13 ร้าน / 17 สาขา) · ราชประสงค์ (8 / 10) · สยาม (8 / 10; เท่ากัน เรียงด้วย stable id) |
-| ข้อค้นพบ | 22 จาก 38 ร้าน = 57.9% (แสดง 58%) · 37 จาก 233 สาขา |
-| ภายใน Locale | 82 สาขา; อีก 151 สาขาอยู่นอก Locale (97) หรือยังไม่มีพิกัด (54) |
+| ย่าน | รัชดา-ตะวันตก 13 ร้าน/17 สาขา · สยาม 10/12 · ราชประสงค์ 8/10 |
+| ข้อค้นพบ |24/39ร้าน=61.5%(แสดง62%) ·39/252สาขา |
+| ภายใน Locale |101สาขา;151อยู่นอกLocale (135มีพิกัด/16ไม่มีพิกัดในdefault) |
 | ร้านที่พบเฉพาะย่านมากที่สุด | รัชดา-ตะวันตก 9/13 |
 
 กล้องแรก: preset `city` กับ `fitPitched` ที่ตรวจว่าทุกจุดยอดของ polygon ย่านโฟกัสอยู่ในจอ **ต่างจาก Luxury Brands:** padding ด้านล่างบนเดสก์ท็อปนับ legend (ไม่เกิน 45% ของความสูงแผนที่) และถ้า fit ได้ต่ำกว่า zoom 13 จะวางที่ zoom 13 (`CITY_MASSING_ZOOM` — ระดับที่มวลอาคารเมืองและโฟกัสเริ่มแสดง) โดยใช้ศูนย์กลางเดิม; มือถือแนวตั้งใช้ fit เต็มเพื่อให้เห็นทั้งสามย่าน (harness 1280×800: fit 12.82 → วางที่ 13.0; 390×844: 12.73)
@@ -154,27 +154,21 @@ Snapshot ค่าเริ่มต้น (fixture, `tests/area-insight.test.js
 
 ## ร้าน สาขา และการนับ (เฉพาะ Camera Shops)
 
-- **ร้านของสาขา**: `brand` = ร้านหลักจาก `02_STORES`; `brands[]` = ทุกร้านที่นับได้จาก `11_STORE_BRANDS` (retail_banner และ host_counter_banner ไม่รวม operator) ร้านหลักก่อน; `bannerSegments[]` = ประเภทของแต่ละร้านจาก `01_BRANDS` เรียงตรงกัน รวม 241 ความสัมพันธ์บน 234 สาขา
+- **ร้านของสาขา**: `brand` = ร้านหลักจาก `02_STORES`; `brands[]` = ทุกร้านที่นับได้จาก `11_STORE_BRANDS` (retail_banner และ host_counter_banner ไม่รวม operator) ร้านหลักก่อน; `bannerSegments[]` = ประเภทของแต่ละร้านจาก `01_BRANDS` เรียงตรงกัน รวม 260ความสัมพันธ์บน253สาขา (native261รวมoperator1ซึ่งไม่นับร้าน)
 - **การนับ**: ร้าน = ขนาดของเซตชื่อร้าน (`brandSet`) ในทุกตัวนับ (สรุป, Aha, ย่าน, จังหวัด, กราฟ, โปรไฟล์); สาขา = จำนวนแถว; สัดส่วนประเภทร้านนับคู่ (สาขา × ร้าน) ตามประเภทของแต่ละร้าน (`segmentMixOf`, matrix) จึงรวมกันได้มากกว่าจำนวนสาขา; ร้านเฉพาะ/ร่วมคิดจากชื่อร้าน; “สาขาอื่นของร้านนี้” หาร้านจากทุกสาขาที่มีร้านนั้น (ร้าน Insta360 นับเป็นสาขาของ BIG CAMERA ด้วย); การค้นหาตรงกับทุกร้านของสาขา ชื่อสาขา สถานที่ และจังหวัด
 - **ตัวกรองประเภทร้าน** (snapshot): กล้องหลายแบรนด์ 183 สาขา / 14 ร้าน · มือสองและฟิล์ม 8 / 6 · ร้านแบรนด์ผู้ผลิต 29 / 7 · โดรนและอุปกรณ์ภาพ 12 / 8 · ช่องทางขายเสริม 7 / 3 (Power Buy, King Power และเคาน์เตอร์ Power Mall 5 แห่งในชื่อ Power Mall)
-- **ป้ายชื่อบนหมุด**: เมื่อไม่มีโลโก้ (ทุกร้านในรุ่นนี้) หมุดใน focus ได้ป้ายข้อความตั้งแต่ zoom 14 ใต้เพดาน 250 ตามกติกาเดียวกับโลโก้ (`placeBrandLogos` — แต่ละร้านได้ตาก่อนสาขาซ้ำ ไม่ทับหมุด ป้าย หรือ UI) ข้อความ = `bannerLabel(ร้านหลัก)`: ชื่อยาว 10 ชื่อใช้ `BANNER_LABELS` (คำนำของชื่อใน research หรือ alias ใน `01_BRANDS`: Insta360, FUJIFILM House, DJI Experience, Hasselblad Store, Leica Store, JIA Colorlab, 13Store, B2H, STM, SYG Camera) ชื่ออื่นแสดงตามจริง ตัดที่ 17 ตัวอักษร + “…” เมื่อยาวกว่า 18; กว้าง `clamp(16 + 6.6 × ตัวอักษร, 36, 136)` px สูง 20 px (22 px ตั้งแต่ zoom 15) พื้นการ์ดสว่าง เส้น 1 px Bai Jamjuree 600 11px — ไม่ใช่ชิปหมึกของย่าน และไม่ใช่โลโก้แทน
+- **ป้ายบนหมุด:** ใช้43verifiedretailermarksตามregistry;ชื่อร้านเป็นidentity/fallbackเมื่อไม่มีlogo ไม่ใช้manufacturer/operator markแทน และคงoriginalbytes/proportions/neutralbacking
 - **ป้ายแสดงผลไม่เปลี่ยนข้อมูล**: `BANNER_LABELS`, `FORMATS`, `hostTypeLabel`, `SEGMENT_SHORT` เปลี่ยนเฉพาะข้อความบนจอ ไม่เปลี่ยนแถว คีย์ค้นหา หรือจำนวน
 
 ## Host และอาคารที่ตั้ง (เฉพาะ Camera Shops)
 
-**ต้นทางของจุดและอาคาร = research master** (ฉบับแก้ไข 2026-10-22 13:13 UTC, `meta.researchRevision`): venue join ของ master (`07_VENUES`, `02_STORES` และหนึ่งแถวต่อสาขาใน `12_SPATIAL_JOIN`) ตัดสินว่าสาขาใดมีจุด host และ building join ของ master (`13_BUILDINGS` กับไฟล์ feature ที่ README ของ master ระบุให้ใช้ต่อ) ตัดสินว่าอาคารใดเป็นอาคารของ host; build ตรวจซ้ำและแปลงรูปแบบเท่านั้น ไม่เพิ่ม ย้าย หรือยกระดับการจับคู่ (`scripts/host-links/03_verify_master_join.py`, `scripts/build-camera-data.py`)
+147persistent named venuesแยกจาก107acceptedCityMETERhosts(192rows);61rowsไม่มีacceptedhost แต่44ในกลุ่มนี้มีsourcepointที่ผ่านเกณฑ์ของตัวเอง อีก17ไม่มีพิกัด. `geometryRole`/`coordinateSource` บอกที่มาของจุด ส่วน`mallId`/`hostKind`/`venueJoin`บอกhostidentity. Refreshadapterไม่บังคับจุดธุรกิจให้เท่าvenuepoint และไม่copyไปvenueโดยไม่มีexplicithostrole.
 
-| ชนิด host | ระเบียน | สาขา | พิกัด | ที่มาพิกัด |
-|---|---|---|---|---|
-| ศูนย์การค้า (`shopping_center`) | 106 | 179 | จุดตัวแทนอาคาร/ศูนย์การค้า (`host_complex_point_not_shopfront`) | `landometer.com/api/v2/citymeter-v3/shopping-center/detail/{id}` (= `coordinate_source_url` ของ master) |
-| ไฮเปอร์มาร์เก็ต (`grocery`) | 0 | 0 | รองรับในโค้ด (`host_hypermarket_point_not_shopfront`, `centers[].kind`) แต่ master ยังไม่จับคู่ระเบียน Grocery | — |
-| ไม่มี host | — | 55 | ไม่มีพิกัด (`venueJoin`: `no_venue` 15 · `awaiting_registry` 32 · `held` 8) | — |
+Buildingcontexts129rows=125inside+4named-host outside;source103features(69footprints+34parts)เดิม ไม่มีgeometryใหม่. ทดสอบactualselectedpointกับqualifiednamedhostเท่านั้น;LeicaSiamParagonpointใหม่อยู่นอกfootprintจึงคงcontextและไม่เข้าcontainment. ไม่อ้างshopunitหรือnewfull-part-coverageQA.
 
-- **การจับคู่ (ของ master)**: ชื่อหรือชื่อเรียกเฉพาะสาขาและจังหวัดตรงทะเบียน ไม่ใช้ชื่อถนน/ย่านแทนอาคาร และไม่ใช้ nearest; `centers[].match` = `venue_join_method` ของ master (สถานที่: `unique_normalized_exact_curated_alias` 43 · `curated_distinctive_bilingual_or_official_host_alias` 33 · `existing_explicit_host_reference` 30); 144 สถานที่ → 106 จับคู่แล้ว (106 ระเบียน) · 32 มีชื่อสถานที่แต่รอจับคู่ทะเบียน · 6 ถูกพักไว้: Siam Square One (จุดใน CityMETER และ polygon ใต้ดินที่ไม่มีชื่อขัดกับแผนผังผู้เช่าทางการของ Fujifilm), Central Phuket Floresta (อยู่คนละฝั่งกับ Festival), ท็อปส์ ซูเปอร์สโตร์ พะเยา, มาร์คโฟร์ แพร่, ไชยแสง สิงห์บุรี, ไอที พลาซ่า สำโรง
-- **การตรวจ (build)**: ทุกสถานที่ที่ master จับคู่ต้องมี detail ใน production; พิกัดใน master ต้องเท่าจุด detail (106/106 ตรงทุกตำแหน่ง เกณฑ์ 0.0005°); จุดอยู่ใน polygon จังหวัดของ production ของจังหวัดที่สถานที่นั้นอยู่; จุดในกรุงเทพฯ ได้ Locale จาก `base/locatePoint` และ polygon ที่ส่งมาต้องให้ผลเดียวกัน (31/31); ทุกสาขาของสถานที่ที่จับคู่มี host id และจุดเดียวกัน สาขาที่พักไว้หรือยังไม่จับคู่ต้องไม่มีจุด — build หยุดเมื่อไม่ตรง
-- **ข้อเสนอที่ไม่เผยแพร่**: crosswalk ของแอป (`crosswalk_sc.py`, `crosswalk_grocery.py`) เสนอ host ให้สถานที่ที่ master ยังไม่จับคู่ 28 สถานที่ / 29 สาขา (ไฮเปอร์มาร์เก็ต Big C/Lotus's 19 · โรบินสันที่ทะเบียนใช้ชื่อไม่เฉพาะสาขา (“Robinson”/“ROBINSON” 5, “Robinson Lifestyle Center” 1) 6 · สถานที่ที่ master พักไว้ 3) ใน `host_link_proposals.csv` สำหรับทีม research; build ไม่ใช้ข้อเสนอนี้ เมื่อ master รับแล้วรอบ build ถัดไปจะได้จุดเอง; สำหรับสถานที่ที่ master จับคู่แล้ว crosswalk เป็นการตรวจไขว้ (ครอบคลุม 74 แห่ง ตรงกัน 73; โลตัส สุราษฎร์ธานี master ใช้ระเบียน Shopping Center)
-- **ฟิลด์**: `rows.mallId` = id ของ host (ชื่อเดิมเพื่อใช้โค้ดระดับสถานที่ของ 0.5 ต่อได้) `rows.hostKind` = `shopping_center` ทุกแถวที่มีจุด; `rows.venueJoin` = `joined` / `held` / `awaiting_registry` / `no_venue` (จาก `venue_join_status` ของ master); `rows.geometryStatus` = `geometry_status` ของ master (`citymeter_host_reference` / `unresolved`); `centers[].type` เป็น taxonomy ของ production (Regional Mall 59, Super-Regional Mall 29, Neighborhood Center 14, Market 3, Airport Retail 1) แสดงเป็นไทยผ่าน `hostTypeLabel`; แผงสถานที่มีลิงก์ “ศูนย์การค้านี้ใน CityMETER”
-- **อาคารที่ตั้ง** (`data/venue-buildings.geojson` = building join ของ master: 103 รูปทรง — footprint 69 + ส่วนอาคาร 34 — ของ 69 host, 119 สาขา): ทุก feature ต้องตรงแถวใน `13_BUILDINGS` (id, sha256 ของ geometry, ความสูง, จำนวนสาขาที่ผูก) และทุกสาขาที่ผูกต้องเป็นสาขาที่จับคู่แล้วของ host นั้น; กติกาของ master: จุดอยู่ใน footprint กับตัวตนของ host ทดสอบแยกกัน ผู้สมัครที่ตัวตนไม่ผ่านถูกพักไว้ ไม่มีอาคารแทนจากความใกล้ ไม่มีรูปสี่เหลี่ยม/วงกลม และไม่กระจายความสูงจากหอสูงสุดไปทั้งอาคาร; วิธีผูก: footprint OSM ที่ตัวตน host ตรงและครอบจุด 33 · อาคาร host เดิมที่ตรวจตัวตนแล้วและครอบจุด 26 · อาคารที่ป้ายร้านค้าปลีกตรงและครอบจุด 7 · อาคาร host ที่ชื่อตรงแต่จุดอยู่นอก (บริบท) 3 · ส่วนอาคารภายใน host 34; ความสูง: แบบจำลอง CityMETER 56 · ความสูงส่วนอาคาร 34 · ไม่ทราบ 9 (extrusion แสดง 3 ม. 4 · เส้นขอบ 5) · ค่า OSM 2 · footprint แม่ที่ส่วนอาคารถือความสูง 2; render extrusion 95 / outline 8 (`render_as` ของ master: `source_footprint` → extrusion ยกเว้น footprint แม่ที่ส่วนอาคารถือความสูง → outline; ส่วนอาคารใหม่ 3 ส่วนที่ไม่มีค่า → extrusion ระหว่าง `base_m`–`top_m`; ค่าเดิมเก็บใน `source_render_as`); 37 จาก 106 host ไม่มีอาคารที่ master ยอมรับ (เช่น Fortune Town — กล้องวางที่จุด host และไม่มีอาคารสีน้ำเงิน); © OpenStreetMap contributors (ODbL 1.0) ทุกรูปทรง; footprint คืออาคาร host ไม่ใช่ห้องร้าน
+PowerBuyCanonstockistเป็นmanufacturerlistingที่ไม่ระบุวันเผยแพร่ จับชื่อสาขา/เลขที่นำหน้า/province-districtกับcurrentretailerlist;ไม่ใช่currentstock. FutureParkCentralbasementและRobinson3FคงสองoutletIDs. AVVALUEqualifyเฉพาะVanillaMoon4F;HQ65แยกจากที่อยู่showroom. Lidoeventreferencepointเป็นhostไม่ใช่UNIT2Funit/entrance. Chidlompointretained21Oct/API23Oct403 ไม่อ้างfreshrevalidation.
+
+Currentlogoassets:43storemarks,83venuefiles/139labelsจาก147venues;identityrolesและรายการขาดอยู่ในregistry. Historicalhost-onlypipeline/proposalsและcountsของ0.5.0อ่านในVERIFICATIONเท่านั้น.
 
 ## แผงอ่านข้อมูล
 
@@ -187,7 +181,7 @@ Snapshot ค่าเริ่มต้น (fixture, `tests/area-insight.test.js
 | สถานที่ | โลโก้สถานที่ (ถ้ามี), ประเภท host เป็นไทย, ย่าน, ร้าน/สาขา/GLA, ลิงก์ศูนย์การค้า (เฉพาะศูนย์การค้า), ประเภทร้าน, รายการสาขา (ร้านทุกร้านของสาขา + ชั้น/ห้อง) |
 | ร้าน | หัวเรื่อง = ร้านหลัก; “ร่วมกับ …” = ร้านที่ร่วมหน้าร้าน (กดเพื่อค้นหา); ป้ายสถานะ; สถานที่ (หรือรูปแบบช่องทางสำหรับร้านริมถนน) · ย่าน (“นอกย่าน” เมื่อมีจุดแต่อยู่นอก Locale; “—” เมื่อไม่มีจุด) · รูปแบบ (ช่องทาง + `FORMATS` เมื่อให้ข้อมูลเพิ่ม) · ที่อยู่ · พิกัด (+ “ร่วมพิกัดกับอีก n สาขา”) · ตรวจเมื่อ; ลิงก์ หลักฐาน · สถานะ (เมื่อต่างจากหลักฐาน) · พิกัด · แผนที่ของร้าน (ลิงก์ของร้านเอง ไม่ถอดเป็นพิกัด) |
 | สถานะ (`describeStatus`) | พบในแหล่งข้อมูล · ตัวตนหน้าร้านรอตรวจ (6) · รวมรายการรอตรวจ (1) · ที่ตั้งขัดกัน (1) · ที่อยู่ติดต่อ (1) · ปิดถาวร (ข้อเท็จจริง; ไม่มีในชุดนี้) |
-| ความแม่นพิกัด (`describeGeometry`) | จุดตัวแทนอาคาร/ศูนย์การค้า · จุดตัวแทนไฮเปอร์มาร์เก็ต (รองรับ; ไม่มีในรุ่นนี้) · พิกัดรอตรวจ (`venueJoin = held`, 8 สาขา) · ยังไม่มีพิกัด — ห้ามยกระดับเป็นจุดหน้าร้าน |
+| ความแม่นพิกัด (`describeGeometry`) | Officialbusinesspoint,sourcepublishedbranchpoint,hostreference,datedretainedcross-datasetreferenceหรือmissing;ไม่ยืนยันunit/entrance/currentstock และvenueholdไม่ลบindependentvalidbusinesspoint |
 
 ## กราฟเปรียบเทียบย่าน
 
@@ -207,7 +201,7 @@ Snapshot ค่าเริ่มต้น (fixture, `tests/area-insight.test.js
 | แถบเครื่องมือ | ดูทั้งหมด · กรุงเทพฯ · ย่าน (toggle) · 3D (toggle) · มุมสถาปนิก (toggle; กดอยู่เป็นค่าเริ่มต้นที่ระดับสถานที่ ปิดใช้ในระดับอื่นและใน 2D) · วิธีใช้ · ข้อมูล (มือถือ) |
 | มือถือแนวตั้ง | แผนที่เต็มจอ; bottom sheet ≤ 64dvh; Aha ย่อบนแผนที่ (มี breadcrumb) เมื่อแผงปิด; เลือกย่านขณะ sheet เปิดใช้กรอบ 2D แล้วปรับ 3D เมื่อปิด sheet; breadcrumb 4 ระดับพับเป็น “…”; ไม่มี horizontal overflow ที่ 390 px |
 | หมุด | หนึ่งหมุดต่อสาขา; ขนาด 3 ระดับตาม zoom (<12, 12–14, ≥14); context dots สีเทา นอกลำดับ Tab; หมุดใน focus มี roving tab stop และลูกศรเลื่อน |
-| ป้ายบนหมุด | โลโก้ร้านเมื่อมีทะเบียน มิฉะนั้นป้ายชื่อ; เฉพาะ zoom ≥ 14 และเฉพาะรายการใน focus; ≤ 250; ไม่ทับหมุด ป้าย หรือ UI |
+| ป้ายบนหมุด |43verifiedstoremarks/44approved;ขาดCameraExchangeใช้namefallback ไม่แทนด้วยmanufacturerlogo | `data/brand-logos.json`, existinglogo/pincomponents |
 | ป้ายย่าน | ชิปหมึกเข้ม (`--area-label-*`) + ตัวนับร้าน กดได้; quiet = โปร่ง 72% นอก focus; ซ่อน < zoom 11.5 |
 | ป้ายจังหวัด | ชิปแบบเดียวกัน glyph location_city + ตัวนับร้าน; แสดง < zoom 9.5; กด = เจาะลงจังหวัด |
 | คำอธิบายแผนที่ | < zoom 9 “จังหวัด · จำนวนร้าน” · ≥ 9 “ย่าน · จำนวนร้าน”; หมุด, อาคารที่ตั้ง (ซ่อนเมื่อไม่มีอาคารของสถานที่บนแผนที่ — `.map-panel.no-host-buildings`), อาคารโฟกัส/บริบท, “สีประเภทร้าน”; ซ่อนช่วงค่าเมื่อ zoom ≥ 14.5 |

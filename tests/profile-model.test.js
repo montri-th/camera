@@ -18,7 +18,7 @@ test('overview insights use the chart model and expose the most exclusive area',
   const o = buildOverviewInsights(rows, geojson, segments);
   const m = buildNeighborhoodChartModel(rows, geojson, segments);
   assert.equal(o.areaCount, m.areaCount);
-  assert.equal(o.totalBrands, 38);
+  assert.equal(o.totalBrands, 39);
   assert.equal(o.ranking[0].id, ratchadaWest.id);
   assert.ok(o.mostExclusive && o.mostExclusive.exclusiveBrands > 0);
   assert.equal(o.mostExclusive.exclusiveBrands, Math.max(...m.areas.map(a => a.exclusiveBrands)));
@@ -57,16 +57,18 @@ test('exclusive/shared reference is the whole selection, so a single-area select
 test('store detail reads geometry and status from the row without upgrading them', () => {
   const mall = rows.find(r => r.geometryRole === 'host_complex_point_not_shopfront');
   const street = rows.find(r => !r.venue);
-  const held = rows.find(r => r.venueJoin === 'held' && r.venue === 'Siam Square One');
+  const held = {...rows.find(r => r.venueJoin === 'held' && r.venue === 'Siam Square One'), latitude: null, longitude: null};
   // A hypermarket host (CityMETER Grocery record) stays a supported host kind; the current master joins Shopping Centers only.
   const hyper = {...mall, id: 'fixture-hyper', geometryRole: 'host_hypermarket_point_not_shopfront', hostKind: 'grocery'};
   assert.equal(describeGeometry(mall).level, 'host');
   assert.equal(describeGeometry(hyper).level, 'host');
   assert.equal(describeGeometry(hyper).label, 'จุดตัวแทนไฮเปอร์มาร์เก็ต');
-  assert.equal(describeGeometry(street).level, 'none');
-  assert.equal(held.latitude, null, 'the master holds Siam Square One: no point is published');
+  assert.equal(describeGeometry(street).level, 'provider', 'the refreshed standalone A.V.Camera pin keeps its provider precision');
+  assert.equal(describeGeometry({...street, latitude: null, longitude: null}).level, 'none');
   assert.equal(describeGeometry(held).label, 'พิกัดรอตรวจ', 'a held venue keeps its hold, not a generic missing point');
   assert.equal(describeGeometry({...held, venueJoin: 'awaiting_registry'}).label, 'ยังไม่มีพิกัด');
+  assert.equal(describeGeometry({...mall, geometryRole: 'official_venue_event_reference_point_not_entrance_or_shopfront'}).level, 'host');
+  assert.equal(describeGeometry({...mall, geometryRole: 'retailer_published_branch_point_not_field_verified'}).level, 'official');
   const d = buildStoreDetail(mall, {rows, geojson, centers: data.centers});
   assert.equal(d.row, mall);
   assert.equal(d.presence.brand, mall.brand);

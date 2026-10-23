@@ -1,0 +1,4 @@
+# Verified logo originals are byte-addressed assets. Preserve their source line
+# endings and keep embedded/base64 artwork out of textual whitespace reviews.
+assets/brand-logos/* -text -diff
+assets/venue-logos/* -text -diff

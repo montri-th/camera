@@ -1,3 +1,19 @@
+# Verification checkpoint — Camera Shops 0.5.1 refresh (2026-10-23)
+
+Current public data contains 253 outlet records (252 default), 44 approved banners (40 represented overall, 39 in default retail scope), 147 persistent venues and 236 selected points; 17 rows remain without coordinates. There are 129 host-building contexts: 125 inside and 4 named-host outside contexts. The 103 source geometries (69 footprints + 34 parts) are retained. Public banner associations total 260; the native 261 includes one excluded operator link.
+
+The current adapter is `scripts/refresh-camera-master.py`. It projects source-backed business and host points independently of accepted venue/building identity, preserves stable IDs, and excludes the 1,411 private network candidates from public camera totals. The old host-only production-detail equality gate is not the 0.5.1 contract. Source/geometry reconciliation checks are in the working refresh QA; current prepublication checks are recorded below; this research checkpoint alone does not establish a Pages deployment or live byte attestation. The final release receipt and dated evidence must record provider/live outcomes separately. Logo coverage is read from the final registries after the AV VALUE/Vanilla Moon asset patch, rather than copied from the old count below.
+
+Prepublication checks on23October:107/107Node tests passed; all3machine handoff documents passed JSON Schema Draft2020-12 validation;189asset registry byte lengths/hashes matched. Native Sheet readback matched86,478cells across16written tabs, with44count formulas and zero formula errors. All129logo originals have observed Drive file/parent/MIME/size receipts and passed local/remote manifest comparison.
+
+Rendered checks used1280×800desktop and390×844responsive viewports: overview, AV VALUE store/venue marks and precision labels, and the25-row supplementary-channel table, in light and dark themes. New store-format labels resolve to Thai. Existing layout/style/governed colour/font files are unchanged. These checks do not claim field-open operation, current stock, native-device testing or a complete market census.
+
+---
+
+## Historical verification — 0.5.0, retained unchanged
+
+Everything below reports the 22 October snapshot and its historical checks only; it is not evidence of a 0.5.1 live release.
+
 # Verification record — Camera Shops release 0.5.0 (2026-10-22)
 
 Dataset snapshot: 2026-10-22, research master revision 2026-10-22 13:13 UTC (20:13 Asia/Bangkok). Levels are reported separately: data build checks, unit tests, machine contracts, rendered harness, live checks and live byte attestation. None of them is a blanket LDS, accessibility or market-completeness certificate.

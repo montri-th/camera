@@ -1,5 +1,5 @@
-import {summarizeNeighborhoods} from './neighborhoods.js';
-import {bannersOf, bannerSegmentsOf} from './model.js';
+import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
+import {bannersOf, bannerSegmentsOf} from './model.js?v=20261023-camera-r2';
 
 const text = value => String(value ?? '').trim();
 /** Distinct counted banners (ร้าน) of the rows; a co-branded outlet contributes each banner. */

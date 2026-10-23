@@ -24,25 +24,35 @@ const out = resolve(opt('--out', join(root, 'evidence/live-attestation.json')));
 const manifest = JSON.parse(readFileSync(join(root, 'handoff/handoff-manifest.json'), 'utf8'));
 const published = p => !p.startsWith('tests/') && !p.startsWith('scripts/') && !p.startsWith('.') && p !== 'package.json';
 const sha256 = buffer => createHash('sha256').update(buffer).digest('hex');
+const expectedMimes = p => {
+  const ext = p.slice(p.lastIndexOf('.')).toLowerCase();
+  return ({'.html':['text/html'],'.css':['text/css'],'.js':['application/javascript','text/javascript'],'.json':['application/json'],'.geojson':['application/geo+json','application/json'],'.svg':['image/svg+xml'],'.png':['image/png'],'.jpg':['image/jpeg'],'.jpeg':['image/jpeg'],'.webp':['image/webp'],'.woff2':['font/woff2'],'.md':['text/plain','text/markdown']})[ext] || [];
+};
+async function probe(path, wanted, rootDocument = false) {
+  const requestedUrl = rootDocument ? base + `?attest=${Date.now()}` : new URL(path, base).href + `?attest=${Date.now()}`;
+  const response = await fetch(requestedUrl, {cache:'no-store', signal:AbortSignal.timeout(20000)});
+  const finalUrl = response.url;
+  const mime = (response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+  const allowed = expectedMimes(rootDocument ? 'index.html' : path);
+  const transportOk = response.ok && finalUrl === requestedUrl && (!allowed.length || allowed.includes(mime));
+  if (!transportOk) return {path, requestedUrl, finalUrl, status:response.status, mime, expectedMimes:allowed, ok:false, error:'Status, final URL or MIME mismatch; bytes not hashed'};
+  const bytes = Buffer.from(await response.arrayBuffer());
+  const hash = sha256(bytes);
+  return {path, requestedUrl, finalUrl, status:response.status, mime, bytes:bytes.length, sha256:hash, expectedSha256:wanted.sha256, ok:bytes.length === wanted.bytes && hash === wanted.sha256};
+}
 
 const results = [];
 for (const file of manifest.files.filter(f => published(f.path))) {
-  const url = new URL(file.path, base).href + `?attest=${Date.now()}`;
   try {
-    const response = await fetch(url, {cache: 'no-store'});
-    const bytes = Buffer.from(await response.arrayBuffer());
-    const hash = sha256(bytes);
-    results.push({path: file.path, url: url.split('?')[0], status: response.status, bytes: bytes.length, sha256: hash, expectedSha256: file.sha256, ok: response.ok && hash === file.sha256});
+    results.push(await probe(file.path, file));
   } catch (error) {
-    results.push({path: file.path, url: url.split('?')[0], status: 0, bytes: 0, sha256: null, expectedSha256: file.sha256, ok: false, error: String(error.message || error)});
+    results.push({path: file.path, status: 0, bytes: 0, sha256: null, expectedSha256: file.sha256, ok: false, error: String(error.message || error)});
   }
 }
 // The root document must serve index.html bytes.
 const index = manifest.files.find(f => f.path === 'index.html');
 if (index) {
-  const response = await fetch(base + `?attest=${Date.now()}`, {cache: 'no-store'});
-  const bytes = Buffer.from(await response.arrayBuffer());
-  results.push({path: '/', url: base, status: response.status, bytes: bytes.length, sha256: sha256(bytes), expectedSha256: index.sha256, ok: response.ok && sha256(bytes) === index.sha256});
+  results.push(await probe('/', index, true));
 }
 const report = {
   checkedAt: new Date().toISOString(), baseUrl: base,

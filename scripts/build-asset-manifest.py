@@ -26,6 +26,12 @@ def main():
         path = f'assets/venue-logos/{logo.name}'
         if logo.is_file() and path not in seen:
             entries.append({'path': path, 'scope': VENUE_SCOPE})
+    for logo in sorted((ROOT / 'assets' / 'brand-logos').iterdir()):
+        path = f'assets/brand-logos/{logo.name}'
+        if logo.is_file() and path not in seen:
+            entries.append({'path': path, 'scope': 'Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json'}); seen.add(path)
+    if (ROOT / 'assets' / 'brand-logos.svg').is_file() and 'assets/brand-logos.svg' not in seen:
+        entries.append({'path': 'assets/brand-logos.svg', 'scope': 'Contains verified retailer originals with contain positioning; no redrawing'})
     out = []
     for e in entries:
         data = (ROOT / e['path']).read_bytes()

@@ -17,9 +17,9 @@
  * subset, js/navigation.js PICTOGRAM_CONTRACT) so labels can stay one word; the
  * text is the meaning, the pictogram is decorative.
  */
-import {SEGMENTS, SEGMENT_SHORT, DEFAULT_COHORT, hasPoint, bannersOf, formatLabel} from './model.js';
-import {brandLogoMarkup, getBrandLogo} from './brand-logos.js';
-import {venueLogoMarkup, getVenueLogo} from './venue-logos.js';
+import {SEGMENTS, SEGMENT_SHORT, DEFAULT_COHORT, hasPoint, bannersOf, formatLabel} from './model.js?v=20261023-camera-r2';
+import {brandLogoMarkup, getBrandLogo} from './brand-logos.js?v=20261023-camera-r2';
+import {venueLogoMarkup, getVenueLogo} from './venue-logos.js?v=20261023-camera-r2';
 
 const NUMBER = new Intl.NumberFormat('th-TH', {maximumFractionDigits: 0});
 export const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));

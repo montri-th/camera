@@ -1,6 +1,7 @@
 import test, {beforeEach} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 import {configureBrandLogos, getBrandLogo, brandLogoMarkup, logoCoverage, normalizeBrandLabel} from '../js/brand-logos.js';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../data/brand-logos.json', import.meta.url)));
@@ -9,19 +10,26 @@ const fixture = (id, name, extra = {}) => ({id, name, spriteId: `logo-${id}`, so
   sourceSHA256: 'a'.repeat(64), mime: 'image/svg+xml', width: 320, height: 160, ...extra});
 beforeEach(() => configureBrandLogos(catalog, rows));
 
-test('Camera Shops ships an explicit empty store-logo registry: no row resolves a logo, rows are untouched', () => {
+test('verified retailer originals populate the sprite without changing rows or disguising missing logos', () => {
   const before = JSON.stringify(rows);
-  assert.equal(catalog.meta.status, 'not_collected');
-  assert.deepEqual(catalog.brands, []);
+  assert.ok(catalog.brands.length >= 42);
+  assert.equal(catalog.meta.count, catalog.brands.length);
   const coverage = configureBrandLogos(catalog, rows);
   assert.equal(coverage.configured, true);
-  assert.equal(coverage.catalogBrands, 0);
-  assert.equal(coverage.matchedRows, 0);
+  assert.equal(coverage.catalogBrands, catalog.brands.length);
   assert.equal(coverage.totalRows, rows.length);
   assert.deepEqual(coverage.invalidCatalog, []);
-  assert.equal(coverage.complete, false, 'coverage stays honest: nothing is matched');
-  for (const row of rows) { assert.equal(getBrandLogo(row.brand), null); assert.equal(brandLogoMarkup(row.brand), ''); }
-  assert.ok(!fs.existsSync(new URL('../assets/brand-logos.svg', import.meta.url)), 'no Luxury sprite is carried over');
+  assert.deepEqual(coverage.missingBrands.slice().sort(), catalog.meta.missing.filter(name => rows.some(r => r.brand === name)).sort());
+  const sprite = fs.readFileSync(new URL('../assets/brand-logos.svg', import.meta.url), 'utf8');
+  for (const b of catalog.brands) {
+    const raw = fs.readFileSync(new URL('../' + b.file, import.meta.url));
+    assert.equal(createHash('sha256').update(raw).digest('hex'), b.sourceSHA256, b.name);
+    const symbol = sprite.match(new RegExp(`<symbol id="${b.spriteId}"[^>]*>([\\s\\S]*?)</symbol>`))?.[1];
+    assert.ok(symbol?.includes('preserveAspectRatio="xMidYMid meet"'), b.name);
+    const embedded = Buffer.from(symbol.match(/href="data:[^;]+;base64,([^"]+)"/)[1], 'base64');
+    assert.deepEqual(embedded, raw, `${b.name}: original artwork bytes unchanged`);
+  }
+  for (const name of coverage.missingBrands) assert.equal(brandLogoMarkup(name), '');
   assert.equal(JSON.stringify(rows), before);
 });
 

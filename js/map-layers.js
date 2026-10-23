@@ -13,8 +13,8 @@
  * with 0 selected brands → lowest fill + zero outline), and out_of_scope for
  * everything outside the defined set (bare basemap, nothing drawn).
  */
-import {summarizeNeighborhoods} from './neighborhoods.js';
-import {buildCountScale, classify} from './scales.js';
+import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
+import {buildCountScale, classify} from './scales.js?v=20261023-camera-r2';
 
 export const FILL_MAX_ZOOM = 14.5;
 const SOURCE = 'neighborhoods';

@@ -30,24 +30,24 @@
  * Resilience: core data first; the map (MapLibre, CDN) and optional datasets
  * are independent and retryable; charts are vendor-free.
  */
-import {SEGMENTS, CHANNELS, COHORTS, DEFAULT_COHORT, PROVINCES, provinceByName, provinceByCode, provinceNameFrom, filterRows, summarize, hasPoint, isClosed, bannersOf} from './model.js';
-import {summarizeAreaInsight, filterAreaRows} from './area-insight.js';
-import {renderInsightChart, rampMarkup} from './charts.js';
-import {loadMapLibrary} from './vendors.js';
-import {installStorePins} from './pins.js';
-import {installVenueBuildings, HOST_LAYERS} from './buildings.js';
-import {installVenueXray} from './venue-xray.js';
-import {assignNeighborhood} from './neighborhoods.js';
-import {configureBrandLogos, brandLogoMarkup} from './brand-logos.js';
-import {configureVenueLogos} from './venue-logos.js';
-import {installNeighborhoodLayers, installNeighborhoodLabels, installAreaLabels, buildAreaModel, featureBounds} from './map-layers.js';
-import {installProvinceLayers, buildProvinceModel, provinceBounds, PROVINCE_FILL_MAX_ZOOM, PROVINCE_LABEL_MAX_ZOOM} from './provinces.js';
-import {buildOverviewInsights, buildNeighborhoodProfile, buildStoreDetail, buildVenueProfile, describeStatus, rankVenues} from './profile-model.js';
-import {renderOverview, renderNeighborhood, renderVenue, renderStore, renderFilterChips, statusPill, link, esc, num} from './panel.js';
-import {buildMapStyle, basemapPalette, TILEJSON_URL, MASSING_BEFORE} from './map-style.js';
-import {installMassing, outerRings} from './massing.js';
-import {presetFor, applyPreset, fitPitched, framePoint} from './camera.js';
-import {buildBreadcrumb, renderBreadcrumb, breadcrumbText} from './breadcrumb.js';
+import {SEGMENTS, CHANNELS, COHORTS, DEFAULT_COHORT, PROVINCES, provinceByName, provinceByCode, provinceNameFrom, filterRows, summarize, hasPoint, isClosed, bannersOf} from './model.js?v=20261023-camera-r2';
+import {summarizeAreaInsight, filterAreaRows} from './area-insight.js?v=20261023-camera-r2';
+import {renderInsightChart, rampMarkup} from './charts.js?v=20261023-camera-r2';
+import {loadMapLibrary} from './vendors.js?v=20261023-camera-r2';
+import {installStorePins} from './pins.js?v=20261023-camera-r2';
+import {installVenueBuildings, HOST_LAYERS} from './buildings.js?v=20261023-camera-r2';
+import {installVenueXray} from './venue-xray.js?v=20261023-camera-r2';
+import {assignNeighborhood} from './neighborhoods.js?v=20261023-camera-r2';
+import {configureBrandLogos, brandLogoMarkup} from './brand-logos.js?v=20261023-camera-r2';
+import {configureVenueLogos} from './venue-logos.js?v=20261023-camera-r2';
+import {installNeighborhoodLayers, installNeighborhoodLabels, installAreaLabels, buildAreaModel, featureBounds} from './map-layers.js?v=20261023-camera-r2';
+import {installProvinceLayers, buildProvinceModel, provinceBounds, PROVINCE_FILL_MAX_ZOOM, PROVINCE_LABEL_MAX_ZOOM} from './provinces.js?v=20261023-camera-r2';
+import {buildOverviewInsights, buildNeighborhoodProfile, buildStoreDetail, buildVenueProfile, describeStatus, rankVenues} from './profile-model.js?v=20261023-camera-r2';
+import {renderOverview, renderNeighborhood, renderVenue, renderStore, renderFilterChips, statusPill, link, esc, num} from './panel.js?v=20261023-camera-r2';
+import {buildMapStyle, basemapPalette, TILEJSON_URL, MASSING_BEFORE} from './map-style.js?v=20261023-camera-r2';
+import {installMassing, outerRings} from './massing.js?v=20261023-camera-r2';
+import {presetFor, applyPreset, fitPitched, framePoint} from './camera.js?v=20261023-camera-r2';
+import {buildBreadcrumb, renderBreadcrumb, breadcrumbText} from './breadcrumb.js?v=20261023-camera-r2';
 
 const $ = id => document.getElementById(id);
 const FIELDS = ['search', 'cohort', 'segment', 'province', 'channel', 'venue', 'neighborhood'];

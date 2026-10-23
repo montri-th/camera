@@ -126,8 +126,8 @@
     },
     {
       "path": "data/brand-logos.json",
-      "sha256": "5541bb243b0acae4d2cbe21163b67f16c6b1cb2507983d7ae6f19d6eaf8f9d70",
-      "bytes": 257,
+      "sha256": "4c5ef963010400025012c522845b8f217c154681368c56b31a606399aa63c760",
+      "bytes": 25445,
       "scope": "Store-banner logo registry — explicitly empty (meta.status not_collected); pins carry banner-name chips instead"
     },
     {
@@ -162,14 +162,14 @@
     },
     {
       "path": "data/venue-logos.json",
-      "sha256": "0efa0f9ceeff5c68343e5086ec0d790eb449f3e1d6afaafaaaf7ec690e3f698e",
-      "bytes": 55251,
+      "sha256": "333cd5c4770833a43cec4b766c777022f9caa46c98e39bdfd8fcfb2acbbd3bd9",
+      "bytes": 88099,
       "scope": "Venue-logo registry (research sheet tab 10_VENUE_LOGOS): 30 assets, 31 venue labels, 30 CityMETER hosts; lookup by host id then exact label"
     },
     {
       "path": "assets/venue-logos-manifest.json",
-      "sha256": "661b897d03f5f053e187bf5fc169fe6015d2701a67b45c01631a5c3e8710669c",
-      "bytes": 13957,
+      "sha256": "0d78a4796a907a3640183b995a85eab375797f1a6ea2e38430070c876c687bf1",
+      "bytes": 31690,
       "scope": "Per-file provenance of the venue logos (public source page / asset URL, sha256 per the sheet, origin)"
     },
     {
@@ -351,6 +351,768 @@
       "sha256": "a3085cf548599caecc3c82c1452678ec404c678dbbcc0f40e15553c064f02011",
       "bytes": 11159,
       "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/044c6cfa77d04799.png",
+      "sha256": "044c6cfa77d04799d04b062251997ea8467d62665b73b3c570dd285b2764cd7a",
+      "bytes": 9208,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/11befc263edb79a6.png",
+      "sha256": "11befc263edb79a6ac64e7e15f207fb9ec51e2c291f995bd999f3f712ec948c9",
+      "bytes": 18792,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/12cffc2d06217373.png",
+      "sha256": "12cffc2d062173735fc6c44cea35b2263c3c216891f9afb501706df75608cb21",
+      "bytes": 9811,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/1b39cffe4ab6c770.png",
+      "sha256": "1b39cffe4ab6c7707d7e0e2220d9333ca1b991fb9f20339e4ec801787c5b85f9",
+      "bytes": 11120,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/1ed9cfc96f7d3e57.png",
+      "sha256": "1ed9cfc96f7d3e57407b15f682f05a34e6b710d4b6e7b76bb9e90393b3ae1924",
+      "bytes": 9898,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/23d26775dffb6c50.svg",
+      "sha256": "23d26775dffb6c5015ab40810622702f0ea757c1aeef2252a0f82ed7e4650504",
+      "bytes": 9927,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/24c15d6d64ba6d33.svg",
+      "sha256": "24c15d6d64ba6d33d3780b504ed50dc9b5bc5a39a1e5ed786256e81b6304093f",
+      "bytes": 3406,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/27246fa82872e4f6.png",
+      "sha256": "27246fa82872e4f6bcc0527c950c6935b0c6a292dab79cfeb6dfd88bff8f2f68",
+      "bytes": 10368,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/27d8f3562a7d8e4c.png",
+      "sha256": "27d8f3562a7d8e4c29c6a303329cbfd0c2eb3b6835a723f1d214d260a5051c84",
+      "bytes": 9374,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/2b255adc23d3247f.svg",
+      "sha256": "2b255adc23d3247f7259d94e66fcc78af5794ba03f2e084c0308ac4f3093d2fc",
+      "bytes": 3884,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/2c74555b81bc3894.png",
+      "sha256": "2c74555b81bc38943c1dd49d7e792172442eea2f683fe425222b73f929910469",
+      "bytes": 8125,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/2d5edcb653d30fd4.jpg",
+      "sha256": "2d5edcb653d30fd4234305052809fc198a226571ba9b8f9710aa6c33112a6e99",
+      "bytes": 11380,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/3bfb945c7d81c392.png",
+      "sha256": "3bfb945c7d81c3925231d413f48fd487240203a3af4ae356ce4cf68ae70f95ee",
+      "bytes": 9206,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/40582615aaa65da1.png",
+      "sha256": "40582615aaa65da1ef560942bb87592837ccb03850ba6a64678aa0b9d26e92f0",
+      "bytes": 3961,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/41f6c18aa0d086c2.png",
+      "sha256": "41f6c18aa0d086c26843f6710f45611a08f10721920efdbe5515a7f7a48ea845",
+      "bytes": 9711,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/4224f1181abdf19c.jpg",
+      "sha256": "4224f1181abdf19c762133eaec9f0cb1cb8204f64625c909747982e40d615db7",
+      "bytes": 6641,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/459757e535715166.svg",
+      "sha256": "459757e53571516666970d1d78699189583e1cf2c2ad68f0139c6eb5b3d6e000",
+      "bytes": 10842,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/45edcb7d24732ff4.jpg",
+      "sha256": "45edcb7d24732ff46e433be271c982d680588bc5b8f071fca63088e927c7824b",
+      "bytes": 7480,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/59179ce7e39f1837.png",
+      "sha256": "59179ce7e39f1837d9fe065b753e765af20558fb9eb9f9402f30fecbd96fd1e3",
+      "bytes": 10255,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/5e4716d582687257.svg",
+      "sha256": "5e4716d582687257c83f134ed4e771b15b1315dc2b394daa7660c5126f767496",
+      "bytes": 9583,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/65108860287355cd.png",
+      "sha256": "65108860287355cd89937215decd3b0f3816393837ee7399216815b171f44e22",
+      "bytes": 11821,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/68b350ecebc0bc80.png",
+      "sha256": "68b350ecebc0bc80ecb2e0206a7f537b523029fa8566eab44168db4252dc2e6f",
+      "bytes": 9480,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/68ef52be5690270f.svg",
+      "sha256": "68ef52be5690270f255ff360c19a8d6fc6acb7aeb9a74e9323e803bdfafa4601",
+      "bytes": 15755,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/6a5d93387e9dd0a3.svg",
+      "sha256": "6a5d93387e9dd0a3c542765b647a2a31aac4a768cb068d87e11b9b8e093fa526",
+      "bytes": 83501,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/6de57f80a77409ee.png",
+      "sha256": "6de57f80a77409ee930379ef453b26db11bda6c816d631d7f0e9eaec48774e5f",
+      "bytes": 11088,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/70d04c26cd9ea94d.svg",
+      "sha256": "70d04c26cd9ea94d674bff0f291741c729c545d9f9df67e79a87f11110d92eaf",
+      "bytes": 6227,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/70d16b7422c4464d.png",
+      "sha256": "70d16b7422c4464d33fa551e71b382ca15559440219ca4679be753a70c01f358",
+      "bytes": 11641,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/71a27a89e22d9761.png",
+      "sha256": "71a27a89e22d9761355278fc48e844a5d7a512551fbfac11fbf3ac5d12ed00c1",
+      "bytes": 56740,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/7237b47ac4bd7f68.png",
+      "sha256": "7237b47ac4bd7f68d5c58eadbc0d970c218fc9eb7a48438e3e4938748a29541b",
+      "bytes": 11020,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/75c0000312bddb56.jpg",
+      "sha256": "75c0000312bddb56b431bae57580f3cd62203f3ce5d6e18d92d17597f48c76a1",
+      "bytes": 58642,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/7d4d4aebc089a1fd.png",
+      "sha256": "7d4d4aebc089a1fdef5860c1a3e12ef28229c821157cc8a15dd5876e616ec2e6",
+      "bytes": 10693,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/7dd80f34276c58b5.png",
+      "sha256": "7dd80f34276c58b51f10c36a915f56d4eee3b1bd04430ebba30e62d305a61d4c",
+      "bytes": 1279,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/7e4917bb38535b17.png",
+      "sha256": "7e4917bb38535b17762639ece16922705ac90b1c581fa495fe240bcae90b7663",
+      "bytes": 9332,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/88b809400ca1deec.jpg",
+      "sha256": "88b809400ca1deec4391ceb8aca2943971dacddf5939d112f4fc88de6f5449dc",
+      "bytes": 4235,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/88c9bfd02d75ea88.svg",
+      "sha256": "88c9bfd02d75ea889881e7664a6271431079360a516a92538e985ecf98a909a7",
+      "bytes": 3416,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/894e587d0e540718.png",
+      "sha256": "894e587d0e5407183d4ddbe77b0723a196095d3249d72545f2d80b63170a8781",
+      "bytes": 81998,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/8a8cd8d752f15540.svg",
+      "sha256": "8a8cd8d752f15540657a4f921d2ab4812d368fc0c23af2d2db99b32c0fcb8b6c",
+      "bytes": 3409,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/8d0862e76043aca6.jpg",
+      "sha256": "8d0862e76043aca6bb439862bd43a455920f0697d364e7fb8663c208e6082028",
+      "bytes": 7095,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/8d31b8c822586880.png",
+      "sha256": "8d31b8c822586880c4d61872dab4bb4f7f53e833e82ecdc5b16c14a6d353953a",
+      "bytes": 10754,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/8f1f55871709826c.png",
+      "sha256": "8f1f55871709826c729d1368f4b52550cd9d835eecdd21a523b08eb8abdedac5",
+      "bytes": 10259,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/8f8f3cb838c228cc.png",
+      "sha256": "8f8f3cb838c228cc136e4427a8da7e11498bbe5aa334fe7bc04e944c17c77adf",
+      "bytes": 11840,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/912a70b5a14fb704.png",
+      "sha256": "912a70b5a14fb704c32b9ada55089afcd71235ab6ef839750c7bd940740a38b2",
+      "bytes": 11496,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/9470ddb5eb888f04.png",
+      "sha256": "9470ddb5eb888f04584a7f54f99773db0ff1b080c5f41ca6f041b62e951488f0",
+      "bytes": 28599,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/964e9772a643cc1a.svg",
+      "sha256": "964e9772a643cc1a3d26142e525a0fc45d2212db1785339b97cee7281e46af9e",
+      "bytes": 7854,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/96b134a4f6fc55f6.svg",
+      "sha256": "96b134a4f6fc55f62a10b77602fe6a83bb04423c45fd3eab4fce322e9f068ef9",
+      "bytes": 2543,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/97c53ca279a2aea1.svg",
+      "sha256": "97c53ca279a2aea1fc81b2136712fa5b5ed11baa1c9202da9368151482f42801",
+      "bytes": 9842,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/98b18935c14e8f23.svg",
+      "sha256": "98b18935c14e8f234582341c7b3848f65369ca1fe07ba5e34a780a17521986b3",
+      "bytes": 1949,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/9928001dcd4d3593.png",
+      "sha256": "9928001dcd4d35930c5c38b8697444d2b985220c165f0175f43fbe4156f40f06",
+      "bytes": 7525,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/9cb3ef869b85148c.png",
+      "sha256": "9cb3ef869b85148c1fe313fbfe01994b446eebe60c37cba4bd652cdc3c446e0d",
+      "bytes": 4393,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/9e227479dbbf3795.svg",
+      "sha256": "9e227479dbbf3795644805ce1cd69fbb8e54859c1f0cb199b72597d65e54df53",
+      "bytes": 3898,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/a3085cf548599cae.svg",
+      "sha256": "a3085cf548599caecc3c82c1452678ec404c678dbbcc0f40e15553c064f02011",
+      "bytes": 11159,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/a398f7f941968e7f.png",
+      "sha256": "a398f7f941968e7f9048982d295ecb7de8a4d29f224c28a5fc9c52985e59282c",
+      "bytes": 11345,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/aa091822ffce94a3.png",
+      "sha256": "aa091822ffce94a33abea054447be874b48e94221619300058e2ba2e461b02d8",
+      "bytes": 10851,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/abf7da9ebfec600a.svg",
+      "sha256": "abf7da9ebfec600ada11a96c696445fd52250ca16b060b027f6607312755ab5a",
+      "bytes": 10545,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/ac44418daef4d641.svg",
+      "sha256": "ac44418daef4d641acaca1c5a97450d096e9ddc7b8c938dab57ca743b5f771d5",
+      "bytes": 1963,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/aca01da96ad2787b.png",
+      "sha256": "aca01da96ad2787b6e0c6b3de91fe47fc701ca144508c5ea077489e69be740cb",
+      "bytes": 11921,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/acef56ffd907acfa.png",
+      "sha256": "acef56ffd907acfaaed37ba1d10162ed36abbc798a03df769e806fd73e4590f4",
+      "bytes": 9013,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/b30c3d3f340a25ed.svg",
+      "sha256": "b30c3d3f340a25ed8202045ba95029cbb565814931eb80fdda98ba4616257c14",
+      "bytes": 3323,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/b4f1270b38aecf50.svg",
+      "sha256": "b4f1270b38aecf50021fabe53808aadbe1edb0caff92aca4037400c11be79ee6",
+      "bytes": 9777,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/b6325adda59668cc.png",
+      "sha256": "b6325adda59668cc09ec4b57965f77548e3ebc620f7fc91ea17236342bceb659",
+      "bytes": 9729,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/baecd294f090e923.png",
+      "sha256": "baecd294f090e9230303be429166d60e89b39aa2db33d01cee1f17d3ebc4c9d9",
+      "bytes": 21605,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/bce9861b01941e1e.png",
+      "sha256": "bce9861b01941e1e5e5f780aad85c9f82ccb013ec7716a379d60aae2e73cbfa9",
+      "bytes": 8329,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/be23389cdc05277a.svg",
+      "sha256": "be23389cdc05277a4319834b015396203e8c6fb195ff4aebf2cf2d6b3ae9457d",
+      "bytes": 3861,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/bf56403c653a14f8.png",
+      "sha256": "bf56403c653a14f82c29d60026129c2be38f075085ac864fd5d0b157de2ac7d9",
+      "bytes": 7543,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/c0fe21aa204df66c.png",
+      "sha256": "c0fe21aa204df66c78ca786ccdf639a87979556d87b50391a3654461b84ed61d",
+      "bytes": 1407,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/c17dd33ce8df782c.png",
+      "sha256": "c17dd33ce8df782c1725b4d774195d77b1cd371a37ea155fda8b9340d5d5b469",
+      "bytes": 4886,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/c1aa205e740f0d7e.svg",
+      "sha256": "c1aa205e740f0d7e6d0ebd578809dda056da9f22855345e914af093d3671650a",
+      "bytes": 53035,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/c1f03476f818f63a.png",
+      "sha256": "c1f03476f818f63ac134f47d8e66975fac014a44777aebb639bebe491789ab9b",
+      "bytes": 3041,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/cdd4538ef0e0aaed.png",
+      "sha256": "cdd4538ef0e0aaeda92e6ddc2152942aadc8caf6bdbd331a6d0167f9543a2238",
+      "bytes": 10366,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/d36f8c5e4418d041.svg",
+      "sha256": "d36f8c5e4418d041279991646070715bc6ab7671d31f56d37a6ebda67127fe81",
+      "bytes": 17877,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/d39b6051df36a55a.png",
+      "sha256": "d39b6051df36a55a6c0e5339d423a359f64b5880285da5bf42f6c09cf729bf42",
+      "bytes": 10423,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/dcebd3735d6a3d0e.png",
+      "sha256": "dcebd3735d6a3d0e5e3bab11c8afdc3aa431d7be63cfca2b3137ac05bcdb6e94",
+      "bytes": 11254,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/dd51f18280b2d679.png",
+      "sha256": "dd51f18280b2d679f6dae5874296dd5f939d50c34460f50c8b801d1347ff985d",
+      "bytes": 11448,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/dd9c95604293dff7.png",
+      "sha256": "dd9c95604293dff78e1607dd180771dcc5765c50bf469d231e954a5d02d114d9",
+      "bytes": 10040,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/e3e5f7bc9461c59d.svg",
+      "sha256": "e3e5f7bc9461c59d44768dd7584117625cf10e7c1a49c0f3f4dbbb89a6d33645",
+      "bytes": 7844,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/e58054ac6d586e5d.svg",
+      "sha256": "e58054ac6d586e5d8b7817feee71405d65b1332574e8250f1a031c731f325937",
+      "bytes": 7183,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/e70eeac4cb1c2d24.png",
+      "sha256": "e70eeac4cb1c2d24b4116b30f32f3b93edc1c36c51299d9f8cbf828a11198c47",
+      "bytes": 3324,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/ec32d46869918c89.png",
+      "sha256": "ec32d46869918c895019ca46b8d380ae0d74f63e1aad9b7a58bf5773d5f0d1f1",
+      "bytes": 10328,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/efd695c415e92556.png",
+      "sha256": "efd695c415e925566cfc27ecff8e5b5d36171fb48805365cdb4a1aa6324a9929",
+      "bytes": 9591,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/f9d5b7221432f6d4.jpg",
+      "sha256": "f9d5b7221432f6d4f9f1745c66bf312b4dc6936e5ffcb68c0383de51e23d4e21",
+      "bytes": 7716,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/fa30b03f8494a745.png",
+      "sha256": "fa30b03f8494a74504243e21e7f6b49aa43c04b6feae91deb8e43faa895c00f7",
+      "bytes": 11969,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/fe0d35ecaf8544da.svg",
+      "sha256": "fe0d35ecaf8544da3c45765274dff2fe5a795c1b706ff09afb4411fa14eede9e",
+      "bytes": 1857,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/venue-logos/ffc18a96ed5c9ca6.png",
+      "sha256": "ffc18a96ed5c9ca6ed192af50015b2660f87ad99b7ea0350a2cbb5a9238ffda9",
+      "bytes": 9524,
+      "scope": "Venue logo file (identity support; bytes as verified against the research sheet sha256; not a trademark licence)"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B001.png",
+      "sha256": "ca41675041e3413221fe77651686ebc3638c6c950ad9e4b4107473a446e80767",
+      "bytes": 17595,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B002.png",
+      "sha256": "e3406c61acc7cd5847e597141dc1ba0f7692abb72fde6d78cb0ccfd4cf71ed52",
+      "bytes": 2417,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B003.jpg",
+      "sha256": "7c4f5c2d873117d4001537eb0a6b905cd6f4285d158b876c1199951208adda50",
+      "bytes": 62464,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B004.svg",
+      "sha256": "dbc8d3f7b2e95c6d9a43c102f68be013d3f323cfabc8b4f9b33024c570230c0d",
+      "bytes": 11869,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B005.png",
+      "sha256": "7543525841ea514ac950e739c8c0f0d1e7706ecea5f6cf63e20a914b2eb719c5",
+      "bytes": 14332,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B006.jpg",
+      "sha256": "cda6ea1305847cdb8bd851eb97ba03916507dcd8e49c5e90abd65e1d6482236d",
+      "bytes": 29006,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B007.png",
+      "sha256": "014c06aeba948b913fd6f33af773ef653ab04237f8d8591efc87698ae63168fd",
+      "bytes": 78258,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B008.jpg",
+      "sha256": "29915c84dd5090c65fe799d8e8781f6bbc63deb7213f2d1bc9646876819d99ab",
+      "bytes": 20889,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B009.png",
+      "sha256": "401a822aa4a965a50a30f28574612501346883b9c8f220345a87b2bd28a7b0ad",
+      "bytes": 117817,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B010.jpg",
+      "sha256": "41ee7a871dfcce4ff86c1c7e1cf950850f4fb9b2fc5d98af27edabd26b7c034a",
+      "bytes": 169701,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B011.png",
+      "sha256": "252eb873f1b466d12f06887c263cf50e46a90ad7f7f042bc2645e750590aa7c7",
+      "bytes": 370985,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B012.png",
+      "sha256": "ebd7fa9ef87e90412326c7a350af98a0e622573c82eed14c8c20d4a2b8a32d62",
+      "bytes": 41502,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B013.png",
+      "sha256": "6c531b38131102861374410df27948f1fb7f46a28b1f85f09c5a68e998375bc0",
+      "bytes": 6911,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B014.jpg",
+      "sha256": "ad8adb3a5f716d26c07c392cc5535c97dd186747bcc9be2cd70fed062d1f4da0",
+      "bytes": 12466,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B015.jpg",
+      "sha256": "652976aa972d65ade6c9c928aa5e3eacada91a80e2317478c5e4abda0ec512bf",
+      "bytes": 141561,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B016.jpg",
+      "sha256": "7386e731218e132496f5f569fa991fea9a29ecc2058b55848aac1887dc0eb87b",
+      "bytes": 21509,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B018.png",
+      "sha256": "5393ea1f5692a67ff39edeff82736cf366c09d2dc6e30da3c45da5a26c59f74f",
+      "bytes": 3655,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B019.jpg",
+      "sha256": "3634410ef574d1a90102a38652906bfef321a573089814203d09978745fecd71",
+      "bytes": 202192,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B020.jpg",
+      "sha256": "26e8994f16a69987ab392cb2b3b823360c4db602ff393834b91b8dec554a6180",
+      "bytes": 11449,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B021.svg",
+      "sha256": "11f401989c28a4c29a7856b028a9812106b44116b6e8cb72514a83533ff98281",
+      "bytes": 6591,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B022.jpg",
+      "sha256": "b780934a1c5db3de61ef57c088fc2660cd2550bdbe225eb947296a2cf1d3b6b9",
+      "bytes": 17966,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B023.jpg",
+      "sha256": "3cdea1f386d75580702e6175a9e89d22d6d5f0ddccb46f22f0744ed46a96209c",
+      "bytes": 5245,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B024.svg",
+      "sha256": "78b37a72f3a7258eba307eb30292dde94a2d5c256e2614650d7d2f244905118e",
+      "bytes": 4181,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B025.svg",
+      "sha256": "5edc10c74a9acbf97c18e7de2d9d332fd0d2ffb0936eea32baf20b7c653815b4",
+      "bytes": 3972,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B026.png",
+      "sha256": "5e35463138f973d00a0ef2b2bd3ea014f266a35fe13e72535dbed28d70723893",
+      "bytes": 25204,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B027.png",
+      "sha256": "4b59a8804c7a7d298e815e5476e2b771982f62fdd1a97e6ab7e516220e7532b5",
+      "bytes": 366419,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B028.png",
+      "sha256": "b4199e44cf94aaf8a426b22ed2e7e414500886379c51aa38f35b8df162932dd1",
+      "bytes": 7386,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B029.svg",
+      "sha256": "a031cb3d197dc06049081d167d60c2110c4adc74eb34ea256922815644500e56",
+      "bytes": 1670,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B030.svg",
+      "sha256": "0c83e7b8d8105c229f01c302cc40ecfa105829ea63212802690fdd49937a9aae",
+      "bytes": 7905,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B031.png",
+      "sha256": "e21d8cd462ae24459a71587e650313b9d1c16d871dac226d313b59f84d3ac012",
+      "bytes": 119463,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B032.jpg",
+      "sha256": "d1eb8ced7a7f80ede5c6e0933e8488e15707866255cba7916aee1505266d8f50",
+      "bytes": 17157,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B033.png",
+      "sha256": "c9a1cb54e8a5967993f93a0b14753216d15e84d1d4905e305ab1360934d6f595",
+      "bytes": 26698,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B034.jpg",
+      "sha256": "f3d2049de9ef7bdf1ba40a4825fdf4a5ebe7d02f34f99f1c4909fe47ef38fb9b",
+      "bytes": 5160,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B035.jpg",
+      "sha256": "d242543fcdd85bbc40db162981462117cb7be4979e8b56715909833785dcddec",
+      "bytes": 23292,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B036.webp",
+      "sha256": "2d183bc4dc9f11aaa1c52d7eaa606d77ad8f379ce38552eb589c5f83e7bf5491",
+      "bytes": 13482,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B037.png",
+      "sha256": "b85c9b7c97b4513b0eac25cb5396d570176256ab42b183a1f4b2a2e7c708a62c",
+      "bytes": 7066,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B038.jpg",
+      "sha256": "5cb5305e2ab7d89fb80a292527033255ca2fe1634f97db284acf3a4498959de9",
+      "bytes": 145961,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B039.png",
+      "sha256": "d8e4408c6eee0414f4387f5880e724eabe4ad29e0ea66749c95139cc09fe6190",
+      "bytes": 9319,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B040.png",
+      "sha256": "54d2c251185d79d130bab3fde55ca5c91f57013acf7391b3ded58a2ee1ee0dd1",
+      "bytes": 16230,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B041.svg",
+      "sha256": "f20a8c816c2f9606fe8fea32c1f8297bcb251f5b825de5a4beb5112a3a6c1f76",
+      "bytes": 3855,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B042.svg",
+      "sha256": "868a3c1983557f7f6673a2af51f16c37d1b9b4db9d1c707eea35ddc83b97bb6e",
+      "bytes": 2627,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B043.svg",
+      "sha256": "42d37e4b4f577c1d8148533ae2191daf100508ceb66b8e0a281f0d945ccd21c3",
+      "bytes": 2804,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos/CAM-B044.jpg",
+      "sha256": "929399b09556ddc70671decfe0a7c4c8a8660c37461dd725724f37cea7e42a07",
+      "bytes": 125621,
+      "scope": "Verified original retailer logo; original proportions and bytes; source role in data/brand-logos.json"
+    },
+    {
+      "path": "assets/brand-logos.svg",
+      "sha256": "ed240a378c5c0f9a7782c2779aabfc77253973d1e584baca66217990c96f98cb",
+      "bytes": 3079901,
+      "scope": "Contains verified retailer originals with contain positioning; no redrawing"
     }
   ]
 }

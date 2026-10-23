@@ -1,5 +1,5 @@
 // Frozen analytical neighborhoods: membership is geographic, never inferred from labels or filters.
-import {countBrands} from './model.js';
+import {countBrands} from './model.js?v=20261023-camera-r2';
 
 const EPSILON = 1e-10;
 

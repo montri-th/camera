@@ -17,9 +17,9 @@
  * banners in the current filter → lowest fill + zero outline), out_of_scope
  * (provinces without rows in the dataset — nothing drawn).
  */
-import {PROVINCES, provinceByName, bannersOf} from './model.js';
-import {buildCountScale, classify} from './scales.js';
-import {featureBounds, firstLineLayerId} from './map-layers.js';
+import {PROVINCES, provinceByName, bannersOf} from './model.js?v=20261023-camera-r2';
+import {buildCountScale, classify} from './scales.js?v=20261023-camera-r2';
+import {featureBounds, firstLineLayerId} from './map-layers.js?v=20261023-camera-r2';
 
 export const PROVINCE_FILL_MAX_ZOOM = 9;
 export const PROVINCE_OUTLINE_MAX_ZOOM = 12;

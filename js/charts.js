@@ -13,9 +13,9 @@
  * users. Every click emits {type:'neighborhood', id}; the empty compare state
  * emits {type:'resetAreas'}.
  */
-import {buildNeighborhoodChartModel, neighborhoodMatrix} from './chart-model.js';
-import {buildCountScale, classify, countRamp} from './scales.js';
-import {SEGMENTS, SEGMENT_SHORT} from './model.js';
+import {buildNeighborhoodChartModel, neighborhoodMatrix} from './chart-model.js?v=20261023-camera-r2';
+import {buildCountScale, classify, countRamp} from './scales.js?v=20261023-camera-r2';
+import {SEGMENTS, SEGMENT_SHORT} from './model.js?v=20261023-camera-r2';
 
 const NUMBER = new Intl.NumberFormat('th-TH', {maximumFractionDigits: 0});
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));

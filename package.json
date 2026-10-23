@@ -1,6 +1,6 @@
 {
   "name": "citymeter-camera-shops",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "type": "module",
   "description": "CityMETER · Camera Shops — neighborhood-first 3D map of camera-shop outlets in Thailand (same 0.5 architecture as CityMETER · Luxury Brands)",
@@ -13,8 +13,9 @@
     "handoff:manifest": "node scripts/build-handoff.mjs",
     "handoff:bundle": "node scripts/build-handoff.mjs --zip dist/CityMETER-Camera-Shops-Developer-Handoff.zip",
     "verify:live": "node scripts/verify-live.mjs",
-    "data:build": "python3 scripts/build-camera-data.py",
+    "data:build": "python3 scripts/refresh-camera-master.py",
     "data:provinces": "node scripts/extract-provinces.mjs",
-    "assets:manifest": "python3 scripts/build-asset-manifest.py"
+    "assets:manifest": "python3 scripts/build-asset-manifest.py",
+    "data:build:legacy": "python3 scripts/build-camera-data.py"
   }
 }
