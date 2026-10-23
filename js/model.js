@@ -6,7 +6,7 @@
  * co-branded storefront stays ONE row whose `brands` lists every counted banner
  * (retail banner + host-counter banner; an operator is not a banner) with the
  * matching `bannerSegments`. Nothing here mutates a row; summaries count
- * distinct banners (ร้าน) separately from outlet rows (สาขา).
+ * distinct banners (แบรนด์) separately from outlet rows (สาขา).
  */
 
 /** Segment taxonomy (research scope groups A–E). Order is the stable categorical series assignment (series.01–.05). */
@@ -151,6 +151,13 @@ export function brandSet(rows = []) {
   return out;
 }
 export const countBrands = rows => brandSet(rows).size;
+
+/** One canonical outlet ID contributes once; different outlets at one point stay distinct. */
+export const uniqueOutletRows = rows => [...new Map((Array.isArray(rows) ? rows : []).map((row, i) => [row.id || `unkeyed:${i}`, row])).values()];
+export const COUNT_METRICS = Object.freeze({brands: {label: 'จำนวนแบรนด์', unit: 'แบรนด์'}, pos: {label: 'จำนวนสาขา', unit: 'สาขา'}});
+export const normalizeCountMetric = metric => metric === 'pos' ? 'pos' : 'brands';
+export const metricValue = (record, metric = 'brands') => record?.[normalizeCountMetric(metric)] ?? 0;
+export const rankByMetric = (a, b, metric = 'brands') => metricValue(b, metric) - metricValue(a, metric) || b.brands - a.brands || b.pos - a.pos || String(a.name || a.id).localeCompare(String(b.name || b.id));
 
 /**
  * A segment view of one row: only the banners of that segment, the first of them

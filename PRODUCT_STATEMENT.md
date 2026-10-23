@@ -2,7 +2,7 @@
 
 Winning strategy ของชุดข้อมูลนี้ เขียนตามโครง Who → What → Which → How ของ Landometer Master Brand Brief v0.5.3 §7.2 และ Product Brief — CityMETER v6 §1.6 ป้ายหลักฐานใช้มาตรฐาน MBB §3.7: **Observed fact** · **Owner-stated** · **Inference** · **Hypothesis** · **Project evidence**
 
-หน่วยนับในเอกสารนี้ตรงกับหน้าจอ: **ร้าน** = ชื่อร้านไม่ซ้ำ (shop banner เช่น BIG CAMERA, Sony Store) · **สาขา** = จุดขายหนึ่งรายการ (outlet) · **สถานที่** = ศูนย์การค้า ไฮเปอร์มาร์เก็ต หรืออาคารที่ตั้ง · **ย่าน** = Locale ของ CityMETER production
+หน่วยนับในเอกสารนี้ตรงกับหน้าจอ: **แบรนด์** = ชื่อแบรนด์ร้านไม่ซ้ำ (shop banner เช่น BIG CAMERA, Sony Store) · **สาขา** = จุดขายหนึ่งรายการ (outlet) · **ศูนย์การค้า** = ป้ายเรียก venue บนหน้าจอ (รวม host ประเภทไฮเปอร์มาร์เก็ตหรืออาคาร โดยไม่เปลี่ยนประเภทต้นทาง) · **ย่าน** = Locale ของ CityMETER production
 
 ## 0. Metadata
 
@@ -10,11 +10,11 @@ Winning strategy ของชุดข้อมูลนี้ เขียน�
 |---|---|
 | Parent product | CityMETER (City Intelligence Base Layer ของ Landometer) · แกน Location |
 | Feature / dataset | Camera Shops — ย่าน สถานที่ และสาขาของร้านกล้องในประเทศไทย (ร้านกล้องหลายแบรนด์ · มือสองและฟิล์ม · ร้านแบรนด์ผู้ผลิต · โดรนและอุปกรณ์ภาพ · ช่องทางขายเสริม) |
-| รุ่นเอกสาร | 0.5.1 ·23ตุลาคม2569 — refreshข้อมูล/พิกัด/โลโก้บนสถาปัตยกรรมเดิม |
-| สถานะ | Public research demo;0.5.1refresh snapshot ไม่ใช่สำมะโนหรือหลักฐานว่า live deployment เสร็จแล้ว ดู release receipt แยก |
+| รุ่นเอกสาร | 0.5.2 ·23ตุลาคม2569 — กู้และเพิ่มมวลอาคาร ปรับกรอบจังหวัดและหน่วยนับ |
+| สถานะ | Public research demo;0.5.2snapshot ไม่ใช่สำมะโนหรือหลักฐานว่า live deployment เสร็จแล้ว ดู release receipt แยก |
 | ผู้รับผิดชอบ | Landometer · CityMETER (owner: Montri) |
 | ผู้ใช้หลัก | ทีมขยายสาขาของร้านกล้อง (เครือข่ายใหญ่และร้านเฉพาะทาง) · ทีมค้าปลีกของผู้ผลิตกล้องและอุปกรณ์ภาพ · ทีม leasing ของศูนย์การค้าและ IT mall · นักวิเคราะห์ CityMETER และที่ปรึกษาด้านทำเล |
-| ชุดข้อมูลที่เกี่ยวข้อง |147named venues/107accepted CityMETERhosts;36production Locales;129buildingcontexts(125inside+4outside),103sourcefeaturesเดิม;ย่านไม่ใช่เขตปกครองหรือcatchment |
+| ชุดข้อมูลที่เกี่ยวข้อง |147named venues/107accepted CityMETERhosts;36production Locales;160buildingcontexts(145inside+12outside+3missing-selected-point),111features(76footprints+35parts),76/147venues;ย่านไม่ใช่เขตปกครองหรือcatchment |
 | แหล่งข้อมูล / วิธี (สรุป) | Official retailer/manufacturer/mall/contact sources, officialsourcepoints และ named map-targets ที่ตรวจตัวตนแล้ว; Canon camera-sales stockist undated จับกับcurrentPowerBuyspecificbranch/address ไม่ยืนยันสต็อก;พิกัด/venue/buildingเป็นคนละdecision |
 | ข้อมูลตรวจถึง |2026-10-23ตามmeta.asOf/researchRevision;วันที่ตรวจไม่ใช่วันเปิดร้านหรือวันmanufacturerเผยแพร่ |
 
@@ -53,12 +53,12 @@ Winning strategy ของชุดข้อมูลนี้ เขียน�
 
 **Solution ที่ใช้:** ชั้นข้อมูลแบบ neighborhood-first บน CityMETER
 
-- **ข้อมูลต้นทาง (raw):** 234 รายการสาขาของ 39 ร้าน ใน 64 จังหวัด จาก research master 2026-10-22 — สาขาขายปลีก 233 รายการ (ค่าเริ่มต้น 38 ร้าน) และที่อยู่ติดต่อของร้าน 1 รายการ; ร้านที่อนุมัติในขอบเขต 43 ร้าน (อีก 4 ร้านยังระบุสาขาไม่ได้); ทุกรายการมี source, สถานะ และ checkedOn; พิกัด 179 รายการเป็นจุดตัวแทนของศูนย์การค้าใน CityMETER ตาม venue join ของ research master อีก 55 รายการยังไม่มีพิกัด — master พักไว้ 8 · มีชื่อสถานที่แต่รอจับคู่ทะเบียน 32 · ไม่มีสถานที่ 15 (Observed fact, `meta.venueJoin`)
+- **ข้อมูลต้นทาง (raw):** 253 outlet IDs / 252 สาขาขายปลีกเริ่มต้น; 44 แบรนด์ที่อนุมัติ มีแถว 40 แบรนด์และ 39 แบรนด์ในค่าเริ่มต้น; 147 named venues, 236 selected source/reference points, 17 missing points, 107 accepted CityMETER host records. Branch/point/host/building เป็นคนละ decision; source-listed ไม่ยืนยันเปิดจริงหรือสต็อกปัจจุบัน (Observed fact, snapshot 2026-10-23)
 - **ค่าคำนวณ (calculated):** ร้านไม่ซ้ำและสาขาต่อย่าน/สถานที่/ประเภทร้าน/จังหวัด; สัดส่วนร้านใน 3 ย่านอันดับต้น (first Aha); ร้านเฉพาะย่าน/ร่วมเทียบทุกย่านในตัวกรอง; นอกกรุงเทพฯ ที่ production ยังไม่มี Locale: สัดส่วนร้านที่สถานที่อันดับหนึ่งของจังหวัด; ระบายสีด้วยสีไล่ครบ 41 ระดับของ LDS (`count` LUT 41 สี) แบบเส้นตรงจาก 1 ถึงค่าสูงสุดในตัวกรอง (กฎเจ้าของ 2026-10-22: color scale ใช้ 41 ระดับตาม LDS เสมอ)
 - **การตีความ (inferred):** การจับคู่สถานที่กับ host ของ CityMETER เป็นของ research master (ชื่อหรือชื่อเรียกเฉพาะสาขาและจังหวัดตรงทะเบียน ไม่ใช้ nearest; refresh adapter คง source periods/roles และตรวจ selected-point receipts แยกจาก host identity) ให้จุดตัวแทนของอาคาร ไม่ใช่หน้าร้าน; อาคารที่ตั้งผ่านการทดสอบสองชั้นของ master (จุดอยู่ใน footprint และตัวตนของ host ตรงกัน); ย่านจาก point-in-polygon บนขอบเขต Locale ของ production (ตรงกับ `locatePoint` ของ production ทั้ง48/48จุดในกรุงเทพฯ); อันดับย่านช่วยจัดลำดับการสำรวจ ไม่ใช่คำตัดสินศักยภาพ
-- **ผลลัพธ์ที่ผู้ใช้เห็น:** ข้อค้นพบแรก (62% ใน 3 ย่าน) บนเมือง 3 มิติที่โฟกัส 3 ย่านนั้น → โปรไฟล์ย่าน (ประเภทร้าน สถานที่ ร้านเฉพาะ/ร่วม ลิงก์ไปย่านเดียวกันใน CityMETER) → สถานที่และอาคารที่ตั้ง → สาขารายรายการพร้อมสถานะ วันที่ ความแม่นพิกัด และลิงก์หลักฐาน → กราฟเทียบย่านและตารางส่งต่อ; มุมมองทั้งประเทศมีกรอบ 64 จังหวัดที่เจาะลงได้ และนอกกรุงเทพฯ ข้อค้นพบย้ายไปที่สถานที่อันดับหนึ่งที่มีจุดบนแผนที่ (เช่น เชียงใหม่ 80% ของร้านมีสาขาที่ Central Chiangmai; ภูเก็ต 67% ที่ Central Phuket)
+- **ผลลัพธ์ที่ผู้ใช้เห็น:** ข้อค้นพบแรก (62% ใน 3 ย่าน) บนเมือง 3 มิติที่โฟกัส 3 ย่านนั้น → โปรไฟล์ย่าน (ประเภทร้าน สถานที่ ร้านเฉพาะ/ร่วม ลิงก์ไปย่านเดียวกันใน CityMETER) → สถานที่และอาคารที่ตั้ง → สาขารายรายการพร้อมสถานะ วันที่ ความแม่นพิกัด และลิงก์หลักฐาน → กราฟเทียบย่านและตารางส่งต่อ; มุมมองทั้งประเทศมีกรอบ 77 จังหวัดที่เจาะลงได้ และนอกกรุงเทพฯ ข้อค้นพบย้ายไปที่สถานที่อันดับหนึ่งที่มีจุดบนแผนที่ (เช่น เชียงใหม่ 80% ของร้านมีสาขาที่ Central Chiangmai; ภูเก็ต 67% ที่ Central Phuket)
 
-> **Data Clarity:** ข้อมูลหลักมาจาก official locators, branch lists, directories และเว็บไซต์/รายชื่อติดต่อของร้าน ตรวจถึง 2026-10-22; ตัวชี้วัดหลักคำนวณจากการนับร้านไม่ซ้ำแยกจากสาขาใน point-in-polygon ของ Locale ของ production; อันดับและ “เฉพาะ/ร่วม” เป็นการตีความเพื่อจัดลำดับ ไม่ใช่ยอดขาย อุปสงค์ หรือสถานะตัวแทนจำหน่าย; การพบในแหล่งข้อมูลยืนยันว่ามีรายการในแหล่งนั้น ไม่ใช่การยืนยันเปิดจริงหน้าร้าน; พิกัดเป็นจุดตัวแทนของศูนย์การค้าที่ research master จับคู่แล้ว ไม่ใช่ประตูร้าน และสถานที่ที่ master พักไว้ไม่มีจุด; ความสูงอาคารเป็นบริบทจาก OSM/CityMETER ไม่ใช่ผลรังวัด; ไม่ใช่สำมะโนทั้งประเทศ
+> **Data Clarity:** แหล่ง official retailer/manufacturer/venue และ named map targets ที่ตรวจตัวตนแล้ว ตรวจถึง 2026-10-23; Canon stockist ที่ undated ใช้ร่วมกับ current Power Buy branch identity ไม่ใช่ current stock. แยกพิกัดธุรกิจ/host reference จาก registry identity และ building identity. 111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only. ไม่ใช่สำมะโนหรือผลรังวัด
 
 ### 2.3 Which — ผู้ใช้แก้ปัญหานี้ด้วยอะไรอยู่ และต้องดีกว่าแค่ไหนจึงจะเปลี่ยนพฤติกรรม
 
@@ -122,10 +122,10 @@ Which คือวิธีที่ผู้ใช้ใช้แก้ **probl
 ## 4. ข้อมูลและวิธี (Data and method clarity)
 
 - **Sources:** Official retailer/brand locators, mall directories, contactpages และ officialsourcepoints/identity-checked named map targets. PowerBuyเพิ่มจากCanon camera-category sales stockistที่undated จับbranchqualifier/leadingaddress/adminกับcurrentlocator;ไม่ใช่สต็อกปัจจุบัน. `scripts/refresh-camera-master.py` เป็นadapterปัจจุบัน; host-onlypipelineเก็บเป็นประวัติ0.5.0
-- **Granularity:** selected source-backed outletpointหรือmissing →namedvenue/acceptedhost →productionLocale(36ในกรุงเทพฯ) →จังหวัด64กรอบ →ประเทศ
+- **Granularity:** selected source-backed outletpointหรือmissing →namedvenue/acceptedhost →productionLocale(36ในกรุงเทพฯ) →จังหวัด77กรอบ →ประเทศ
 - **Update cycle:** snapshotล่าสุด2026-10-23;ยังไม่มีรอบอัตโนมัติ
-- **Method:** นับร้านไม่ซ้ำแยกจากสาขา (หน้าร้านหลายป้าย = หนึ่งสาขาที่มีหลายร้าน); point-in-polygon คงที่บน Locale ของ production; สีไล่ครบ 41 ระดับของ LDS (`count` LUT 41 สี) แบบเส้นตรงจาก 1 ถึงค่าสูงสุดในตัวกรอง (กฎเจ้าของ 2026-10-22: color scale ใช้ 41 ระดับตาม LDS เสมอ); เฉพาะ/ร่วมเทียบทุกย่านใน scopeRows; ตัวกรองประเภทร้านนับเฉพาะร้านของประเภทนั้น
-- **Known limitations:**253rows/252default;44approvedชื่อแต่มีแถว40ชื่อ/39default;17rowsไม่มีพิกัด. พิกัดไม่เท่ากับhostjoin/ประตูร้าน.129buildingcontexts(125inside+4outside);103sourcefeaturesเดิม. โลโก้ร้าน43/44(ขาดCameraExchange),venue83filesครอบคลุม139/147labels;การเก็บไม่ให้สิทธิ์ใหม่.1,411private networkcandidatesไม่นับpublic;72branch-reviewและ7pendingแยกไว้. Source-listed/undatedmanufacturerไม่ยืนยันเปิดจริงหรือcurrentstock;Chidlomretained21Oct/API23Oct403ระบุชัด
+- **Method:** นับร้านไม่ซ้ำแยกจากสาขา (หน้าร้านหลายป้าย = หนึ่งสาขาที่มีหลายร้าน); point-in-polygon คงที่บน Locale ของ production; สีไล่ครบ 41 ระดับของ LDS (`count` LUT 41 สี) แบบเส้นตรงจาก 1 ถึงค่าสูงสุดในตัวกรอง (กฎเจ้าของ 2026-10-22: color scale ใช้ 41 ระดับตาม LDS เสมอ); เฉพาะ/ร่วมเทียบทุกย่านใน scopeRows; ตัวกรองประเภทร้านนับเฉพาะร้านของประเภทนั้น Reviewed named-host geometry ไม่ต้องมี CityMETER registry join และไม่ย้าย selected point; Fortune Town17สาขา/13แบรนด์ ความสูง17.5/105mเป็นdisplaymodelsโดยsourceheight=null.
+- **Known limitations:**253rows/252default;44approvedชื่อแต่มีแถว40ชื่อ/39default;17rowsไม่มีพิกัด. พิกัดไม่เท่ากับhostjoin/ประตูร้าน.160buildingcontexts(145inside+12outside+3missing-selected-point);111features(76footprints+35parts),76/147venues. โลโก้ร้าน43/44(ขาดCameraExchange),venue83filesครอบคลุม139/147labels;การเก็บไม่ให้สิทธิ์ใหม่.1,411private networkcandidatesไม่นับpublic;72branch-reviewและ7pendingแยกไว้. Source-listed/undatedmanufacturerไม่ยืนยันเปิดจริงหรือcurrentstock;Chidlomretained21Oct/API23Oct403ระบุชัด
 - **Confidence note:** สถานะ ตัวตน และระดับความแม่นพิกัดระบุในทุกรายการ (status, identity, role, geometryRole/geometryStatus); รายการที่สองแหล่งชี้หน้าร้านเดียวกันหรือที่ตั้งขัดกันคงไว้พร้อมป้าย ไม่รวมหรือทิ้งเพื่อให้ตัวเลขสวย
 
 ## 5. ข้อกำหนด UX และผลลัพธ์ (ที่ Product Statement นี้กำหนด)
@@ -152,7 +152,7 @@ Which คือวิธีที่ผู้ใช้ใช้แก้ **probl
 |---|---|---|
 | ผู้ใช้สี่กลุ่มใน §2.1 ถามคำถาม “ใครอยู่ข้างใคร” จริงและเริ่มจากย่าน | สัมภาษณ์ 3–5 คนต่อกลุ่มด้วย demo รุ่น 0.5 | ≥ 3 ใน 4 กลุ่มยืนยัน trigger และเลือกใช้โปรไฟล์ย่านก่อนตาราง |
 | IT mall เป็นตัวทำนายการกระจุกของร้านเฉพาะทาง — Observed: Fortune Town มี 13 ร้าน 17 สาขา มากที่สุดของทุกสถานที่ (รองลงมา centralwOrld และ Siam Paragon 7 ร้าน) | ติดป้าย IT mall ใน host ของ CityMETER แล้วเทียบร้านไม่ซ้ำต่อสถานที่ระหว่าง IT mall กับศูนย์ขนาดเดียวกัน ในรอบวิจัยถัดไป | IT mall มีค่ามัธยฐานร้านไม่ซ้ำต่อสถานที่สูงกว่าศูนย์ขนาดเดียวกันอย่างชัดเจน; ถ้าไม่ จะอธิบายการกระจุกด้วยย่าน ไม่ใช่ประเภทศูนย์ |
-| ร้านแบรนด์ผู้ผลิตตามศูนย์การค้าขนาดใหญ่พิเศษ — Observed: 17 จาก 29 สาขาของร้านแบรนด์ผู้ผลิตอยู่ใน host ประเภท Super-Regional Mall เทียบกับจำนวนตามdata/model0.5.1ปัจจุบัน (ไม่ใช้fixture0.5.0เป็นค่าคงที่) | ทำซ้ำเมื่อเพิ่มร้านแบรนด์ผู้ผลิตรายใหม่ และเทียบกับศูนย์ที่ใช้ร่วมกับ Luxury Brands | สัดส่วนยังเกินครึ่งและต่างจากทั้งชุดชัดเจนหลังเพิ่มร้าน; ถ้าไม่ ถือเป็นผลจากร้านไม่กี่ร้าน |
+| ร้านแบรนด์ผู้ผลิตตามศูนย์การค้าขนาดใหญ่พิเศษ — Observed: 17 จาก 29 สาขาของร้านแบรนด์ผู้ผลิตอยู่ใน host ประเภท Super-Regional Mall เทียบกับจำนวนตามdata/model0.5.2ปัจจุบัน (ไม่ใช้fixture0.5.0เป็นค่าคงที่) | ทำซ้ำเมื่อเพิ่มร้านแบรนด์ผู้ผลิตรายใหม่ และเทียบกับศูนย์ที่ใช้ร่วมกับ Luxury Brands | สัดส่วนยังเกินครึ่งและต่างจากทั้งชุดชัดเจนหลังเพิ่มร้าน; ถ้าไม่ ถือเป็นผลจากร้านไม่กี่ร้าน |
 | การมีร้านกล้องในต่างจังหวัดนำโดยเครือข่ายใหญ่ — Observed: BIG CAMERA พบในทั้ง 64 จังหวัด และเป็นร้านเดียวที่พบใน 55 จาก 63 จังหวัดนอกกรุงเทพฯ (นอกกรุงเทพฯ พบ13ร้าน เทียบกับ37ร้านในกรุงเทพฯ) | สุ่มตรวจร้านอิสระใน 5 จังหวัดจาก Google Maps/โซเชียล และไล่ 7 ชื่อในคิวทบทวนของชีต research | ถ้าพบร้านอิสระที่เข้าเกณฑ์ใน ≥ 3 จาก 5 จังหวัด ภาพ “นำโดยเครือข่าย” เป็นช่องว่างของข้อมูล ไม่ใช่โครงสร้างตลาด และต้องขยายการเก็บ |
 | ภาพ 3D focus/quiet ถูกนำไปใช้ใน deck โดยไม่วาดใหม่ | ขอ screenshot ที่ผู้ทดลองใช้จริง | มีการใช้ในเอกสารภายนอกอย่างน้อย 1 กรณี (ไม่นับเป็น traction) |
 | เวลาจากคำถามถึงรายชื่อที่ส่งต่อได้ < 10 นาที | จับเวลา task ตั้งต้น 3 งาน | ค่ามัธยฐาน < 10 นาที |

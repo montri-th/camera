@@ -59,6 +59,16 @@ test('solidHit finds a point on any projected wall or roof triangle', () => {
   assert.equal(solidHit(s, scale, 400, 300, 2, 2), false);
 });
 
+test('x-ray never invents a solid for an outline, null height or top at/below its base', () => {
+  const outline = square(20); outline.properties.render_as = 'outline';
+  for (const feature of [outline, square(null), square(''), square(0), square(20, 20), square(20, 30)]) {
+    const solid = buildSolid([feature], merc);
+    assert.equal(solid.count, 0);
+    assert.equal(solid.lineCount, 0);
+  }
+  assert.ok(buildSolid([square(3)], merc).count > 0, 'an explicit separate display fallback remains drawable');
+});
+
 test('matrix helpers: translation composes and transformPoint divides by w', () => {
   const t = mat4Translation(2, 3, 4);
   const p = transformPoint(t, [1, 1, 1]);
@@ -111,11 +121,13 @@ function fakeMap() {
   };
 }
 
-test('installVenueXray: custom 3D layer inserted before the anchor; draws only in 3D from zoom 13 with a scissored depth clear', () => {
+test('installVenueXray: solid follows basemap symbols so ground labels cannot paint over walls; draws only in 3D from zoom 13 with a scissored depth clear', () => {
   const map = fakeMap();
+  map.addLayer({id: HOST_LAYERS.extrusion, type: 'fill-extrusion'});
   map.addLayer({id: 'water-name', type: 'symbol'});
-  const xray = installVenueXray(map, {beforeId: 'water-name', toMercator: merc, colors: {fill: '#347DA8', stroke: '#176B82'}});
-  assert.deepEqual(map.layers, [XRAY_LAYER, 'water-name']);
+  map.addLayer({id: 'road-name-major', type: 'symbol'});
+  const xray = installVenueXray(map, {toMercator: merc, colors: {fill: '#347DA8', stroke: '#176B82'}});
+  assert.deepEqual(map.layers, [HOST_LAYERS.extrusion, 'water-name', 'road-name-major', XRAY_LAYER]);
   const def = map.getLayer(XRAY_LAYER);
   assert.equal(def.type, 'custom'); assert.equal(def.renderingMode, '3d');
   const {gl, calls} = fakeGl();
@@ -130,6 +142,9 @@ test('installVenueXray: custom 3D layer inserted before the anchor; draws only i
   assert.equal(names.filter(n => n === 'drawArrays').length, 2, 'solid + edges');
   const scissorIndex = names.indexOf('scissor'), drawIndex = names.indexOf('drawArrays');
   assert.ok(scissorIndex < drawIndex, 'clear happens before the draw');
+  const clearIndex = names.indexOf('clear');
+  const writeMaskIndex = calls.findIndex(c => c[0] === 'depthMask' && c[1] === true);
+  assert.ok(writeMaskIndex >= 0 && writeMaskIndex < clearIndex, 'depth writes must be enabled before clear, including after a translucent MapLibre pass');
   // Plan view or far zoom: nothing drawn.
   calls.length = 0; map.pitch = 0; def.render(gl, {defaultProjectionData: {mainMatrix: main}});
   assert.equal(calls.length, 0);
@@ -147,6 +162,12 @@ test('installVenueXray: custom 3D layer inserted before the anchor; draws only i
   def.render(gl, {defaultProjectionData: {mainMatrix: big}});
   assert.equal(xray.hitTest([190, 150]), true, 'inside the projected roof');
   assert.equal(xray.hitTest([5, 5]), false);
+  const back = {...square(20), id: 'venue-back'}, front = {...square(30), id: 'venue-front'};
+  xray.update([back, front]);
+  const frontView = Float64Array.from(big); frontView[10] = -1;
+  def.render(gl, {defaultProjectionData: {mainMatrix: frontView}});
+  assert.equal(xray.hitFeature([190, 150])?.id, 'venue-front', 'a visible neighborhood solid routes to its actual nearest source feature');
+  assert.equal(xray.hitFeature([5, 5]), null);
   xray.setEnabled(false); assert.equal(xray.hitTest([190, 150]), false);
   xray.setEnabled(true);
   xray.dispose();

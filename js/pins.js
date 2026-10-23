@@ -10,8 +10,8 @@
  * with the banner name — a name, never a substitute logo. Hidden labels never
  * hide a pin: the category-coloured dot always remains.
  */
-import {hasPoint, isClosed, SEGMENTS, bannersOf, bannerLabel} from './model.js?v=20261023-camera-r2';
-import {brandLogoMarkup, getBrandLogo} from './brand-logos.js?v=20261023-camera-r2';
+import {hasPoint, isClosed, SEGMENTS, bannersOf, bannerLabel} from './model.js?v=20261023-camera-r4';
+import {brandLogoMarkup, getBrandLogo} from './brand-logos.js?v=20261023-camera-r4';
 
 const escapeText = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 /** Approximate chip width for a text label (Bai Jamjuree 600 11px): content-sized, capped. */

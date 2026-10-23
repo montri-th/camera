@@ -43,14 +43,17 @@ test('source points and accepted host joins are independent, with no invented ho
   assert.ok(data.centers.every(c => c.kind === 'shopping_center'));
 });
 
-test('held venue identities receive no CityMETER host or building from their source store pins', () => {
+test('held registry identities stay held; independently reviewed named geometry cannot create a CityMETER host', () => {
   const held = [...new Set(data.rows.filter(r => r.venueJoin === 'held').map(r => r.venue))].sort();
   assert.deepEqual(held, [...data.meta.heldVenues].sort());
   for (const v of ['Siam Square One', 'Central Phuket Floresta']) {
     const rs = data.rows.filter(r => r.venue === v);
     assert.ok(rs.length >= 2, v);
     assert.ok(rs.every(r => r.venueJoin === 'held' && !r.mallId), v);
-    assert.ok(buildings.features.every(f => !f.properties.outlet_ids.some(id => rs.some(r => r.id === id))), v);
+    for (const f of buildings.features) for (const r of rs.filter(r => f.properties.outlet_ids.includes(r.id))) {
+      assert.ok(f.properties.venue_ids.includes(r.venueId), `${v}: exact independently reviewed venue identity`);
+      assert.deepEqual(f.properties.mall_ids, [], `${v}: geometry does not invent a registry center`);
+    }
   }
 });
 
@@ -66,10 +69,20 @@ test('host buildings are the master building join: unique ids, joined outlets of
     if (p.render_as === 'extrusion') assert.ok(Number.isFinite(p.display_height_m) && p.display_height_m > (p.display_base_m || 0), f.id);
     assert.ok(!('raw_file' in p), 'no internal workspace paths');
     assert.equal(p.attribution, '© OpenStreetMap contributors (ODbL 1.0)');
-    if (p.geometry_role === 'host_building_part_not_shop_unit') assert.ok(footprints.has(p.host_id), `part ${f.id} belongs to a footprint in the file`);
+    if (['host_building_part_not_shop_unit', 'host_complex_building_part_not_shop_unit'].includes(p.geometry_role)) {
+      assert.ok(footprints.has(p.host_id), `part ${f.id} belongs to a footprint in the file`);
+      const sourceParent = fs.find(x => x.id === p.parent_building_id);
+      assert.ok(sourceParent && sourceParent.properties.host_id === p.host_id, `${f.id}: exact same-host source parent`);
+      if (p.geometry_role === 'host_complex_building_part_not_shop_unit') assert.equal(p.parent_covers_full_polygon, true);
+    }
     for (const id of p.outlet_ids) {
       const r = byId.get(id);
-      assert.ok(r && r.venueJoin === 'joined' && p.mall_ids.includes(r.mallId), `${f.id}: ${id}`);
+      assert.ok(r, `${f.id}: ${id}`);
+      if (r.mallId) assert.ok(r.venueJoin === 'joined' && p.mall_ids.includes(r.mallId), `${f.id}: ${id}`);
+      else {
+        assert.ok(r.venueId && p.venue_ids.includes(r.venueId), `${f.id}: ${id} has an exact reviewed named-venue link`);
+        assert.deepEqual(p.mall_ids, [], 'independent geometry never creates a CityMETER center');
+      }
     }
   }
   const parent = fs.find(f => f.properties.height_status === 'unknown_parent_height_parts_owned');

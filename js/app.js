@@ -1,6 +1,6 @@
 /**
  * CityMETER · Camera Shops — application orchestration (same 0.5 architecture as
- * CityMETER · Luxury Brands; rows are camera-shop outlets, counts are ร้าน = shop
+ * CityMETER · Luxury Brands; rows are camera-shop outlets, counts are แบรนด์ = shop
  * banners and สาขา = outlets, ย่าน = CityMETER production Locales).
  *
  * One committed selection drives everything. Three row scopes exist and are
@@ -30,24 +30,24 @@
  * Resilience: core data first; the map (MapLibre, CDN) and optional datasets
  * are independent and retryable; charts are vendor-free.
  */
-import {SEGMENTS, CHANNELS, COHORTS, DEFAULT_COHORT, PROVINCES, provinceByName, provinceByCode, provinceNameFrom, filterRows, summarize, hasPoint, isClosed, bannersOf} from './model.js?v=20261023-camera-r2';
-import {summarizeAreaInsight, filterAreaRows} from './area-insight.js?v=20261023-camera-r2';
-import {renderInsightChart, rampMarkup} from './charts.js?v=20261023-camera-r2';
-import {loadMapLibrary} from './vendors.js?v=20261023-camera-r2';
-import {installStorePins} from './pins.js?v=20261023-camera-r2';
-import {installVenueBuildings, HOST_LAYERS} from './buildings.js?v=20261023-camera-r2';
-import {installVenueXray} from './venue-xray.js?v=20261023-camera-r2';
-import {assignNeighborhood} from './neighborhoods.js?v=20261023-camera-r2';
-import {configureBrandLogos, brandLogoMarkup} from './brand-logos.js?v=20261023-camera-r2';
-import {configureVenueLogos} from './venue-logos.js?v=20261023-camera-r2';
-import {installNeighborhoodLayers, installNeighborhoodLabels, installAreaLabels, buildAreaModel, featureBounds} from './map-layers.js?v=20261023-camera-r2';
-import {installProvinceLayers, buildProvinceModel, provinceBounds, PROVINCE_FILL_MAX_ZOOM, PROVINCE_LABEL_MAX_ZOOM} from './provinces.js?v=20261023-camera-r2';
-import {buildOverviewInsights, buildNeighborhoodProfile, buildStoreDetail, buildVenueProfile, describeStatus, rankVenues} from './profile-model.js?v=20261023-camera-r2';
-import {renderOverview, renderNeighborhood, renderVenue, renderStore, renderFilterChips, statusPill, link, esc, num} from './panel.js?v=20261023-camera-r2';
-import {buildMapStyle, basemapPalette, TILEJSON_URL, MASSING_BEFORE} from './map-style.js?v=20261023-camera-r2';
-import {installMassing, outerRings} from './massing.js?v=20261023-camera-r2';
-import {presetFor, applyPreset, fitPitched, framePoint} from './camera.js?v=20261023-camera-r2';
-import {buildBreadcrumb, renderBreadcrumb, breadcrumbText} from './breadcrumb.js?v=20261023-camera-r2';
+import {SEGMENTS, CHANNELS, COHORTS, DEFAULT_COHORT, PROVINCES, provinceByName, provinceByCode, provinceNameFrom, filterRows, summarize, hasPoint, isClosed, bannersOf, COUNT_METRICS, normalizeCountMetric, rankByMetric} from './model.js?v=20261023-camera-r4';
+import {summarizeAreaInsight, filterAreaRows} from './area-insight.js?v=20261023-camera-r4';
+import {renderInsightChart, rampMarkup} from './charts.js?v=20261023-camera-r4';
+import {loadMapLibrary} from './vendors.js?v=20261023-camera-r4';
+import {installStorePins} from './pins.js?v=20261023-camera-r4';
+import {installVenueBuildings, HOST_LAYERS} from './buildings.js?v=20261023-camera-r4';
+import {installVenueXray} from './venue-xray.js?v=20261023-camera-r4';
+import {assignNeighborhood} from './neighborhoods.js?v=20261023-camera-r4';
+import {configureBrandLogos, brandLogoMarkup} from './brand-logos.js?v=20261023-camera-r4';
+import {configureVenueLogos} from './venue-logos.js?v=20261023-camera-r4';
+import {installNeighborhoodLayers, installNeighborhoodLabels, installAreaLabels, buildAreaModel, featureBounds} from './map-layers.js?v=20261023-camera-r4';
+import {installProvinceLayers, buildProvinceModel, provinceBounds, PROVINCE_FILL_MAX_ZOOM, PROVINCE_LABEL_MAX_ZOOM} from './provinces.js?v=20261023-camera-r4';
+import {buildOverviewInsights, buildNeighborhoodProfile, buildStoreDetail, buildVenueProfile, describeStatus, rankVenues} from './profile-model.js?v=20261023-camera-r4';
+import {renderOverview, renderNeighborhood, renderVenue, renderStore, renderFilterChips, statusPill, link, esc, num} from './panel.js?v=20261023-camera-r4';
+import {buildMapStyle, basemapPalette, TILEJSON_URL, MASSING_BEFORE} from './map-style.js?v=20261023-camera-r4';
+import {installMassing, outerRings} from './massing.js?v=20261023-camera-r4';
+import {presetFor, applyPreset, fitPitched, framePoint} from './camera.js?v=20261023-camera-r4';
+import {buildBreadcrumb, renderBreadcrumb, breadcrumbText} from './breadcrumb.js?v=20261023-camera-r4';
 
 const $ = id => document.getElementById(id);
 const FIELDS = ['search', 'cohort', 'segment', 'province', 'channel', 'venue', 'neighborhood'];
@@ -61,7 +61,7 @@ const SEGMENT_LIST = Object.entries(SEGMENTS).map(([id, name]) => ({id, name}));
 const state = {
   data: null, neighborhoods: null, buildingData: null, provinces: null,
   scopeRows: [], baseRows: [], rows: [],
-  view: 'centers', page: 0,
+  view: 'centers', page: 0, metric: 'brands',
   focusAreaIds: [], autoFocus: true, focusIds: [], selectedId: '',
   panel: {mode: 'overview', id: '', venue: ''}, history: [],
   map: null, loaded: false, mapTheme: '', popup: null, initialCameraDone: false, tileTemplate: '',
@@ -99,6 +99,7 @@ function saveURL() {
   if (state.focusAreaIds.length) p.set('areas', state.focusAreaIds.join(','));
   else if (!state.autoFocus) p.set('areas', 'all');
   if (state.view !== 'centers') p.set('view', state.view);
+  if (state.metric !== 'brands') p.set('metric', state.metric);
   if (state.panel.mode === 'store' && state.panel.id) p.set('store', state.panel.id);
   if (state.panel.mode === 'venue' && state.panel.id) p.set('place', state.panel.id);
   if (!state.view3d) p.set('view3d', '0');
@@ -129,11 +130,12 @@ function update({fit = false} = {}) {
   const f = values(), feature = selectedNeighborhood();
   state.scopeRows = filterRows(state.data.rows, {...f, neighborhoodIds: null});
   state.baseRows = feature ? state.scopeRows.filter(r => assignNeighborhood(r, state.neighborhoods) === feature) : state.scopeRows;
-  const top = summarizeAreaInsight(state.baseRows, state.neighborhoods);
+  const top = summarizeAreaInsight(state.baseRows, state.neighborhoods, {metric: state.metric});
   state.focusIds = state.focusAreaIds.length ? state.focusAreaIds : (state.autoFocus && !feature ? top.areaIds : []);
   state.rows = state.focusIds.length ? filterAreaRows(state.baseRows, state.neighborhoods, new Set(state.focusIds)) : state.baseRows;
   state.page = 0;
-  state.areaModel = buildAreaModel(state.scopeRows, state.neighborhoods);
+  state.areaModel = buildAreaModel(state.scopeRows, state.neighborhoods, {metric: state.metric});
+  state.provinceModel = buildProvinceModel(provinceScopeRows(), state.provinces, {metric: state.metric});
   const s = summarize(state.rows, state.data.centers);
 
   // Keep the panel honest: drop a store/venue that left the filtered scope.
@@ -164,7 +166,7 @@ function update({fit = false} = {}) {
   drawChart();
   renderTable();
   saveURL();
-  announce(`พบ ${num(s.pos)} สาขา ${num(s.brands)} ร้าน`);
+  announce(`พบ ${num(s.pos)} สาขา ${num(s.brands)} แบรนด์`);
 }
 
 /** Focused rows get full detail; the rest of the scope becomes quiet context dots. */
@@ -194,7 +196,7 @@ function updatePins() {
 
 /* ---------- breadcrumb ---------- */
 /**
- * The venue level (ศูนย์การค้า / สถานที่) of the open venue or store: id is the
+ * The venue level (ศูนย์การค้า) of the open venue or store: id is the
  * CityMETER Shopping Center id when the venue is a matched center, else '' with
  * the plain venue label. `point` is the venue's representative point (center
  * coordinates, else the first member row with a point) — the ย่าน crumb is decided
@@ -240,13 +242,13 @@ function renderPanel(summary = summarize(state.rows, state.data.centers)) {
   renderCrumbs();
   syncEyeToggle();
   let html = '';
-  if (mode === 'neighborhood') html = renderNeighborhood(buildNeighborhoodProfile(state.scopeRows, areaById(state.panel.id), state.neighborhoods, state.data.centers, SEGMENT_LIST));
-  else if (mode === 'venue') html = renderVenue(buildVenueProfile(state.scopeRows, {mallId: state.panel.id, venue: state.panel.venue, centers: state.data.centers, geojson: state.neighborhoods}));
+  if (mode === 'neighborhood') html = renderNeighborhood(buildNeighborhoodProfile(state.scopeRows, areaById(state.panel.id), state.neighborhoods, state.data.centers, SEGMENT_LIST, {metric: state.metric}));
+  else if (mode === 'venue') html = renderVenue(buildVenueProfile(state.scopeRows, {mallId: state.panel.id, venue: state.panel.venue, centers: state.data.centers, geojson: state.neighborhoods}), {metric: state.metric});
   else if (mode === 'store') html = renderStore(buildStoreDetail(rowById(state.panel.id), {rows: state.scopeRows, geojson: state.neighborhoods, centers: state.data.centers}));
   if (!html) {
-    const insight = summarizeAreaInsight(focusMode() === 'explicit' ? state.rows : state.baseRows, state.neighborhoods);
-    const overview = buildOverviewInsights(state.baseRows, state.neighborhoods, SEGMENT_LIST);
-    html = renderOverview({insight, overview, summary, focusMode: focusMode(), areaModel: state.areaModel, asOf: state.data.meta?.asOf || '', venues: overview.areaCount ? [] : rankVenues(state.rows, state.data.centers), view3d: state.view3d, provinces: $('province').value ? [] : (state.provinceModel?.provinces || buildProvinceModelSafe()).filter(p => p.brands > 0).sort((a, b) => b.brands - a.brands || b.pos - a.pos)});
+    const insight = summarizeAreaInsight(focusMode() === 'explicit' ? state.rows : state.baseRows, state.neighborhoods, {metric: state.metric});
+    const overview = buildOverviewInsights(state.baseRows, state.neighborhoods, SEGMENT_LIST, {metric: state.metric});
+    html = renderOverview({insight, overview, summary, focusMode: focusMode(), areaModel: state.areaModel, asOf: state.data.meta?.asOf || '', venues: overview.areaCount ? [] : rankVenues(state.rows, state.data.centers, {metric: state.metric}), view3d: state.view3d, provinces: $('province').value ? [] : (state.provinceModel?.provinces || buildProvinceModelSafe()).sort((a, b) => rankByMetric(a, b, state.metric)), metric: state.metric});
     renderMapAha(insight);
   } else {
     $('map-aha').hidden = true;
@@ -265,8 +267,8 @@ function renderMapAha(insight) {
   el.hidden = $('panel').classList.contains('is-open');
   const crumb = `<p class="map-aha-crumb">${esc(breadcrumbText(buildBreadcrumb({area: null, provinceName: $('province').value})))}</p>`;
   el.innerHTML = mode === 'explicit'
-    ? `<div>${crumb}<h2>กำลังสำรวจ ${num(insight.areas.length)} ย่าน</h2><p>${num(insight.brands)} ร้าน · ${num(insight.pos)} สาขา</p></div><button type="button" class="btn" data-action="clear-focus">ดูทุกย่าน</button>`
-    : `<div>${crumb}<h2>${num(Math.round(insight.share))}% ของร้านกล้องมีสาขาใน ${num(insight.areas.length)} ย่าน</h2><p>${insight.areas.map(a => esc(a.name)).join(' · ')}</p></div>${mode === 'auto'
+    ? `<div>${crumb}<h2>กำลังสำรวจ ${num(insight.areas.length)} ย่าน</h2><p>${num(insight.brands)} แบรนด์ · ${num(insight.pos)} สาขา</p></div><button type="button" class="btn" data-action="clear-focus">ดูทุกย่าน</button>`
+    : `<div>${crumb}<h2>${num(Math.round(insight.share))}% ของแบรนด์มีสาขาใน ${num(insight.areas.length)} ย่าน</h2><p>${insight.areas.map(a => esc(a.name)).join(' · ')}</p></div>${mode === 'auto'
       ? '<button type="button" class="btn" data-action="clear-focus">ดูทุกย่าน</button>'
       : '<button type="button" class="btn primary" data-action="explore-top">โฟกัส</button>'}`;
 }
@@ -392,7 +394,7 @@ function resetToOverview({fit = true} = {}) {
 }
 
 function clearFilter(key) {
-  if (key === 'all') { $('filters').reset(); $('cohort').value = DEFAULT_COHORT; resetToOverview(); return; }
+  if (key === 'all') { $('filters').reset(); $('cohort').value = DEFAULT_COHORT; state.metric = 'brands'; $('count-metric').value = 'brands'; resetToOverview(); return; }
   if (key === 'neighborhood') { $('neighborhood').value = ''; resetToOverview(); return; }
   $(key).value = key === 'cohort' ? DEFAULT_COHORT : '';
   update({fit: key !== 'search'});
@@ -425,19 +427,23 @@ function onPanelAction(event) {
 }
 
 /* ---------- legend ---------- */
-/** Country/region zooms read the province frames; from PROVINCE_FILL_MAX_ZOOM the neighborhoods carry the scale. */
-const provinceZoom = () => Boolean(state.provinceModel) && (state.map?.getZoom?.() ?? 12) < PROVINCE_FILL_MAX_ZOOM;
+/** A selected province outside Bangkok has no production Locale layer to replace its provincial reading. */
+const provinceZoom = () => Boolean(state.provinceModel) && (
+  ($('province').value && $('province').value !== 'กรุงเทพมหานคร') ||
+  (state.map?.getZoom?.() ?? 12) < PROVINCE_FILL_MAX_ZOOM
+);
 function renderLegend() {
   const atProvince = provinceZoom();
   const model = atProvince ? state.provinceModel : state.areaModel;
   const steps = $('legend-steps');
-  $('legend-title').textContent = atProvince ? 'จังหวัด · จำนวนร้าน' : 'ย่าน · จำนวนร้าน';
+  const count = COUNT_METRICS[state.metric];
+  $('legend-title').textContent = `${atProvince ? 'จังหวัด' : 'ย่าน'} · ${count.label}`;
   const unit = atProvince ? 'จังหวัด' : 'ย่าน';
-  if (!model || !model.scale.max) { steps.innerHTML = `<span class="hint">ไม่มี${unit}ที่มีร้านในตัวกรองนี้</span>`; }
+  if (!model || !model.scale.max) { steps.innerHTML = `<span class="hint">ยังไม่พบสาขาในชุดข้อมูลตามตัวกรองนี้</span>`; }
   else {
-    steps.innerHTML = rampMarkup(model.scale, `ร้านไม่ซ้ำต่อ${unit}`) +
-      (model.zeroCount ? `<span class="legend-step" title="${unit}ที่มีร้านในข้อมูลแต่ไม่พบในตัวกรองนี้"><i class="legend-zero" aria-hidden="true"></i>0</span>` : '');
-    $('legend-areas').title = `ร้านไม่ซ้ำต่อ${unit} · สีไล่ ${model.scale.steps} ระดับของ LDS จาก 1 ถึง ${model.scale.max} · นอกขอบเขต${unit}ไม่ระบายสี · สีเดียวกันทั้งสองธีม`;
+    steps.innerHTML = rampMarkup(model.scale, `${count.unit}ต่อ${unit}`) +
+      (model.zeroCount ? `<span class="legend-step" title="ยังไม่พบสาขาในชุดข้อมูลตามตัวกรองนี้"><i class="legend-zero" aria-hidden="true"></i>0 · ยังไม่พบ</span>` : '');
+    $('legend-areas').title = `${count.unit}ต่อ${unit} · 0 = ยังไม่พบสาขาในชุดข้อมูล ไม่ยืนยันว่าไม่มีในจังหวัด · สีไล่ ${model.scale.steps} ระดับของ LDS จาก 1 ถึง ${model.scale.max} · นอกขอบเขต${unit}ไม่ระบายสี · สีเดียวกันทั้งสองธีม`;
   }
   document.querySelector('.map-panel').classList.toggle('is-3d', state.view3d);
   document.querySelector('.map-panel').classList.toggle('is-province-zoom', atProvince);
@@ -453,7 +459,7 @@ function drawChart() {
   const narrowed = selectedNeighborhood() || state.focusIds.length;
   $('chart-scope').textContent = `${num(state.scopeRows.length)} สาขาในตัวกรอง${narrowed ? ' · ทุกย่าน' : ''}`;
   if ($('insight-content').hidden) return;
-  chartDispose = renderInsightChart({elementId: 'chart', view: state.view, rows: state.scopeRows, segments: SEGMENT_LIST, neighborhoods: state.neighborhoods, theme: theme(), selectedAreaId: areaKey(selectedNeighborhood())}, selection => {
+  chartDispose = renderInsightChart({elementId: 'chart', view: state.view, rows: state.scopeRows, segments: SEGMENT_LIST, neighborhoods: state.neighborhoods, theme: theme(), selectedAreaId: areaKey(selectedNeighborhood()), metric: state.metric}, selection => {
     if (selection.type === 'resetAreas') { $('neighborhood').value = ''; resetToOverview(); return; }
     if (selection.type === 'neighborhood') selectNeighborhood(selection.id, {fromMap: true});
   });
@@ -479,7 +485,7 @@ function renderTable() {
   $('result-rows').innerHTML = rs.map(r => {
     const area = assignNeighborhood(r, state.neighborhoods);
     return `<tr><td><button type="button" class="row-name brand-row" data-id="${esc(r.id)}">${brandLogoMarkup(r.brand)}<span>${esc(bannersOf(r).join(' · '))}</span></button><small>${esc(r.name)}</small></td>
-      <td>${r.venue ? esc(r.venue) : `<span class="hint">${esc(CHANNELS[r.channel] || 'ไม่มีสถานที่')}</span>`}<small>${esc(provinceByName(r.province)?.th || r.province)}</small></td>
+      <td>${r.venue ? esc(r.venue) : `<span class="hint">${esc(CHANNELS[r.channel] || 'ไม่มีศูนย์การค้า')}</span>`}<small>${esc(provinceByName(r.province)?.th || r.province)}</small></td>
       <td>${area ? esc(area.properties.name) : `<span class="hint">${hasPoint(r) ? 'นอกย่าน' : '—'}</span>`}</td>
       <td>${statusPill(describeStatus(r))}</td>
       <td><small class="data-number">${hasPoint(r) ? r.latitude.toFixed(5) + ', ' + r.longitude.toFixed(5) : 'ไม่มีพิกัด'}</small></td>
@@ -543,7 +549,11 @@ function fitMap({instant = false} = {}) {
   const b = area ? featureBounds(area, maplibregl.LngLatBounds) : new maplibregl.LngLatBounds();
   const focusFeatures = area ? [area] : state.neighborhoods.features.filter(f => state.focusIds.includes(areaKey(f)));
   if (!area) {
-    if (!rs.length && !state.focusIds.length) return;
+    if (!rs.length && !state.focusIds.length) {
+      const province = provinceBounds(state.provinces, selectedProvinceCode(), maplibregl.LngLatBounds);
+      if (province) fitPitched(state.map, province, {preset: 'plan', padding: cameraPadding(), maxZoom: 10, animate: animate() && !instant});
+      return;
+    }
     for (const f of focusFeatures) featureBounds(f, maplibregl.LngLatBounds).toArray().forEach(p => b.extend(p));
     rs.forEach(r => b.extend([r.longitude, r.latitude]));
   }
@@ -569,14 +579,14 @@ function fitMap({instant = false} = {}) {
 const provinceScopeRows = () => filterRows(state.data.rows, {...values(), province: '', neighborhoodIds: null});
 const selectedProvinceCode = () => provinceByName($('province').value)?.code || '';
 function buildProvinceModelSafe() {
-  try { return state.provinces?.features?.length ? buildProvinceModel(provinceScopeRows(), state.provinces).provinces : []; } catch { return []; }
+  try { return state.provinces?.features?.length ? buildProvinceModel(provinceScopeRows(), state.provinces, {metric: state.metric}).provinces : []; } catch { return []; }
 }
 
 function updateSpatialLayers() {
   if (!state.loaded) return;
   const feature = selectedNeighborhood();
   const code = selectedProvinceCode();
-  const pm = state.provinceLayers?.update({rows: provinceScopeRows(), selectedCode: code, visible: true}) || null;
+  const pm = state.provinceLayers?.update({rows: provinceScopeRows(), selectedCode: code, visible: true, metric: state.metric}) || null;
   state.provinceModel = pm;
   state.provinceLabels?.update(pm ? pm.provinces : [], {selectedId: code, visible: true, LngLatBounds: maplibregl.LngLatBounds});
   if (pm) renderLegend();
@@ -584,23 +594,25 @@ function updateSpatialLayers() {
   // The host-building key only when a host building is on the map (many hosts have no accepted footprint).
   document.querySelector('.map-panel').classList.toggle('no-host-buildings', !(state.buildings?.displayedFeatures() || []).length);
   const selectedId = areaKey(feature);
-  const model = state.areaLayers?.update({rows: state.scopeRows, selectedId, visible: state.showNeighborhoods, focusIds: state.focusIds});
+  const model = state.areaLayers?.update({rows: state.scopeRows, selectedId, visible: state.showNeighborhoods, focusIds: state.focusIds, metric: state.metric});
   state.labels?.update(model ? model.areas : [], {selectedId, visible: state.showNeighborhoods, LngLatBounds: maplibregl.LngLatBounds});
   const focusFeatures = feature ? [feature] : state.focusIds.map(areaById).filter(Boolean);
-  const hostFeatures = state.buildings?.displayedFeatures() || [];
+  const hostMasses = state.buildings?.visibleExtrusionFeatures() || [];
   // City-tier fade anchors: the focused areas (or every area when nothing is focused) — far from them the city fades out.
   const anchorFeatures = focusFeatures.length ? focusFeatures : state.neighborhoods.features;
   state.massing?.update({
     regions: focusFeatures.flatMap(outerRings),
-    hosts: hostFeatures.flatMap(outerRings),
+    hosts: hostMasses.flatMap(outerRings),
     anchors: anchorFeatures.map(f => featureBounds(f, maplibregl.LngLatBounds).getCenter().toArray()),
     enabled: true, city: state.view3d, zoom: state.map.getZoom(), latitude: state.map.getCenter().lat,
   })?.catch(e => console.warn('Massing', e));
   // Venue-level two-point view: surroundings very quiet, buildings hiding the venue see-through.
-  state.massing?.setScene(cameraPreset() === 'eye' ? 'eye' : 'default', venueTargets(hostFeatures));
+  state.massing?.setScene(cameraPreset() === 'eye' ? 'eye' : 'default', venueTargets(hostMasses));
   // Venue x-ray: the venue's own solid is always drawn on top in 3D (never hidden by massing).
   const hostColors = () => { const s = getComputedStyle(document.documentElement); return {fill: s.getPropertyValue('--map-active-layer').trim(), stroke: s.getPropertyValue('--map-selected-stroke').trim()}; };
-  state.xray?.update(venueLevel() ? venueHostFeatures(hostFeatures).filter(f => f.properties?.render_as === 'extrusion') : [], {colors: hostColors()});
+  // The selected neighborhood's real host masses stay visible through quiet
+  // context buildings too; this never changes outlet/venue grouping or geometry.
+  state.xray?.update(venueLevel() ? venueHostFeatures(hostMasses) : feature ? hostMasses : [], {colors: hostColors()});
   state.xray?.setEnabled(state.view3d);
   state.pins?.layout();
 }
@@ -641,16 +653,25 @@ function installSpatialLayers() {
     onResult: result => { state.massingResult = result; $('map-status').dataset.massing = `${result.features || 0}`; },
   });
   // The venue x-ray is the last 3D layer: always on top of host, massing and occluders.
-  try { state.xray = installVenueXray(map, {beforeId: MASSING_BEFORE}); }
+  try { state.xray = installVenueXray(map); }
   catch (e) { state.xray = null; console.warn('Venue x-ray unavailable', e); }
   // The solid is clickable everywhere it is drawn: MapLibre's own fill-extrusion query only finds a
   // tall building near its footprint or along the camera ray, so the x-ray hit-tests its own triangles.
   map.on('click', e => {
     if (e.originalEvent?.__citymeterVenueBuildingHandled || !state.xray?.hitTest([e.point.x, e.point.y])) return;
     const v = currentVenue();
-    if (!v) return;
-    e.originalEvent.__citymeterVenueBuildingHandled = true;
-    if (state.panel.mode !== 'venue') selectVenue(v.id, v.label);
+    if (v) {
+      if (e.originalEvent) e.originalEvent.__citymeterVenueBuildingHandled = true;
+      if (state.panel.mode !== 'venue') selectVenue(v.id, v.label);
+      return;
+    }
+    const feature = state.xray.hitFeature([e.point.x, e.point.y]);
+    const ids = asList(feature?.properties?.selected_outlet_ids);
+    const rs = detailRows().filter(r => ids.includes(r.id));
+    if (!rs.length) return;
+    if (e.originalEvent) e.originalEvent.__citymeterVenueBuildingHandled = true;
+    if (rs.length === 1) selectStore(rs[0].id, {fly: false, showPopup: true, fromPin: true});
+    else selectVenue(rs[0].mallId, rs[0].venue);
   });
   map.on('mousemove', e => {
     const over = Boolean(state.xray?.hitTest([e.point.x, e.point.y]));
@@ -674,7 +695,7 @@ function initMap() {
     state.map.addControl(new maplibregl.NavigationControl({showCompass: true, visualizePitch: true}), 'top-right');
     state.labels = installNeighborhoodLabels(state.map, $('map'), {onSelect: id => selectNeighborhood(id, {fromMap: true}), reservedBottom: bottomSpace});
     state.provinceLabels = installAreaLabels(state.map, $('map'), {className: 'province-label', hostId: 'province-labels', hostLabel: 'จังหวัดบนแผนที่', minZoom: 0, maxZoom: PROVINCE_LABEL_MAX_ZOOM, verb: 'กดเพื่อดูจังหวัด', detailZoomClass: false, onSelect: code => selectProvince(code), reservedBottom: bottomSpace});
-    state.map.on('zoomend', () => { if (state.loaded) renderLegend(); });
+    state.map.on('zoomend', () => { if (state.loaded) { renderLegend(); updateSpatialLayers(); } });
     state.pins = installStorePins(state.map, $('map'), {
       reservedBottom: bottomSpace,
       onSelect: r => selectStore(r.id, {fly: false, showPopup: true, fromPin: true}),
@@ -794,6 +815,8 @@ function options(id, items, labels = {}) {
 
 function restoreFromURL() {
   const p = new URLSearchParams(location.search);
+  state.metric = normalizeCountMetric(p.get('metric'));
+  $('count-metric').value = state.metric;
   for (const f of FIELDS) if (p.has(f)) $(f).value = f === 'province' ? (provinceNameFrom(p.get(f)) || p.get(f)) : p.get(f);
   if (![...$('cohort').options].some(o => o.value === $('cohort').value)) $('cohort').value = DEFAULT_COHORT;
   if (['centers', 'mix', 'compare'].includes(p.get('view'))) state.view = p.get('view');
@@ -810,6 +833,7 @@ function restoreFromURL() {
 }
 
 function wireEvents() {
+  $('count-metric').addEventListener('change', () => { state.metric = normalizeCountMetric($('count-metric').value); update(); });
   let timer;
   for (const f of FIELDS) $(f).addEventListener(f === 'search' ? 'input' : 'change', () => {
     clearTimeout(timer);
@@ -821,7 +845,7 @@ function wireEvents() {
       update({fit: f !== 'search'});
     }, f === 'search' ? 180 : 0);
   });
-  $('filters').addEventListener('reset', () => setTimeout(() => { $('cohort').value = DEFAULT_COHORT; resetToOverview(); }, 0));
+  $('filters').addEventListener('reset', () => setTimeout(() => { $('cohort').value = DEFAULT_COHORT; state.metric = 'brands'; $('count-metric').value = 'brands'; resetToOverview(); }, 0));
   $('panel-view').addEventListener('click', onPanelAction);
   $('filter-chips').addEventListener('click', onPanelAction);
   $('map-aha').addEventListener('click', onPanelAction);
@@ -838,7 +862,7 @@ function wireEvents() {
     });
   });
 
-  $('fit-map').onclick = () => { if (selectedNeighborhood() || state.rows.some(hasPoint)) fitMap(); };
+  $('fit-map').onclick = () => { if (selectedNeighborhood() || selectedProvinceCode() || state.rows.some(hasPoint)) fitMap(); };
   $('bangkok-map').onclick = () => { if (state.map) applyPreset(state.map, state.view3d ? 'city' : 'plan', {center: BANGKOK.center, zoom: BANGKOK.zoom, animate: animate()}); };
   $('toggle-3d').onclick = toggle3d;
   $('toggle-eye').onclick = toggleTwoPoint;
@@ -886,7 +910,7 @@ async function init() {
 
     options('segment', Object.keys(SEGMENTS), SEGMENTS);
     options('channel', state.data.rows.map(r => r.channel), CHANNELS);
-    options('province', state.data.rows.map(r => r.province), PROVINCE_LABELS);
+    options('province', PROVINCES.map(p => p.th), PROVINCE_LABELS);
     options('venue', state.data.rows.map(r => r.venue));
     for (const f of state.neighborhoods.features) { const o = document.createElement('option'); o.value = areaKey(f); o.textContent = f.properties.name; $('neighborhood').append(o); }
     $('category-items').innerHTML = Object.entries(SEGMENTS).map(([, name], i) => `<span><i class="category-swatch category-${i + 1}" aria-hidden="true"></i>${esc(name)}</span>`).join('');

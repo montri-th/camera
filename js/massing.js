@@ -20,8 +20,8 @@
  * Heights are OpenMapTiles render_height / render_min_height (OSM tags where
  * present, otherwise the schema's default). They are context, never a claim.
  */
-import {parseVectorTile, tileToLonLat, lonLatToTileUnits, tilesForBBox, metresPerTileUnit} from './mvt.js?v=20261023-camera-r2';
-import {clipRingToBox, offsetRing, roundRing, isClockwise, ringsIntersect, cleanRing, signedArea} from './geometry.js?v=20261023-camera-r2';
+import {parseVectorTile, tileToLonLat, lonLatToTileUnits, tilesForBBox, metresPerTileUnit} from './mvt.js?v=20261023-camera-r4';
+import {clipRingToBox, offsetRing, roundRing, isClockwise, ringsIntersect, cleanRing, signedArea} from './geometry.js?v=20261023-camera-r4';
 
 export const CITY_LAYER = 'city-massing';
 export const FOCUS_SOURCE = 'focus-massing';
@@ -216,9 +216,12 @@ export function installMassing(map, {sourceId = 'openmaptiles', beforeId, colors
     const bucket = Math.floor(zoom);
     const {tiles, truncated} = tilesForRegions(regions);
     const ready = typeof tileUrl === 'function' && tiles.length > 0 && tiles.every(t => Boolean(tileUrl(t)));
-    const key = `${enabled}|${ready}|${bucket}|${regions.length}:${regions.map(r => r.length + ':' + r[0]?.join(',')).join('|')}|${hosts.length}`;
+    // Equal ring counts do not mean equal hosts: switching venues must replace
+    // the suppression masks even when both selections contain one footprint.
+    const key = JSON.stringify({enabled, ready, bucket, regions, hosts});
     if (key === lastKey) return {features: 0, tiles: 0, cached: true};
     lastKey = key; lastBucket = bucket;
+    const my = ++token;
     if (!enabled || !regions.length || !ready) {
       map.getSource(FOCUS_SOURCE)?.setData({type: 'FeatureCollection', features: []}); setHidden([]);
       currentFeatures = []; setOccluders([]);
@@ -226,7 +229,6 @@ export function installMassing(map, {sourceId = 'openmaptiles', beforeId, colors
       if (typeof onResult === 'function') { try { onResult(empty); } catch (e) { console.warn('Massing onResult', e); } }
       return empty;
     }
-    const my = ++token;
     const radiusM = roundingRadiusM(Math.max(zoom, 14.5), latitude), offsetM = encloseOffsetM(radiusM);
     const layers = await Promise.all(tiles.map(t => loadTile(t).catch(e => { console.warn('Massing tile unavailable', e.message || e); return null; })));
     if (my !== token || disposed) return {features: 0, tiles: 0, stale: true};

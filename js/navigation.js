@@ -14,7 +14,7 @@ export const NAV_GLYPHS = Object.freeze({
  * Metric-tile pictograms (test exception approved by the owner 2026-10-22; to be
  * registered in LDS if it proves itself). Same family and axes as nav-7, a
  * separate subset so the approved nav-7 bytes stay unchanged. Roles → glyphs:
- * brand (ร้าน) photo_camera · store storefront · venue local_mall · area map ·
+ * brand (แบรนด์) photo_camera · store storefront · venue local_mall · area map ·
  * province location_city · exclusive star · gla square_foot · segment category.
  */
 export const PICTOGRAM_CONTRACT = Object.freeze({
@@ -56,25 +56,26 @@ const TITLES = {
   'fit-map': 'ปรับแผนที่ให้เห็นทุกสาขาตามตัวกรอง',
   'bangkok-map': 'กลับไปดูพื้นที่กรุงเทพฯ',
   'toggle-3d': 'สลับมุมมอง 3 มิติ (อาคารทั้งเมือง) กับแผนผัง 2 มิติ',
-  'toggle-eye': 'มุมสถาปนิก: เปอร์สเปกทีฟ 2 จุดที่ระดับสถานที่ อาคารรอบข้างจางลง อาคารที่บังสถานที่โปร่งใส',
+  'toggle-eye': 'มุมสถาปนิก: เปอร์สเปกทีฟ 2 จุดที่ระดับศูนย์การค้า อาคารรอบข้างจางลง อาคารที่บังศูนย์การค้าโปร่งใส',
   'toggle-neighborhoods': 'แสดงหรือซ่อนสีและขอบเขตย่าน',
   'mobile-panel': 'เปิดแผงข้อมูลและตัวกรอง',
   'open-help': 'เปิดวิธีใช้',
   'toggle-insights': 'เปิดหรือย่อกราฟเปรียบเทียบย่าน',
   'open-table': 'เปิดตารางสาขาตามตัวกรอง',
   'toggle-table': 'ปิดตารางและกลับไปแผนที่',
-  'search': 'ค้นหาร้าน สาขา สถานที่ ย่าน หรือจังหวัด',
+  'search': 'ค้นหาแบรนด์ สาขา ศูนย์การค้า ย่าน หรือจังหวัด',
   'cohort': 'เลือกสาขาขายปลีก ทั้งหมด หรือรายการที่รอตรวจตัวตนและที่ตั้ง',
-  'segment': 'เลือกประเภทร้าน',
+  'segment': 'เลือกประเภทแบรนด์',
   'province': 'กรองตามจังหวัด',
+  'count-metric': 'เลือกจำนวนแบรนด์ไม่ซ้ำหรือจำนวนสาขาสำหรับสี ป้าย และอันดับ',
   'channel': 'แยกร้านในศูนย์การค้า ร้านริมถนน/อาคาร และรูปแบบอื่น',
-  'venue': 'กรองตามสถานที่ (ศูนย์การค้า ไฮเปอร์มาร์เก็ต หรืออาคาร)',
+  'venue': 'กรองตามศูนย์การค้า (ศูนย์การค้า ไฮเปอร์มาร์เก็ต หรืออาคาร)',
   'neighborhood': 'เลือกย่าน (Locale ของ CityMETER ในกรุงเทพฯ)',
   'prev-page': 'ดูหน้าก่อนหน้าของตาราง',
   'next-page': 'ดูหน้าถัดไปของตาราง',
-  'tab-centers': 'เปรียบเทียบจำนวนร้านในแต่ละย่าน',
-  'tab-mix': 'ดูบุคลิกของย่านผ่านประเภทร้าน',
-  'tab-compare': 'เปรียบเทียบร้านเฉพาะย่านและร้านที่พบร่วมกัน',
+  'tab-centers': 'เปรียบเทียบจำนวนแบรนด์ในแต่ละย่าน',
+  'tab-mix': 'ดูบุคลิกของย่านผ่านประเภทแบรนด์',
+  'tab-compare': 'เปรียบเทียบแบรนด์เฉพาะย่านและแบรนด์ที่พบร่วมกัน',
 };
 
 function decorateNavigation() {

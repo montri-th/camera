@@ -13,8 +13,9 @@
  * with 0 selected brands → lowest fill + zero outline), and out_of_scope for
  * everything outside the defined set (bare basemap, nothing drawn).
  */
-import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
-import {buildCountScale, classify} from './scales.js?v=20261023-camera-r2';
+import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r4';
+import {buildCountScale, classify} from './scales.js?v=20261023-camera-r4';
+import {normalizeCountMetric, metricValue, COUNT_METRICS} from './model.js?v=20261023-camera-r4';
 
 export const FILL_MAX_ZOOM = 14.5;
 const SOURCE = 'neighborhoods';
@@ -43,14 +44,15 @@ export function featureBounds(feature, LngLatBounds) {
  * Build the per-area model used by the layer, the legend and the labels.
  * Returns {areas, scale} where every defined area carries its EVID-05 state and its LUT sample.
  */
-export function buildAreaModel(rows, geojson) {
+export function buildAreaModel(rows, geojson, {metric = 'brands'} = {}) {
+  metric = normalizeCountMetric(metric);
   const summaries = summarizeNeighborhoods(rows, geojson, {includeEmpty: true});
-  const scale = buildCountScale(summaries.map(s => s.brands));
+  const scale = {...buildCountScale(summaries.map(s => metricValue(s, metric))), unit: COUNT_METRICS[metric].unit};
   const areas = summaries.map(s => {
-    const c = classify(s.brands, scale);
-    return {id: s.id, name: s.name, nameEn: s.nameEn, brands: s.brands, pos: s.pos, state: c.state, fill: c.fill, ink: c.ink, outline: c.outline || null, feature: s.feature, latitude: s.latitude, longitude: s.longitude};
+    const c = classify(metricValue(s, metric), scale);
+    return {id: s.id, name: s.name, nameEn: s.nameEn, brands: s.brands, pos: s.pos, value: metricValue(s, metric), metric, state: c.state, fill: c.fill, ink: c.ink, outline: c.outline || null, feature: s.feature, latitude: s.latitude, longitude: s.longitude};
   });
-  return {areas, scale, zeroCount: areas.filter(a => a.state === 'measured_zero').length};
+  return {areas, metric, scale, zeroCount: areas.filter(a => a.state === 'measured_zero').length};
 }
 
 export function installNeighborhoodLayers(map, geojson, {onSelect} = {}) {
@@ -89,14 +91,14 @@ export function installNeighborhoodLayers(map, geojson, {onSelect} = {}) {
    * their data fill; the rest stay as quiet outlines so attention goes to the
    * focused part without recolouring any data value.
    */
-  function update({rows = [], selectedId = '', visible = true, focusIds = []} = {}) {
-    current = buildAreaModel(rows, geojson);
+  function update({rows = [], selectedId = '', visible = true, focusIds = [], metric = 'brands'} = {}) {
+    current = buildAreaModel(rows, geojson, {metric});
     const focus = new Set(selectedId ? [selectedId] : focusIds);
     const focusMode = focus.size > 0;
     for (const a of current.areas) { a.focused = !focusMode || focus.has(a.id); a.quiet = focusMode && !focus.has(a.id); }
     const features = current.areas.map(a => ({
       type: 'Feature', id: a.id, geometry: a.feature.geometry,
-      properties: {id: a.id, name: a.name, brands: a.brands, pos: a.pos, state: a.state, fill: a.fill, filled: a.focused ? 1 : 0, quiet: a.quiet ? 1 : 0, selected: a.id === selectedId || (focusIds.includes(a.id) && !selectedId) ? 1 : 0},
+      properties: {id: a.id, name: a.name, brands: a.brands, pos: a.pos, value: a.value, metric: a.metric, state: a.state, fill: a.fill, filled: a.focused ? 1 : 0, quiet: a.quiet ? 1 : 0, selected: a.id === selectedId || (focusIds.includes(a.id) && !selectedId) ? 1 : 0},
     }));
     map.getSource(SOURCE)?.setData({type: 'FeatureCollection', features});
     for (const id of Object.values(LAYERS)) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
@@ -175,9 +177,10 @@ export function installAreaLabels(map, container, {onSelect, reservedBottom = ()
       button.className = `${className} is-${a.state}${a.id === selectedId ? ' is-selected' : ''}${a.quiet ? ' is-quiet' : ''}`;
       button.innerHTML = `<span class="label-name"></span><span class="label-count data-number" aria-hidden="true"></span>`;
       button.querySelector('.label-name').textContent = a.name;
-      button.querySelector('.label-count').textContent = String(a.brands);
-      button.setAttribute('aria-label', `${a.name}: ${a.brands} ร้าน, ${a.pos} สาขา ${verb}`);
-      button.title = `${a.name} · ${a.brands} ร้าน · ${a.pos} สาขา`;
+      button.querySelector('.label-count').textContent = String(a.value ?? a.brands);
+      const zeroNote = a.pos === 0 ? ' · ยังไม่พบสาขาในชุดข้อมูล' : '';
+      button.setAttribute('aria-label', `${a.name}: ${a.brands} แบรนด์, ${a.pos} สาขา${zeroNote} ${verb}`);
+      button.title = `${a.name} · ${COUNT_METRICS[a.metric || 'brands'].label} ${a.value ?? a.brands} · ${a.brands} แบรนด์ · ${a.pos} สาขา${zeroNote}`;
       button.setAttribute('aria-pressed', String(a.id === selectedId));
       if (a.state === 'measured_zero') { button.classList.add('is-zero'); }
       button.onclick = () => onSelect?.(a.id);

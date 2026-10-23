@@ -1,10 +1,9 @@
-import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
-import {bannersOf, bannerSegmentsOf} from './model.js?v=20261023-camera-r2';
+import {summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r4';
+import {bannersOf, bannerSegmentsOf, uniqueOutletRows, normalizeCountMetric, rankByMetric} from './model.js?v=20261023-camera-r4';
 
 const text = value => String(value ?? '').trim();
-/** Distinct counted banners (ร้าน) of the rows; a co-branded outlet contributes each banner. */
+/** Distinct counted banners (แบรนด์) of the rows; a co-branded outlet contributes each banner. */
 const uniqueBrands = rows => new Set(rows.flatMap(row => bannersOf(row).map(text)).filter(Boolean));
-const sortAreas = (a, b) => b.brands - a.brands || b.pos - a.pos || a.name.localeCompare(b.name) || String(a.id).localeCompare(String(b.id));
 
 /**
  * A chart describes the caller's selected observations, with the same frozen
@@ -13,8 +12,9 @@ const sortAreas = (a, b) => b.brands - a.brands || b.pos - a.pos || a.name.local
  * "Exclusive" means observed in one of these defined neighborhoods only;
  * it is not an assertion about the whole market or a brand's other stores.
  */
-export function buildNeighborhoodChartModel(rows = [], neighborhoods, segments = []) {
-  const selected = Array.isArray(rows) ? rows : [];
+export function buildNeighborhoodChartModel(rows = [], neighborhoods, segments = [], {metric = 'brands'} = {}) {
+  metric = normalizeCountMetric(metric);
+  const selected = uniqueOutletRows(rows);
   const registry = new Map((Array.isArray(segments) ? segments : []).map(segment => [text(segment.id), text(segment.name || segment.id)]));
   const grouped = summarizeNeighborhoods(selected, neighborhoods);
   const brandAreas = new Map();
@@ -46,10 +46,10 @@ export function buildNeighborhoodChartModel(rows = [], neighborhoods, segments =
         brands: cell.brands.size, pos: cell.rows.size, brandNames: [...cell.brands].sort(),
       })),
     };
-  }).sort(sortAreas);
+  }).sort((a, b) => rankByMetric(a, b, metric));
   const assignedPos = areas.reduce((sum, area) => sum + area.pos, 0);
   return {
-    areas, areaCount: areas.length, assignedPos, outsidePos: selected.length - assignedPos,
+    areas, metric, areaCount: areas.length, assignedPos, outsidePos: selected.length - assignedPos,
     totalPos: selected.length, totalBrands: uniqueBrands(selected).size,
     assignedBrands: brandAreas.size,
   };

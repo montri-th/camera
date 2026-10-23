@@ -1,7 +1,7 @@
 /**
  * Province frames for the country view (owner instruction 2026-10-22: when the
  * whole country is on screen the map must still show where the data is — the
- * provinces that hold camera shops get a frame to drill down into).
+ * all 77 provinces get a frame to drill down into).
  *
  * Below PROVINCE_FILL_MAX_ZOOM every province that carries rows is filled with
  * the LDS `count` family (distinct shop banners per province, equal-interval classes
@@ -14,12 +14,12 @@
  * Boundaries: data/provinces.geojson (OpenGISData-Thailand, CC BY 4.0, DOPA-
  * credited) — frames for context and navigation, never an administrative claim.
  * EVID-05: measured (nonzero), measured_zero (province in the frame set with 0
- * banners in the current filter → lowest fill + zero outline), out_of_scope
- * (provinces without rows in the dataset — nothing drawn).
+ * observed outlets in the current filter → lowest fill + zero outline). Zero
+ * describes the source-backed observations, not absence of shops in the market.
  */
-import {PROVINCES, provinceByName, bannersOf} from './model.js?v=20261023-camera-r2';
-import {buildCountScale, classify} from './scales.js?v=20261023-camera-r2';
-import {featureBounds, firstLineLayerId} from './map-layers.js?v=20261023-camera-r2';
+import {PROVINCES, provinceByName, bannersOf, uniqueOutletRows, normalizeCountMetric, metricValue, COUNT_METRICS} from './model.js?v=20261023-camera-r4';
+import {buildCountScale, classify} from './scales.js?v=20261023-camera-r4';
+import {featureBounds, firstLineLayerId} from './map-layers.js?v=20261023-camera-r4';
 
 export const PROVINCE_FILL_MAX_ZOOM = 9;
 export const PROVINCE_OUTLINE_MAX_ZOOM = 12;
@@ -36,10 +36,11 @@ function cssVar(name, fallback) {
  * Per-province model: distinct banners and rows per province among `rows`
  * (rows carry the dataset province name; the frame set is the GeoJSON).
  */
-export function buildProvinceModel(rows, geojson) {
+export function buildProvinceModel(rows, geojson, {metric = 'brands'} = {}) {
+  metric = normalizeCountMetric(metric);
   const features = geojson?.features || [];
   const byCode = new Map();
-  for (const r of rows || []) {
+  for (const r of uniqueOutletRows(rows)) {
     const p = provinceByName(r.province);
     if (!p) continue;
     const e = byCode.get(p.code) || {brands: new Set(), pos: 0};
@@ -51,11 +52,12 @@ export function buildProvinceModel(rows, geojson) {
     const code = f.id || f.properties?.code;
     const meta = PROVINCES.find(p => p.code === code) || {code, th: f.properties?.name || code, en: f.properties?.nameEn || code};
     const e = byCode.get(code);
-    return {id: code, code, name: meta.th, nameEn: meta.en, brands: e ? e.brands.size : 0, pos: e ? e.pos : 0, feature: f};
+    return {id: code, code, name: meta.th, nameEn: meta.en, brands: e ? e.brands.size : 0, pos: e ? e.pos : 0, feature: f,
+      observationStatus: e ? 'observed_outlets' : 'no_observed_outlets'};
   });
-  const scale = buildCountScale(provinces.map(p => p.brands));
-  for (const p of provinces) { const c = classify(p.brands, scale); p.state = c.state; p.fill = c.fill; p.ink = c.ink; p.outline = c.outline || null; }
-  return {provinces, scale, zeroCount: provinces.filter(p => p.state === 'measured_zero').length};
+  const scale = {...buildCountScale(provinces.map(p => metricValue(p, metric))), unit: COUNT_METRICS[metric].unit};
+  for (const p of provinces) { const c = classify(metricValue(p, metric), scale); p.value = metricValue(p, metric); p.metric = metric; p.state = c.state; p.fill = c.fill; p.ink = c.ink; p.outline = c.outline || null; }
+  return {provinces, metric, scale, zeroCount: provinces.filter(p => p.state === 'measured_zero').length};
 }
 
 export function installProvinceLayers(map, geojson, {onSelect} = {}) {
@@ -90,12 +92,12 @@ export function installProvinceLayers(map, geojson, {onSelect} = {}) {
   let current = {provinces: [], classes: null, zeroCount: 0};
 
   /** rows: the filtered scope WITHOUT the province filter, so every frame keeps its own count; selectedCode: the จังหวัด filter. */
-  function update({rows = [], selectedCode = '', visible = true} = {}) {
-    current = buildProvinceModel(rows, geojson);
+  function update({rows = [], selectedCode = '', visible = true, metric = 'brands'} = {}) {
+    current = buildProvinceModel(rows, geojson, {metric});
     for (const p of current.provinces) { p.selected = p.code === selectedCode; p.quiet = Boolean(selectedCode) && !p.selected; }
     const features = current.provinces.map(p => ({
       type: 'Feature', id: p.code, geometry: p.feature.geometry,
-      properties: {code: p.code, name: p.name, brands: p.brands, pos: p.pos, state: p.state, fill: p.fill, filled: p.quiet ? 0 : 1, quiet: p.quiet ? 1 : 0, selected: p.selected ? 1 : 0},
+      properties: {code: p.code, name: p.name, brands: p.brands, pos: p.pos, value: p.value, metric: p.metric, observationStatus: p.observationStatus, state: p.state, fill: p.fill, filled: p.quiet ? 0 : 1, quiet: p.quiet ? 1 : 0, selected: p.selected ? 1 : 0},
     }));
     map.getSource(SOURCE)?.setData({type: 'FeatureCollection', features});
     for (const id of Object.values(PROVINCE_LAYERS)) if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');

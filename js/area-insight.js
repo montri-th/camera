@@ -8,8 +8,8 @@
  * including rows outside every Locale and rows without a coordinate. Snapshot
  * values in the handoff JSON are regression fixtures, never UI constants.
  */
-import {hasPoint, countBrands} from './model.js?v=20261023-camera-r2';
-import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
+import {hasPoint, countBrands, uniqueOutletRows, rankByMetric} from './model.js?v=20261023-camera-r4';
+import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r4';
 
 const safeRows = rows => (Array.isArray(rows) ? rows : []);
 const safeGeoJSON = geojson => (geojson?.type === 'FeatureCollection' && !Array.isArray(geojson.features) ? null : geojson);
@@ -27,10 +27,10 @@ export function filterAreaRows(rows, geojson, areaIdsSet) {
 }
 
 /** Top three neighborhoods by distinct banners within the supplied selection. */
-export function summarizeAreaInsight(rows = [], geojson) {
-  const selected = safeRows(rows);
+export function summarizeAreaInsight(rows = [], geojson, {metric = 'brands'} = {}) {
+  const selected = uniqueOutletRows(rows);
   const summaries = summarizeNeighborhoods(selected.filter(hasPoint), safeGeoJSON(geojson))
-    .sort((a, b) => b.brands - a.brands || b.pos - a.pos || String(a.id).localeCompare(String(b.id)));
+    .sort((a, b) => rankByMetric(a, b, metric));
   const areas = summaries.slice(0, 3), areaIds = areas.map(area => area.id);
   // Fixed assignment makes these row sets disjoint; a banner can still span several areas.
   const members = areas.flatMap(area => area.rows);

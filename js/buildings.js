@@ -13,6 +13,7 @@ const EXTRUSION = 'camera-venue-buildings-3d';
 const OUTLINE = 'camera-venue-buildings-outline';
 /** Layer ids, exported so the massing tiers can be inserted BEFORE the host extrusion (draw order = depth order). */
 export const HOST_LAYERS = Object.freeze({extrusion: EXTRUSION, outline: OUTLINE, source: SOURCE});
+export const HOST_MIN_ZOOM = 13;
 const active = new WeakMap();
 
 function list(value) {
@@ -22,6 +23,37 @@ function list(value) {
     catch { return []; }
   }
   return [];
+}
+
+/** Only an explicit, same-host source parent can lend selection to its 3D parts. */
+export function selectedBuildingFeatures(features = [], rows = []) {
+  const byId = new Map(rows.map(r => [String(r.id), r]));
+  const byFeature = new Map(features.map(f => [String(f.id), f]));
+  const directIds = f => list(f?.properties?.outlet_ids).map(String).filter(id => byId.has(id));
+  return features.flatMap(feature => {
+    const p = feature.properties || {};
+    const sourcePart = p.geometry_role === 'host_building_part_not_shop_unit'
+      || (p.geometry_role === 'host_complex_building_part_not_shop_unit' && p.parent_covers_full_polygon === true);
+    const parent = sourcePart && p.parent_building_id
+      ? byFeature.get(String(p.parent_building_id)) : null;
+    const qualifiedParent = parent?.properties?.geometry_role === 'host_building_footprint_not_shop_unit'
+      && parent.properties.host_id === p.host_id;
+    const ids = [...new Set([...directIds(feature), ...(qualifiedParent ? directIds(parent) : [])])];
+    if (!ids.length) return [];
+    const rs = ids.map(id => byId.get(id));
+    return [{...feature, properties: {...p, selected_outlet_ids: ids, selected_pos: ids.length,
+      selected_brands: new Set(rs.map(r => r.brand)).size, height_label: buildingHeightLabel(p)}}];
+  });
+}
+
+/** An outline or a missing/invalid display height cannot replace background massing. */
+export function renderableExtrusions(features = [], {zoom = Infinity, enabled = true} = {}) {
+  if (!enabled || zoom < HOST_MIN_ZOOM) return [];
+  return features.filter(f => {
+    const p = f.properties || {}, top = Number(p.display_height_m), base = Number(p.display_base_m) || 0;
+    return p.render_as === 'extrusion' && p.display_height_m != null && p.display_height_m !== ''
+      && Number.isFinite(top) && top > base;
+  });
 }
 
 function colors(theme) {
@@ -38,6 +70,12 @@ function colors(theme) {
 }
 
 export function buildingHeightLabel(properties = {}) {
+  if (properties.height_status === 'level_count_display_model') {
+    const display = Number(properties.display_height_m);
+    if (properties.display_height_m == null || !Number.isFinite(display) || display <= 0) return 'ไม่มีข้อมูลความสูง';
+    const label = new Intl.NumberFormat('th-TH', {maximumFractionDigits: 2});
+    return `ค่าประมาณเพื่อแสดงรูปทรง ${label.format(display)} ม. (จำนวนชั้น × 3.5 ม.)`;
+  }
   if (properties.height_status === 'model_height_review') {
     return 'ความสูงแบบจำลองรอตรวจ · 3 ม. เพื่อแสดงรูปทรง';
   }
@@ -84,7 +122,7 @@ export function installVenueBuildings(map, geojson, options = {}) {
   });
   const palette = colors(theme);
   map.addLayer({
-    id: EXTRUSION, type: 'fill-extrusion', source: SOURCE, minzoom: 14,
+    id: EXTRUSION, type: 'fill-extrusion', source: SOURCE, minzoom: HOST_MIN_ZOOM,
     filter: ['==', ['get', 'render_as'], 'extrusion'],
     layout: {visibility: enabled ? 'visible' : 'none'},
     paint: {
@@ -116,11 +154,10 @@ export function installVenueBuildings(map, geojson, options = {}) {
     const estimatedHosts = new Set();
     const disputedHosts = new Set();
     const venues = new Set();
-    displayed = [];
-    for (const feature of originals) {
+    displayed = selectedBuildingFeatures(originals, currentRows);
+    for (const feature of displayed) {
       const properties = feature.properties || {};
-      const ids = list(properties.outlet_ids).filter(id => byId.has(String(id))).map(String);
-      if (!ids.length) continue;
+      const ids = properties.selected_outlet_ids;
       const rs = ids.map(id => byId.get(id));
       ids.forEach(id => matched.add(id));
       rs.forEach(r => venues.add(r.venue));
@@ -128,11 +165,6 @@ export function installVenueBuildings(map, geojson, options = {}) {
       if (properties.render_as === 'extrusion' && properties.height_status === 'unknown_display_fallback') unknownHosts.add(properties.host_id);
       if (properties.height_status === 'citymeter_model_estimate') estimatedHosts.add(properties.host_id);
       if (properties.height_status === 'model_height_review') disputedHosts.add(properties.host_id);
-      displayed.push({...feature, properties: {...properties,
-        selected_outlet_ids: ids, selected_pos: ids.length,
-        selected_brands: new Set(rs.map(r => r.brand)).size,
-        height_label: buildingHeightLabel(properties),
-      }});
     }
     const unmatchedRows = currentRows.filter(r => !matched.has(String(r.id)));
     coverage = {
@@ -191,7 +223,12 @@ export function installVenueBuildings(map, geojson, options = {}) {
   }
   /** Features currently drawn (hosts of the selected rows) — used to keep OSM massing from swallowing them. */
   function displayedFeatures() { return disposed || !enabled ? [] : displayed.slice(); }
-  const controller = {update, getCoverage, displayedFeatures, dispose};
+  function visibleExtrusionFeatures() {
+    const layer = map.getLayer(EXTRUSION);
+    const visible = layer && (!map.getLayoutProperty || map.getLayoutProperty(EXTRUSION, 'visibility') !== 'none');
+    return renderableExtrusions(displayedFeatures(), {zoom: map.getZoom?.() ?? Infinity, enabled: Boolean(visible)});
+  }
+  const controller = {update, getCoverage, displayedFeatures, visibleExtrusionFeatures, dispose};
   active.set(map, controller);
   update();
   return controller;

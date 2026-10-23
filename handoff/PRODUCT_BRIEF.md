@@ -1,8 +1,20 @@
 # CityMETER Camera Shops — Product Brief
 
-รุ่นส่งต่อ0.5.1 ·ปรับเอกสาร23ตุลาคม2569 ·ข้อมูลตรวจถึง23ตุลาคม2569 · ใช้คู่กับ [product-brief.json](product-brief.json) (schema 1.4.0)
+รุ่นส่งต่อ **0.5.2** · 23 ตุลาคม 2569 · schema **1.4.0** · Current machine contract: `product-brief.json`
 
-เอกสารนี้กำหนดประสบการณ์ที่ทีมพัฒนาต้องรักษาและต่อยอด เจตนาผลิตภัณฑ์และ winning strategy อยู่ใน [PRODUCT_STATEMENT.md](../PRODUCT_STATEMENT.md) (+ [product-statement.json](product-statement.json)); brief ฉบับนี้คือสัญญาของหน้าจอรุ่นปัจจุบัน หาก machine contract กับเอกสารนี้ขัดกัน ให้ถือ JSON เป็นหลักและแก้ทั้งสองฉบับพร้อมกัน ตัวเลขปัจจุบันเป็นsnapshotของrefresh23ต.ค.2569;ประวัติ0.5.0อยู่ในVERIFICATION (`meta.researchRevision`; fixture สำหรับทดสอบ) ไม่ใช่ค่าคงที่ของหน้าจอ
+## Current 0.5.2 contract — 23 October 2026
+
+- 111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged.
+- A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.
+- Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.
+- All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units.
+- 44 approved banners; 40 represented overall / 39 default; 252 default retail rows. 43 store-logo files and 83 venue-logo files cover 139 of 147 venue labels. 1,411 private network candidates remain excluded. Branch-specific camera evidence, including undated Canon stockist/current Power Buy branch intersections, qualifies listings; it does not confirm current stock or field operation.
+- Public units: แบรนด์ / สาขา / ศูนย์การค้า / ย่าน. Current adapter: `scripts/refresh-camera-master.py --master …`; identity, selected points and building decisions remain independent. Real browser/live verification is recorded separately in `VERIFICATION.md` and the release receipt.
+- Qualified host solids render from zoom 13; only visible positive-height extrusions suppress background massing. Venue and selected-neighborhood hosts receive x-ray above all basemap labels, appended last in the map style. DOM outlet marks and logos remain above the canvas. No x-ray solid is created for an outline, invalid height or unaccepted geometry.
+
+สัญญาปัจจุบันด้านบนและ machine JSON เป็น authority ของรุ่นนี้ ส่วนบันทึกด้านล่างคงไว้เพื่อสอบกลับ ไม่ใช้จำนวน หน่วยคำ หรือ host-only gate เดิมเป็นกฎปัจจุบัน
+
+## Retained 0.5.0/0.5.1 implementation notes — historical where superseded
 
 ## สร้างบนสถาปัตยกรรม Luxury Brands 0.5
 

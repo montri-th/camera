@@ -21,7 +21,7 @@
  *   - a store is not a crumb (it is a record, not a container) — the panel heading names it;
  *   - with four crumbs on narrow screens the upper levels collapse behind “…”.
  */
-import {provinceByName, provinceByCode} from './model.js?v=20261023-camera-r2';
+import {provinceByName, provinceByCode} from './model.js?v=20261023-camera-r4';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 

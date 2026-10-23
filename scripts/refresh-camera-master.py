@@ -105,6 +105,8 @@ def join_code(value, host_id=''):
 
 
 def split_ids(value):
+    if isinstance(value, (list, tuple)):
+        return [str(x).strip() for x in value if str(x).strip()]
     return [x.strip() for x in re.split(r'[;,\n]', str(value or '')) if x.strip()]
 
 
@@ -306,6 +308,9 @@ def retained_buildings(master, baseline, rows):
     stores = {s['outlet_id']: s for s in master['02_STORES']}
     by_id = {r['id']: r for r in rows}
     joins = {j['outlet_id']: j for j in master['12_SPATIAL_JOIN']}
+    venues = {v['venue_id']: v for v in master.get('07_VENUES', [])}
+    named_method = 'reviewed_named_host_geometry_without_citymeter_registry'
+    accepted_building_statuses = {'เชื่อมอาคารแล้ว', 'อาคารบริบทจากชื่อ venue'}
     for s in stores.values():
         if set(split_ids(s.get('building_ids'))) != set(split_ids(joins[s['outlet_id']].get('building_ids'))):
             raise ValueError(f"{s['outlet_id']}: store and spatial tabs disagree on building IDs")
@@ -316,15 +321,39 @@ def retained_buildings(master, baseline, rows):
             # Explicit links in both source tabs may use the known feature; this
             # code never infers a link from coordinate proximity or a shared name.
             r = by_id[s['outlet_id']]
-            if r['venueJoin'] != 'joined' or r['mallId'] not in f['properties']['mall_ids']:
+            registered = r['venueJoin'] == 'joined' and bool(r['mallId']) and r['mallId'] in f['properties']['mall_ids']
+            venue = venues.get(r['venueId'])
+            reviewed_named_host = not r['mallId'] and bool(r['venueId']) and venue is not None \
+                and r['venueId'] in split_ids(f['properties'].get('venue_ids')) \
+                and bid in split_ids(venue.get('building_ids')) \
+                and s.get('building_join_method') == joins[s['outlet_id']].get('building_join_method') == named_method \
+                and all(x.get('building_join_status') in accepted_building_statuses for x in (s, joins[s['outlet_id']], venue))
+            if not (registered or reviewed_named_host):
                 raise ValueError(f"{s['outlet_id']}: building link differs from accepted host")
             links[bid].append(s['outlet_id'])
+    # A retained part belongs to its explicitly recorded parent feature. The
+    # research links outlets to that host footprint, rather than listing every
+    # owned 3D part again in each store row. Preserve this source ownership; do
+    # not expand through shared names, mall IDs, proximity or a whole complex.
+    for bid, f in known.items():
+        p = f['properties']
+        parent_id = p.get('parent_building_id')
+        part_role = p.get('geometry_role')
+        if part_role not in ('host_building_part_not_shop_unit', 'host_complex_building_part_not_shop_unit') or not parent_id:
+            continue
+        if part_role == 'host_complex_building_part_not_shop_unit' and p.get('parent_covers_full_polygon') is not True:
+            raise ValueError(f'{bid}: contextual part has no qualified full-polygon parent coverage')
+        parent = known.get(parent_id)
+        if not parent or parent['properties'].get('geometry_role') != 'host_building_footprint_not_shop_unit' or parent['properties'].get('host_id') != p.get('host_id'):
+            raise ValueError(f'{bid}: retained part has no qualified source parent')
+        links[bid] = sorted(set(links[bid]) | set(links[parent_id]))
     for bid, f in known.items():
         f['properties']['outlet_ids'] = sorted(links[bid])
         f['properties']['venue_names'] = sorted({by_id[i]['venue'] for i in links[bid]})
     result['metadata'].update({'rows': len(rows), 'mapped_rows': sum(r['latitude'] is not None for r in rows),
         'matched_rows': len({i for ids in links.values() for i in ids}), 'features': len(known),
-        'source': 'Retained research-master 13_BUILDINGS source geometries, heights and retrieval dates; outlet assignments come only from explicit refreshed 02_STORES and 12_SPATIAL_JOIN links. No new geometry, nearest matching or automatic host-to-outlet building links.'})
+        'host_venues': len({v for f in known.values() for v in split_ids(f['properties'].get('venue_ids')) if links[f['id']]}),
+        'source': 'Reviewed research-master 13_BUILDINGS geometries and accepted acquisition packet; retained geometry, source heights and retrieval dates preserved. Outlet assignments come from explicit 02_STORES and 12_SPATIAL_JOIN links, plus only qualified same-host source parent ownership to parts. The adapter itself acquires no building geometry; no nearest matching or automatic host-to-outlet building links.'})
     return result
 
 

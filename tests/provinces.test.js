@@ -11,10 +11,10 @@ const data = JSON.parse(readFileSync(new URL('../data/camera.json', import.meta.
 const rows = filterRows(data.rows, {cohort: 'current'});
 const withRows = PROVINCES.filter(p => data.rows.some(r => r.province === p.th));
 
-test('data/provinces.geojson: one frame per province that holds an outlet row, production codes as ids, DOPA codes and provenance kept', () => {
+test('data/provinces.geojson: all 77 province frames remain, production codes, geometry and source provenance kept', () => {
   assert.equal(withRows.length, 64);
-  assert.equal(provinces.features.length, withRows.length);
-  for (const p of withRows) {
+  assert.equal(provinces.features.length, 77);
+  for (const p of PROVINCES) {
     const f = provinces.features.find(x => x.id === p.code);
     assert.ok(f, p.code);
     assert.equal(f.properties.code, p.code);
@@ -32,14 +32,14 @@ test('data/provinces.geojson: one frame per province that holds an outlet row, p
   assert.equal(m.license, 'CC BY 4.0');
   assert.match(m.sourceCommit, /^[0-9a-f]{40}$/);
   assert.match(m.sourceSha256, /^[0-9a-f]{64}$/);
-  assert.equal(m.retrievedOn, '2026-10-22');
-  assert.equal(m.provinces, 64);
+  assert.equal(m.retrievedOn, '2026-10-23');
+  assert.equal(m.provinces, 77);
   assert.equal(provinces.features.find(f => f.id === 'BKK').properties.dopaCode, '10');
 });
 
 test('buildProvinceModel counts distinct banners and rows per province and classes them with the count family', () => {
   const model = buildProvinceModel(rows, provinces);
-  assert.equal(model.provinces.length, 64);
+  assert.equal(model.provinces.length, 77);
   const bkk = model.provinces.find(p => p.code === 'BKK');
   const bkkRows = rows.filter(r => r.province === 'กรุงเทพมหานคร');
   assert.equal(bkk.pos, bkkRows.length);
@@ -49,10 +49,30 @@ test('buildProvinceModel counts distinct banners and rows per province and class
   assert.equal(model.scale.max, Math.max(...model.provinces.map(p => p.brands)));
   // Narrow filter: provinces without rows are measured_zero (lowest fill + zero outline), never dropped silently.
   const narrow = buildProvinceModel(rows.filter(r => r.province === 'ภูเก็ต'), provinces);
-  assert.equal(narrow.zeroCount, 63);
+  assert.equal(narrow.zeroCount, 76);
   assert.equal(narrow.provinces.find(p => p.code === 'PKT').state, 'measured');
   assert.equal(narrow.provinces.find(p => p.code === 'BKK').state, 'measured_zero');
   assert.equal(buildProvinceModel([], {features: []}).provinces.length, 0);
+});
+
+test('zero observed provinces stay visible, and the chosen metric counts unique outlets without inflating banners', () => {
+  const fixture = [{id: 'a', brand: 'BIG CAMERA', province: 'กรุงเทพมหานคร'}, {id: 'b', brand: 'BIG CAMERA', province: 'กรุงเทพมหานคร'},
+    {id: 'c', brand: 'Sony Store', brands: ['Sony Store', 'Power Mall'], province: 'ภูเก็ต'}];
+  const byBrand = buildProvinceModel([...fixture, fixture[0]], provinces);
+  const byOutlet = buildProvinceModel([...fixture, fixture[0]], provinces, {metric: 'pos'});
+  assert.equal(byBrand.provinces.find(p => p.code === 'BKK').value, 1);
+  assert.equal(byOutlet.provinces.find(p => p.code === 'BKK').value, 2, 'same outlet ID counts once');
+  assert.equal(byOutlet.provinces.find(p => p.code === 'PKT').value, 1, 'co-branded outlet is one branch');
+  assert.equal(byBrand.provinces.find(p => p.code === 'PKT').value, 2);
+  assert.equal(byOutlet.scale.max, 2);
+  assert.equal(byOutlet.scale.unit, 'สาขา');
+  for (const code of ['PLG', 'UTI', 'YST']) {
+    const p = byOutlet.provinces.find(p => p.code === code);
+    assert.ok(p?.feature, code);
+    assert.equal(p.state, 'measured_zero');
+    assert.equal(p.observationStatus, 'no_observed_outlets');
+    assert.ok(p.fill && p.outline, 'zero observed is a visible source polygon');
+  }
 });
 
 function fakeMap() {
@@ -77,7 +97,7 @@ test('installProvinceLayers: fill under the first basemap line, outline/selected
   assert.ok(map.sources.get('provinces').def.attribution.includes('CC BY 4.0'));
   const model = layers.update({rows, selectedCode: '', visible: true});
   const feats = map.data.provinces.features;
-  assert.equal(feats.length, 64);
+  assert.equal(feats.length, 77);
   assert.ok(feats.every(f => f.properties.filled === 1 && f.properties.quiet === 0 && f.properties.selected === 0));
   assert.equal(model.provinces.find(p => p.code === 'BKK').selected, false);
   layers.update({rows, selectedCode: 'PKT'});
@@ -96,17 +116,20 @@ test('installProvinceLayers: fill under the first basemap line, outline/selected
 
 test('overview panel lists the provinces that hold camera shops as drill-downs (ten, the rest folded); tiles and headings carry pictograms', () => {
   const model = buildProvinceModel(rows, provinces);
-  const list = model.provinces.filter(p => p.brands > 0).sort((a, b) => b.brands - a.brands);
+  const list = model.provinces.sort((a, b) => b.brands - a.brands);
   const html = renderOverview({
     insight: {areas: [{id: 'siam', name: 'สยาม'}], brands: 10, totalBrands: 20, share: 50, pos: 30, totalPos: 60},
     overview: {ranking: [], areaCount: 10, mostExclusive: null, outsidePos: 0},
     summary: {brands: 20, pos: 60, centers: [], venues: 12}, areaModel: {areas: []}, asOf: '2026-10-22', provinces: list,
   });
   assert.ok(html.includes('data-action="select-province" data-id="BKK"'));
-  assert.ok(html.includes('จังหวัดที่มีร้านกล้อง'));
+  assert.ok(html.includes('จังหวัด · จำนวนแบรนด์'));
   assert.equal((html.match(/select-province/g) || []).length, list.length, 'every province stays a drill-down');
   assert.ok(html.includes('<details class="province-more"><summary>อีก ' + (list.length - 10) + ' จังหวัด</summary>'));
-  assert.ok(!html.includes('แบรนด์'), 'camera copy: ร้าน, never แบรนด์');
+  assert.ok(html.includes('แบรนด์'), 'owner vocabulary: counted banners are แบรนด์');
+  assert.ok(html.includes('ศูนย์การค้า'));
+  assert.ok(html.includes('ยังไม่พบสาขาในชุดข้อมูล'));
+  assert.ok(!html.includes('จำนวนร้าน'));
   assert.ok(html.includes('class="metric-symbol pictogram pic-store"'));
   assert.ok(heading('area', 'ย่าน').includes('pic-area'));
   assert.ok(metricTile(5, 'GLA ตร.ม.', 'gla').includes('pic-gla'));
@@ -135,7 +158,7 @@ test('a province without Locales moves the first finding to its leading venue (s
     overview: {ranking: [], areaCount: 0, mostExclusive: null, outsidePos: cmi.length},
     summary: {brands: 5, pos: 7, centers: [], venues: 3}, areaModel: {areas: []}, asOf: '2026-10-22', venues,
   });
-  assert.ok(html.includes('80%') && html.includes('ของร้านกล้องมีสาขาที่ Central Chiangmai'));
+  assert.ok(html.includes('80%') && html.includes('ของแบรนด์มีสาขาที่ Central Chiangmai'));
   assert.ok(html.includes('data-action="select-venue" data-id="c1" data-value="Central Chiangmai"'));
   assert.ok(!html.includes('pic-area'), 'no "0 ย่าน" tile where production has no Locale');
   assert.ok(!html.includes('ย่านของกรุงเทพฯ'));
@@ -150,8 +173,8 @@ test('the venue-level finding names the leading venue that has a host point; a h
     overview: {ranking: [], areaCount: 0, mostExclusive: null, outsidePos: 5},
     summary: {brands: 3, pos: 5, centers: [], venues: 2}, areaModel: {areas: []}, asOf: '2026-10-22', venues,
   });
-  assert.ok(html.includes('33%') && html.includes('ของร้านกล้องมีสาขาที่ Central Phuket'));
-  assert.ok(!html.includes('ของร้านกล้องมีสาขาที่ Central Phuket Floresta'));
+  assert.ok(html.includes('33%') && html.includes('ของแบรนด์มีสาขาที่ Central Phuket'));
+  assert.ok(!html.includes('ของแบรนด์มีสาขาที่ Central Phuket Floresta'));
   assert.ok(html.includes('data-action="select-venue" data-id="p1"'));
   assert.ok(html.includes('Central Phuket Floresta'), 'the held venue is still listed');
   const unmapped = renderOverview({
@@ -159,6 +182,6 @@ test('the venue-level finding names the leading venue that has a host point; a h
     overview: {ranking: [], areaCount: 0, mostExclusive: null, outsidePos: 2},
     summary: {brands: 1, pos: 2, centers: [], venues: 1}, areaModel: {areas: []}, asOf: '2026-10-22', venues: [venues[0]],
   });
-  assert.ok(!unmapped.includes('ของร้านกล้องมีสาขาที่'), 'no map finding without a venue on the map');
-  assert.ok(unmapped.includes('2 สาขา · 1 ร้าน'));
+  assert.ok(!unmapped.includes('ของแบรนด์มีสาขาที่'), 'no map finding without a venue on the map');
+  assert.ok(unmapped.includes('2 สาขา · 1 แบรนด์'));
 });

@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import {filterRows, SEGMENTS, bannersOf, bannerSegmentsOf} from '../js/model.js';
 import {assignNeighborhood, summarizeNeighborhoods} from '../js/neighborhoods.js';
 import {buildNeighborhoodChartModel, neighborhoodMatrix, bubbleRadius} from '../js/chart-model.js';
+import {buildAreaModel} from '../js/map-layers.js';
+import {summarizeAreaInsight} from '../js/area-insight.js';
 const source=JSON.parse(fs.readFileSync(new URL('../data/camera.json',import.meta.url)));
 const geo=JSON.parse(fs.readFileSync(new URL('../data/neighborhoods.geojson',import.meta.url)));
 const rows=filterRows(source.rows),segments=Object.entries(SEGMENTS).map(([id,name])=>({id,name}));
@@ -16,6 +18,17 @@ test('neighborhood ranking uses distinct banners and conserves selected outlet s
  assert.deepEqual(m.areas.slice(0,3).map(a=>[a.id,a.brands,a.pos]),[[RATCHADA_WEST,13,17],[SIAM,10,12],[RATCHAPRASONG,8,10]]);
  assert.equal(m.assignedPos,101);assert.equal(m.outsidePos,151);assert.equal(m.assignedPos+m.outsidePos,m.totalPos);
  for(const a of m.areas)assert.equal(a.exclusiveBrands+a.sharedBrands,a.brands);
+});
+
+test('outlet metric keeps map values, ranking and automatic top-area focus consistent',()=>{
+ const duplicated=[...rows,rows[0]], m=buildNeighborhoodChartModel(duplicated,geo,segments,{metric:'pos'});
+ const map=buildAreaModel(duplicated,geo,{metric:'pos'}), insight=summarizeAreaInsight(duplicated,geo,{metric:'pos'});
+ assert.equal(m.totalPos,252,'duplicated canonical outlet ID does not inflate the metric');
+ assert.equal(map.scale.max,Math.max(...m.areas.map(a=>a.pos)));
+ assert.equal(map.scale.unit,'สาขา');
+ assert.deepEqual(insight.areaIds,m.areas.slice(0,3).map(a=>a.id));
+ assert.ok(m.areas.every((a,i)=>i===0||m.areas[i-1].pos>=a.pos));
+ for(const a of map.areas)assert.equal(a.value,a.pos);
 });
 
 test('duplicated real outlet raises the outlet count without inflating area, cell or shared banner counts',()=>{

@@ -3,7 +3,7 @@
   "schemaVersion": "1.4.0",
   "documentType": "product-statement",
   "productId": "citymeter-camera-shops",
-  "productVersion": "0.5.1",
+  "productVersion": "0.5.2",
   "updatedOn": "2026-10-23",
   "humanDocument": "../PRODUCT_STATEMENT.md",
   "standard": "Product Brief — CityMETER v6 §1.6.3 metadata block; Master Brand Brief v0.5.3 §7.2 / §3.7",
@@ -21,11 +21,11 @@
     "staleSourceExamples": "project-evidence"
   },
   "units": {
-    "ร้าน": "distinct shop banner (e.g. BIG CAMERA, Sony Store); a co-branded storefront contributes each counted banner",
+    "แบรนด์": "distinct shop banner (e.g. BIG CAMERA, Sony Store); a co-branded storefront contributes each counted banner",
     "สาขา": "one outlet record (point of sale, or one listed contact location); a co-branded storefront is one สาขา",
-    "สถานที่": "persistent named venue; a CityMETER host reference or building requires its own accepted identity link, independent of outlet point availability",
+    "ศูนย์การค้า": "persistent named venue; a CityMETER host reference or building requires its own accepted identity link, independent of outlet point availability",
     "ย่าน": "CityMETER production Locale (Bangkok only in production)",
-    "note": "แบรนด์ is never used as a unit: it would read as camera makers"
+    "note": "Owner vocabulary override 2026-10-23: แบรนด์ is the counted shop banner; ศูนย์การค้า is the public venue label. Source fields, named entities and source business categories are unchanged."
   },
   "dataset_id": "camera-shops",
   "dataset_name_en": "Camera Shops",
@@ -173,7 +173,7 @@
     "พร้อมสำหรับคนและเครื่อง และต่อ production ได้ทันที (JSON contracts; Locale uuid, Shopping Center id, รหัสจังหวัดตรง production; Grocery record id รองรับเมื่อ master จับคู่)"
   ],
   "first_finding_snapshot": {
-    "note": "Current0.5.1regression fixture computed from publicdata and model on2026-10-23, never a UI constant",
+    "note": "Current0.5.2regression fixture computed from publicdata and model on2026-10-23, never a UI constant",
     "share": "24/39 shop banners (62% displayed) have an outlet in the top three Locales",
     "areas": [
       {
@@ -308,7 +308,7 @@
       "data_type": "derived"
     },
     {
-      "name": "Refreshed research master selected points and accepted venue/building joins (2026-10-23; original geometry103features retained)",
+      "name": "Refreshed independent selected-point, venue-identity and reviewed named-host building evidence (2026-10-23;111features)",
       "owner": "Landometer research (internal working reference, not published)",
       "url_or_reference": "result in data/camera.json (meta.venueJoin, row venueJoin) and data/venue-buildings.geojson",
       "data_type": "derived"
@@ -354,6 +354,11 @@
       "owner": "Canon Thailand / Power Buy",
       "url_or_reference": "https://th.canon/thailand/th/consumer/buy/get-branches?productCategory=997&sales=true&service=false&parts=false ; https://www.powerbuy.co.th/storelocator",
       "data_type": "official"
+    },
+    {
+      "name": "Reviewed OSM named-host footprints/parts and qualified retained cross-dataset geometry",
+      "role": "Independent host-building identity; does not upgrade CityMETER registry joins or move selected points. Fortune display heights are explicit level-count models, source metre height null.",
+      "source": "data/venue-buildings.geojson; per-feature source URLs, source timestamps, height status and attribution"
     }
   ],
   "spatial_granularity": "outlet selected source point (or missing) → named venue/accepted CityMETER host → production Locale (Bangkok) → province → country",
@@ -439,14 +444,14 @@
     "calculation_note": "distinct banners counted separately from outlet rows; a co-branded storefront is one outlet with each counted banner; a store-type filter counts only that type's banners; colours take the full 41-sample LDS count scale linearly from 1 to the current maximum within the filter (owner rule 2026-10-22)",
     "inference_note": "Locales are production navigation and analysis units, not administrative areas or catchments; rankings help prioritise, not judge potential",
     "confidence_note": "status, identity holds and coordinate precision stated per row; conflicting evidence kept and labelled, never merged or dropped",
-    "limitation_summary": "253rows/252default;44approved banners but40represented overall/39default;17rows lack selected coordinates.125inside-footprint links and4outside named contexts. 43 of 44 approved store marks; Camera Exchange remains missing. 83 original venue-logo files cover139of147venue labels. Identity role, source/asset URL, MIME/dimensions, SHA-256 and reviewed neutral backing stay separate; collection grants no new rights. New category-killer outlets require branch-specific camera-selling evidence. Sixteen added Power Buy branches intersect current retailer branch identity/address with an undated Canon DSLR997/compact933 sales-stockist listing; this is source-listed eligibility, not current stock or field-open verification. AV VALUE qualifies only its Vanilla Moon4F physical camera/lens/video showroom; HQ65SoiChan33 is separate. Generic networks, catalog-only, announcement-only, stock-zero and excluded records remain in1411private network candidates and never enter public camera counts."
+    "limitation_summary": "253rows/252default;44approved banners but40represented overall/39default;17rows lack selected coordinates.111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged.  43 of 44 approved store marks; Camera Exchange remains missing. 83 original venue-logo files cover139of147venue labels. Identity role, source/asset URL, MIME/dimensions, SHA-256 and reviewed neutral backing stay separate; collection grants no new rights. New category-killer outlets require branch-specific camera-selling evidence. Sixteen added Power Buy branches intersect current retailer branch identity/address with an undated Canon DSLR997/compact933 sales-stockist listing; this is source-listed eligibility, not current stock or field-open verification. AV VALUE qualifies only its Vanilla Moon4F physical camera/lens/video showroom; HQ65SoiChan33 is separate. Generic networks, catalog-only, announcement-only, stock-zero and excluded records remain in1411private network candidates and never enter public camera counts."
   },
   "known_limitations": [
     "ไม่ใช่สำมะโน; พบในแหล่งข้อมูลไม่เท่ากับตรวจเปิดจริงหรือสต็อกปัจจุบัน",
     "44ชื่อที่อนุมัติมีแถว40ชื่อ และ39ชื่อในค่าเริ่มต้นขายปลีก",
     "17สาขายังไม่มีพิกัด; จุดที่มีอยู่แยกbusinesspointกับhostreference ไม่ยืนยันประตู ชั้น หรือขอบเขตร้าน",
     "มีจุดโดยไม่มีacceptedhostได้; hostที่พักไว้ไม่ทำให้จุดธุรกิจซึ่งมีหลักฐานอิสระหายไป",
-    "129buildingcontextsมี125insideและ4outside named contexts;103sourcefeaturesเดิม ไม่ได้หาอาคารเพิ่ม",
+    "111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part. Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.",
     "43 of 44 approved store marks; Camera Exchange remains missing. 83 original venue-logo files cover139of147venue labels. Identity role, source/asset URL, MIME/dimensions, SHA-256 and reviewed neutral backing stay separate; collection grants no new rights.",
     "New category-killer outlets require branch-specific camera-selling evidence. Sixteen added Power Buy branches intersect current retailer branch identity/address with an undated Canon DSLR997/compact933 sales-stockist listing; this is source-listed eligibility, not current stock or field-open verification. AV VALUE qualifies only its Vanilla Moon4F physical camera/lens/video showroom; HQ65SoiChan33 is separate. Generic networks, catalog-only, announcement-only, stock-zero and excluded records remain in1411private network candidates and never enter public camera counts.",
     "หน้าร้านหลายป้ายนับเป็นหนึ่งสาขาที่มีหลายร้าน; operatorไม่นับเป็นป้ายร้าน",
@@ -454,7 +459,7 @@
     "Production Localeมีเฉพาะกรุงเทพฯ; ไม่ใช่เขตปกครอง ประชากร eligibility risk หรือcatchment",
     "ไม่มีเบอร์โทร/privateDriveURLsในpublicdata; ความสูง source/model/unknownแยกdisplayfallback"
   ],
-  "methodology_note": "DATA_METHOD.md, docs/NEIGHBORHOOD_METHOD.md",
+  "methodology_note": "DATA_METHOD.md, docs/NEIGHBORHOOD_METHOD.md A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part. Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only. All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units.",
   "example_use_cases": [
     "คัดย่านสำหรับสาขาแรกในกรุงเทพฯ ของร้านกล้องมือสอง/ฟิล์ม",
     "เทียบ tenant mix ร้านกล้องของศูนย์กับ Fortune Town หรือ MBK",

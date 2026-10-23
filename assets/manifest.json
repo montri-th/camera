@@ -156,9 +156,9 @@
     },
     {
       "path": "data/provinces.geojson",
-      "sha256": "8c0de70ea945403512e3fd310abb3820b65be6c67a4fbf201337c7e33f35a051",
-      "bytes": 488491,
-      "scope": "Province frames for the 64 provinces holding camera-shop rows; OpenGISData-Thailand (CC BY 4.0, DOPA-credited); context and drill-down, not an administrative authority"
+      "sha256": "1158650561c012cd044f09ae17897e600e3d716d3ce3958df6e44c88c2adc7fd",
+      "bytes": 573827,
+      "scope": "Province frames for all77provinces, including13with no observed outlets; OpenGISData-Thailand (CC BY4.0, DOPA-credited); context and drill-down, not an administrative authority"
     },
     {
       "path": "data/venue-logos.json",

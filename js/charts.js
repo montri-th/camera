@@ -2,7 +2,7 @@
  * Neighborhood charts rendered as plain HTML/SVG — no chart vendor.
  *
  * Three views share one model (chart-model.js) and the committed selection:
- *  - ranking  (view key `centers`, kept for URL compatibility): distinct shop banners (ร้าน) per area
+ *  - ranking  (view key `centers`, kept for URL compatibility): distinct shop banners (แบรนด์) per area
  *  - mix      : area × segment matrix of distinct banners (numeric heat table)
  *  - compare  : exclusive vs shared banners per area, stacked bars
  *
@@ -13,9 +13,9 @@
  * users. Every click emits {type:'neighborhood', id}; the empty compare state
  * emits {type:'resetAreas'}.
  */
-import {buildNeighborhoodChartModel, neighborhoodMatrix} from './chart-model.js?v=20261023-camera-r2';
-import {buildCountScale, classify, countRamp} from './scales.js?v=20261023-camera-r2';
-import {SEGMENTS, SEGMENT_SHORT} from './model.js?v=20261023-camera-r2';
+import {buildNeighborhoodChartModel, neighborhoodMatrix} from './chart-model.js?v=20261023-camera-r4';
+import {buildCountScale, classify, countRamp} from './scales.js?v=20261023-camera-r4';
+import {SEGMENTS, SEGMENT_SHORT, COUNT_METRICS, normalizeCountMetric, metricValue} from './model.js?v=20261023-camera-r4';
 
 const NUMBER = new Intl.NumberFormat('th-TH', {maximumFractionDigits: 0});
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -27,7 +27,7 @@ const CUES = {
 };
 
 /** The 41-sample count ramp with its value ticks (map legend and matrix legend share it). */
-export function rampMarkup(scale, label = 'ร้านไม่ซ้ำ') {
+export function rampMarkup(scale, label = 'แบรนด์ไม่ซ้ำ') {
   const ramp = countRamp(scale);
   if (!ramp.ticks.length) return '';
   const values = ramp.ticks.map(t => num(t.value));
@@ -40,48 +40,50 @@ function empty(element, message, actionLabel, action) {
 }
 
 function ranking(element, model, select, selectedId) {
-  const scale = buildCountScale(model.areas.map(a => a.brands));
-  const max = Math.max(1, ...model.areas.map(a => a.brands));
+  const metric = model.metric || 'brands', unit = COUNT_METRICS[metric].unit;
+  const scale = buildCountScale(model.areas.map(a => metricValue(a, metric)));
+  const max = Math.max(1, ...model.areas.map(a => metricValue(a, metric)));
   const rows = model.areas.map((a, i) => {
-    const cls = classify(a.brands, scale);
+    const value = metricValue(a, metric), cls = classify(value, scale);
     const pressed = a.id === selectedId;
     return `<li><button type="button" class="bar-row${pressed ? ' is-selected' : ''}" data-area="${esc(a.id)}" aria-pressed="${pressed}"
-      aria-label="อันดับ ${i + 1} ${esc(a.name)}: ${num(a.brands)} ร้าน, ${num(a.pos)} สาขา กดเพื่อดูย่านนี้">
+      aria-label="อันดับ ${i + 1} ${esc(a.name)}: ${num(a.brands)} แบรนด์, ${num(a.pos)} สาขา กดเพื่อดูย่านนี้">
       <span class="bar-rank data-number" aria-hidden="true">${i + 1}</span>
       <span class="bar-label">${esc(a.name)}</span>
-      <span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:${Math.max(2, Math.round((a.brands / max) * 100))}%;background:${cls.fill}"></span></span>
-      <span class="bar-value" aria-hidden="true"><b class="data-number">${num(a.brands)}</b><small>${num(a.pos)} สาขา</small></span>
+      <span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:${Math.max(2, Math.round((value / max) * 100))}%;background:${cls.fill}"></span></span>
+      <span class="bar-value" aria-hidden="true"><b class="data-number">${num(value)}</b><small>${unit}</small></span>
     </button></li>`;
   }).join('');
-  element.innerHTML = `<p class="chart-caption">${num(model.areaCount)} ย่าน · จำนวนร้าน · สีเดียวกับแผนที่</p><ol class="chart-bars">${rows}</ol>`;
+  element.innerHTML = `<p class="chart-caption">${num(model.areaCount)} ย่าน · ${COUNT_METRICS[metric].label} · สีเดียวกับแผนที่</p><ol class="chart-bars">${rows}</ol>`;
   element.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => select({type: 'neighborhood', id: b.dataset.area})));
 }
 
 function matrix(element, model, select, selectedId) {
   const m = neighborhoodMatrix(model, {areaLimit: 12, segmentLimit: 8});
-  const scale = buildCountScale(m.cells.map(c => c.brands));
+  const metric = model.metric || 'brands', unit = COUNT_METRICS[metric].unit;
+  const scale = buildCountScale(m.cells.map(c => metricValue(c, metric)));
   const head = m.segments.map(s => `<th scope="col" title="${esc(s.name)}"><span class="matrix-col"><i class="category-swatch category-${segmentIndex(s.id)}" aria-hidden="true"></i>${esc(SEGMENT_SHORT[s.id] || s.name)}</span></th>`).join('');
   const body = m.areas.map(a => {
     const pressed = a.id === selectedId;
     const cells = m.segments.map(s => {
       const cell = m.cells.find(c => c.areaId === a.id && c.segmentId === s.id);
       const brands = cell?.brands || 0, pos = cell?.pos || 0;
-      const cls = classify(brands, scale);
+      const value = metric === 'pos' ? pos : brands, cls = classify(value, scale);
       const style = cls.state === 'measured_zero'
         ? `background:${cls.fill};color:${cls.ink};box-shadow:inset 0 0 0 2px ${cls.outline}`
         : `background:${cls.fill};color:${cls.ink}`;
       return `<td><button type="button" class="matrix-cell is-${cls.state}" data-area="${esc(a.id)}" style="${style}"
-        aria-label="${esc(a.name)} × ${esc(s.name)}: ${num(brands)} ร้าน, ${num(pos)} สาขา กดเพื่อดูย่านนี้"
-        title="${esc(a.name)} × ${esc(s.name)} — ${num(brands)} ร้าน · ${num(pos)} สาขา"><span class="data-number${cls.inkContrast < 4.5 ? ' on-chip' : ''}">${num(brands)}</span></button></td>`;
+        aria-label="${esc(a.name)} × ${esc(s.name)}: ${num(brands)} แบรนด์, ${num(pos)} สาขา กดเพื่อดูย่านนี้"
+        title="${esc(a.name)} × ${esc(s.name)} — ${num(brands)} แบรนด์ · ${num(pos)} สาขา"><span class="data-number${cls.inkContrast < 4.5 ? ' on-chip' : ''}">${num(value)}</span></button></td>`;
     }).join('');
-    return `<tr${pressed ? ' class="is-selected"' : ''}><th scope="row"><button type="button" class="matrix-row" data-area="${esc(a.id)}" aria-pressed="${pressed}">${esc(a.name)}<small class="data-number">${num(a.brands)}</small></button></th>${cells}</tr>`;
+    return `<tr${pressed ? ' class="is-selected"' : ''}><th scope="row"><button type="button" class="matrix-row" data-area="${esc(a.id)}" aria-pressed="${pressed}">${esc(a.name)}<small class="data-number">${num(metricValue(a, metric))}</small></button></th>${cells}</tr>`;
   }).join('');
-  const legend = rampMarkup(scale);
+  const legend = rampMarkup(scale, `${unit}ต่อช่อง`);
   // Every cell is the same size on purpose: only the tint and the number carry meaning.
   const columns = `<colgroup><col class="matrix-head-col">${m.segments.map(() => '<col class="matrix-cell-col">').join('')}</colgroup>`;
-  element.innerHTML = `<p class="chart-caption">${num(m.areas.length)}/${num(m.totalAreas)} ย่าน × ${num(m.segments.length)}/${num(m.totalSegments)} ประเภท · ตัวเลข = ร้าน · สีเข้ม = มากกว่า</p>
-    <div class="matrix-scroll"><table class="matrix" style="--matrix-columns:${m.segments.length}">${columns}<thead><tr><th scope="col" class="matrix-corner">ย่าน · ร้าน</th>${head}</tr></thead><tbody>${body}</tbody></table></div>
-    <p class="chart-legend"><span class="legend-title">สี (ร้านในช่อง):</span>${legend}<span class="legend-step"><i class="legend-zero" aria-hidden="true"></i>0 = ไม่พบ</span></p>`;
+  element.innerHTML = `<p class="chart-caption">${num(m.areas.length)}/${num(m.totalAreas)} ย่าน × ${num(m.segments.length)}/${num(m.totalSegments)} ประเภท · ตัวเลข = ${unit} · สีเข้ม = มากกว่า</p>
+    <div class="matrix-scroll"><table class="matrix" style="--matrix-columns:${m.segments.length}">${columns}<thead><tr><th scope="col" class="matrix-corner">ย่าน · ${unit}</th>${head}</tr></thead><tbody>${body}</tbody></table></div>
+    <p class="chart-legend"><span class="legend-title">สี (${unit}ในช่อง):</span>${legend}<span class="legend-step"><i class="legend-zero" aria-hidden="true"></i>0 = ไม่พบในชุดข้อมูล</span></p>`;
   element.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => select({type: 'neighborhood', id: b.dataset.area})));
 }
 
@@ -91,15 +93,15 @@ function compare(element, model, select, selectedId) {
     const pressed = a.id === selectedId;
     const ex = Math.round((a.exclusiveBrands / max) * 100), sh = Math.round((a.sharedBrands / max) * 100);
     return `<li><button type="button" class="bar-row stacked${pressed ? ' is-selected' : ''}" data-area="${esc(a.id)}" aria-pressed="${pressed}"
-      aria-label="${esc(a.name)}: เฉพาะย่านนี้ ${num(a.exclusiveBrands)} ร้าน, พบในย่านอื่นด้วย ${num(a.sharedBrands)} ร้าน จากทั้งหมด ${num(a.brands)} ร้าน กดเพื่อดูย่านนี้">
+      aria-label="${esc(a.name)}: เฉพาะย่านนี้ ${num(a.exclusiveBrands)} แบรนด์, พบในย่านอื่นด้วย ${num(a.sharedBrands)} แบรนด์ จากทั้งหมด ${num(a.brands)} แบรนด์ กดเพื่อดูย่านนี้">
       <span class="bar-label">${esc(a.name)}</span>
       <span class="bar-track" aria-hidden="true">
         <span class="bar-fill seg-exclusive" style="width:${ex}%">${a.exclusiveBrands ? `<span>${num(a.exclusiveBrands)}</span>` : ''}</span><span class="bar-fill seg-shared" style="width:${sh}%">${a.sharedBrands ? `<span>${num(a.sharedBrands)}</span>` : ''}</span>
       </span>
-      <span class="bar-value" aria-hidden="true"><b class="data-number">${num(a.brands)}</b><small>ร้าน</small></span>
+      <span class="bar-value" aria-hidden="true"><b class="data-number">${num(a.brands)}</b><small>แบรนด์</small></span>
     </button></li>`;
   }).join('');
-  element.innerHTML = `<p class="chart-caption">${num(model.areaCount)} ย่าน · จำนวนร้าน</p>
+  element.innerHTML = `<p class="chart-caption">${num(model.areaCount)} ย่าน · จำนวนแบรนด์</p>
     <p class="chart-legend"><span class="legend-item"><i class="cue seg-exclusive">${CUES.hexagon}</i>เฉพาะย่านนี้</span><span class="legend-item"><i class="cue seg-shared">${CUES.dash}</i>พบในย่านอื่นด้วย</span></p>
     <ol class="chart-bars">${rows}</ol>`;
   element.querySelectorAll('[data-area]').forEach(b => b.addEventListener('click', () => select({type: 'neighborhood', id: b.dataset.area})));
@@ -112,16 +114,17 @@ const segmentIndex = id => Math.max(0, SEGMENT_ORDER.indexOf(id) + 1);
  * Render one view into #elementId. Returns an idempotent disposer.
  * `view` accepts `centers` (ranking), `mix` and `compare`.
  */
-export function renderInsightChart({elementId, view = 'centers', rows = [], segments = [], neighborhoods, theme, selectedAreaId = ''} = {}, onSelect = () => {}) {
+export function renderInsightChart({elementId, view = 'centers', rows = [], segments = [], neighborhoods, theme, selectedAreaId = '', metric = 'brands'} = {}, onSelect = () => {}) {
+  metric = normalizeCountMetric(metric);
   const element = document.getElementById(elementId);
   if (!element) return () => {};
   const select = typeof onSelect === 'function' ? onSelect : () => {};
   element.replaceChildren();
   if (theme) element.dataset.chartTheme = theme;
-  const labels = {centers: 'ย่านเรียงตามจำนวนร้าน', mix: 'ประเภทร้านในแต่ละย่าน', compare: 'ร้านเฉพาะย่านและร้านที่พบร่วมกัน'};
+  const labels = {centers: `ย่านเรียงตาม${COUNT_METRICS[metric].label}`, mix: `ประเภทแบรนด์ในแต่ละย่าน · ${COUNT_METRICS[metric].label}`, compare: 'แบรนด์เฉพาะย่านและแบรนด์ที่พบร่วมกัน'};
   element.setAttribute('aria-label', labels[view] || labels.centers);
   if (!Array.isArray(rows) || !rows.length) { empty(element, 'ไม่พบสาขาตามตัวกรอง'); return () => element.replaceChildren(); }
-  const model = buildNeighborhoodChartModel(rows, neighborhoods, segments);
+  const model = buildNeighborhoodChartModel(rows, neighborhoods, segments, {metric});
   if (view === 'compare' && model.areaCount < 2) { empty(element, 'เลือกอย่างน้อย 2 ย่านเพื่อเปรียบเทียบ', 'ดูทุกย่าน', () => select({type: 'resetAreas'})); return () => element.replaceChildren(); }
   if (!model.areaCount) { empty(element, 'ไม่มีย่านในตัวกรองนี้'); return () => element.replaceChildren(); }
   try {

@@ -3,7 +3,7 @@
   "schemaVersion": "1.4.0",
   "documentType": "product-brief",
   "productId": "citymeter-camera-shops",
-  "productVersion": "0.5.1",
+  "productVersion": "0.5.2",
   "updatedOn": "2026-10-23",
   "datasetCheckedOn": "2026-10-23",
   "researchRevision": "2026-10-23",
@@ -15,7 +15,7 @@
     "productId": "citymeter-luxury-brands",
     "version": "0.5.0",
     "liveUrl": "https://montri-th.github.io/luxurybrands/",
-    "relation": "same 0.5 architecture and screen contract (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops changes the dataset, the counting unit (ร้าน = shop banner), the ย่าน layer (production Locales), the host source (the research master venue and building join) and the items listed in changesSince"
+    "relation": "same 0.5 architecture and screen contract (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops changes the dataset, the counting unit (แบรนด์ = shop banner), the ย่าน layer (production Locales), the host source (the research master venue and building join) and the items listed in changesSince"
   },
   "productStatement": {
     "human": "../PRODUCT_STATEMENT.md",
@@ -41,14 +41,15 @@
     "ownerInstructions": "2026-10-22: “ทำแบบเดียวกัน” กับ CityMETER Luxury Brands สำหรับ Camera Shops จากชีต research ของร้านกล้อง แล้ว publish ที่ github.com/montri-th/camera",
     "items": [
       "Current data:253outlet rows/252default,44approved banners/40represented/39default,147venues; scripts/refresh-camera-master.py projects the normalized refreshed master",
-      "counting unit ร้าน = distinct shop banner (bannersOf/brandSet); a co-branded storefront is one outlet with every counted banner; “แบรนด์” is never a unit on screen (it would read as camera makers)",
+      "0.5.2: 111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part. Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.",
+      "Owner vocabulary override 2026-10-23: counting unit แบรนด์ = distinct shop banner (bannersOf/brandSet), ศูนย์การค้า = public venue label, สาขา = outlet; a co-branded storefront is one outlet with every counted banner. Source fields, entity names and business categories are unchanged.",
       "segment filter projects banners (projectSegment): an outlet stays when any of its banners is in the segment and only those banners count",
       "Production Locales:36Bangkokfeatures, IDs unchanged productionUUIDs; selected-point membership metadata48/48",
       "The normalized refresh master owns stable IDs, selected source-backed outlet points, source roles and accepted venue/building links independently. scripts/refresh-camera-master.py projects them without creating joins. Coordinates may come from official published branch geo, identity-checked named business-map targets, explicit venue references or clearly dated retained evidence; never viewport centres. A point need not have a joined host and must not be copied to venue coordinates without an explicit host role. Held host identity can coexist with an independently qualified business point. No geocoded, nearest-host or nearest-building fallback; containment retests use the actual selected point.",
       "venue level is fed from scopeRows (detailRows): a venue outside the automatic top-three areas still gets its pins, blue host and x-ray (when the master accepts a building for it)",
       "desktop 3D fits count the legend (pitchedPadding) and the 3D overview is never framed below zoom 13 (CITY_MASSING_ZOOM) so the city massing is on the first screen; phones keep the full fit",
       "provinces without a Locale get a venue-level first finding (share of banners at the leading venue) and no “0 ย่าน” tile",
-      "province frames for all 64 provinces that hold an outlet; the panel lists ten and folds the rest in a native disclosure",
+      "All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units.",
       "43 of 44 approved store marks; Camera Exchange remains missing. 83 original venue-logo files cover139of147venue labels. Identity role, source/asset URL, MIME/dimensions, SHA-256 and reviewed neutral backing stay separate; collection grants no new rights.",
       "pictogram role brand (ร้าน) = photo_camera U+E412 (Luxury Brands: diamond); subset rebuilt byte-reproducibly",
       "store facts add address, store format (FORMATS), linked banners (ร่วมกับ …), the retailer’s own map link and hold statuses; cohorts current / all / review",
@@ -59,7 +60,7 @@
       "venue-level finding names the leading venue that has a host point (venues without one stay in the venue list); ย่าน shows “—” for a row without a point (was “นอกย่าน”); the host-building legend key hides when no host building is displayed",
       "colour scales use the full 41-sample LDS count LUT (owner rule 2026-10-22): a linear sample per count from 1 to the selection maximum on the map, the province frames, the ranking bars and the matrix; legends are the 41-sample ramp; the 5-class projection (classColors, countThresholds, buildCountClasses) is removed; matrix numbers on samples 27–29 sit on a surface chip",
       "New category-killer outlets require branch-specific camera-selling evidence. Sixteen added Power Buy branches intersect current retailer branch identity/address with an undated Canon DSLR997/compact933 sales-stockist listing; this is source-listed eligibility, not current stock or field-open verification. AV VALUE qualifies only its Vanilla Moon4F physical camera/lens/video showroom; HQ65SoiChan33 is separate. Generic networks, catalog-only, announcement-only, stock-zero and excluded records remain in1411private network candidates and never enter public camera counts.",
-      "0.5.1refresh does not itself attest browser rendering or live publication; dated verification/release receipts report those outcomes separately."
+      "0.5.2refresh does not itself attest browser rendering or live publication; dated verification/release receipts report those outcomes separately."
     ]
   },
   "rowScopes": {
@@ -194,7 +195,7 @@
         "quiet": "other Locales outline-only with quiet labels; outlets outside focus are grey context dots without labels; city massing in the quiet tone; no name chips below zoom 14"
       },
       "overviewAll": {
-        "focus": "all 26 Locales filled by distinct banners (count family, all 41 samples mapped linearly from 1 to the maximum), labels with counts; nationally the fit becomes the country plan view where the province frames carry the reading",
+        "focus": "all 36 production Locales filled by the selected brands/pos count metric (count family, all 41 samples mapped linearly from 1 to the maximum), labels with the same metric; nationally the country plan view uses all 77 province frames",
         "quiet": "pins are size-tiered dots; city massing only; no rounded focus massing"
       },
       "neighborhood": {
@@ -210,13 +211,13 @@
         "quiet": "other venues' rows are grey context dots; their host buildings fall back to quiet/focus massing; SCENE.eye lowers massing opacity (city 0.16, focus 0.62) and buildings between the camera and the venue move to the 0.14-opacity occluder layer; the city tier fades to the ground tone with distance from the focus"
       },
       "countryAll": {
-        "focus": "below zoom 9: frames of the 64 provinces that hold an outlet, filled by distinct banners per province (count family, all 41 samples mapped linearly from 1 to the province maximum), ink-chip province labels with counts, legend “จังหวัด · จำนวนร้าน”, panel list “จังหวัดที่มีร้านกล้อง” (ten rows + a disclosure for the rest)",
+        "focus": "All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units.",
         "quiet": "provinces without outlets are not drawn (out_of_scope); with a จังหวัด filter the other frames are outline-only; from zoom 9 the frames are outlines until zoom 12 and the Locales carry the scale"
       }
     },
     "choropleth": {
       "scaleId": "count",
-      "metric": "distinct shop banners per Locale within scopeRows",
+      "metric": "selected count-metric: distinct counted shop banners (brands) or deduplicated outlet IDs (pos) per Locale within scopeRows; map fill, legend, badges and count rankings share this metric",
       "classification": "none: owner rule 2026-10-22 — a colour scale always uses the full 41-sample LDS scale; a count v takes count-LUT sample round(40 × (v − 1) / (max − 1)) of the current selection (max 1 → darkest sample); the legend is the 41-sample ramp with 1 · middle · max ticks; numbers drawn on samples 27–29 (below 4.5:1 with both foundation inks) sit on a surface chip",
       "defaultClasses": [
         "1–2",
@@ -228,16 +229,16 @@
       "evidenceStates": {
         "measured": "class fill",
         "measured_zero": "lowest fill + zero outline",
-        "out_of_scope": "bare basemap (every place outside the 26 Locales, i.e. every province but Bangkok)"
+        "out_of_scope": "bare basemap outside the 36 supplied production Locales; no invented Locale outside Bangkok"
       },
       "themePolicy": "identical light HEX on both themes; fill-opacity 1 inserted before the basemap's first line layer (waterway); hard switch off at zoom ≥ 14.5",
       "model": "js/map-layers.js#buildAreaModel, js/scales.js#buildCountScale / countSampleIndex / countRamp"
     },
-    "hostBuildings": "map.activeLayer role (light #347DA8 / dark #65B6DB), only for detail rows, extrusion zoom ≥ 14, outline zoom ≥ 12, visible in both plan and 3D; layers camera-venue-buildings-3d / camera-venue-buildings-outline",
-    "labels": "pin labels at zoom ≥ 14 for focused rows only, ≤ 250 (js/pins.js LOGO_MIN_ZOOM, MAX_LOGOS): banner logo when registered, else a text name chip (Camera Shops: always a chip, see bannerContract.labels); the map status line reads “{n} สาขา · ป้ายชื่อ {placed}/250 · บริบท {n}”",
+    "hostBuildings": "map.activeLayer role (light #347DA8 / dark #65B6DB), only for detail rows, extrusion zoom ≥ 13, outline zoom ≥ 12, visible in both plan and 3D; only currently visible positive-height host extrusions suppress background massing; layers camera-venue-buildings-3d / camera-venue-buildings-outline",
+    "labels": "pin labels at zoom ≥ 14 for focused rows only, ≤ 250 (js/pins.js LOGO_MIN_ZOOM, MAX_LOGOS): banner logo when registered, else a text name chip (see bannerContract.labels and the current logo registry); the map status line reads “{n} สาขา · ป้ายชื่อ {placed}/250 · บริบท {n}”",
     "detailRows": "js/app.js#detailRows: venueLevel() ? venueRows(scopeRows) — rows of the current venue (mallId, else venue label) : rows",
     "areaLabels": "ink chips (--area-label-bg/ink/border, display font, area square glyph, light count badge) so they never read as name chips or logo boxes; quiet = 72% opacity; hidden below zoom 11.5",
-    "drawOrder": "host extrusion (buildings.js) is installed first; installMassing({beforeId: HOST_LAYERS.extrusion}) inserts city/focus/occluder tiers before it; venue-xray is the last 3D layer (before water-name). Reason: MapLibre 3D layers share one depth buffer and translucent fill-extrusion writes depth in its first pass, so anything drawn later and farther is cut away."
+    "drawOrder": "Install the host extrusion, insert city/focus/occluder massing before it, then append venue-xray last in the MapLibre style after basemap symbol labels. The x-ray clears depth with depth writes enabled before drawing its own solid, so neither context depth nor later basemap text can stripe it. DOM outlet marks and logos remain above the map canvas."
   },
   "basemapContract": {
     "generator": "js/map-style.js#buildMapStyle(theme, {palette, tileJSON, glyphs}) — a MapLibre style v8 object built at runtime; no hosted style URL (unchanged from Luxury Brands 0.5)",
@@ -288,9 +289,11 @@
       "data fill (inserted before DATA_FILL_BEFORE = waterway)",
       "2D building footprints",
       "roads, rail, paths",
-      "massing + host buildings (inserted before MASSING_BEFORE = water-name, the first symbol layer)",
-      "labels",
-      "area outlines, selection outline, pins, name chips"
+      "city/focus/occluder massing, then host extrusions (before MASSING_BEFORE = water-name)",
+      "basemap symbol labels",
+      "area outlines and selection outline",
+      "venue-xray (appended last in the MapLibre style for the current venue or selected neighborhood)",
+      "DOM outlet marks, logos and name chips (above the map canvas)"
     ],
     "atmosphere": "sky + fog blend the far ground into the paper colour; viewport-anchored light (#FFFFFF, intensity 0.32) gives massing a soft shade; both are quiet context, never data",
     "themeSwitch": "map.setStyle(buildMapStyle(theme)) then re-install spatial layers; data layers keep the same HEX on both themes"
@@ -317,7 +320,7 @@
     "hostTier": {
       "source": "data/venue-buildings.geojson via js/buildings.js (controller exposes displayedFeatures()); features joined to outlets by outlet_ids, to hosts by mall_ids (the Shopping Center ids of the research master join; Grocery record ids supported); the features are the research master building join (13_BUILDINGS)",
       "colour": "map.activeLayer; outline map.selectedStroke",
-      "visibility": "extrusion zoom ≥ 14, outline zoom ≥ 12, detail rows only; before MASSING_BEFORE",
+      "visibility": "extrusion zoom ≥ 13, outline zoom ≥ 12, detail rows only; before MASSING_BEFORE; suppress background massing only with visible positive-height host extrusions",
       "attribution": "source attribution “© OpenStreetMap contributors · CityMETER”; every feature carries attribution “© OpenStreetMap contributors (ODbL 1.0)” and license ODbL-1.0 (OSM footprints and OSM-derived CityMETER building parts)"
     },
     "rounding": {
@@ -565,7 +568,7 @@
       "STN",
       "TRG"
     ],
-    "dataBinding": "data/neighborhoods.geojson properties.provinceCode = BKK / provinceName = กรุงเทพมหานคร for all 26 Locales; rows carry the Thai province name",
+    "dataBinding": "data/neighborhoods.geojson properties.provinceCode = BKK / provinceName = กรุงเทพมหานคร for all 36 Locales; rows carry the Thai province name",
     "actions": [
       "crumb-country (clear province + area)",
       "crumb-province (clear area, keep province)",
@@ -616,7 +619,7 @@
       "overview": "js/profile-model.js#buildOverviewInsights, rankVenues (rows without a venue never form a venue); js/panel.js#renderOverview(focusMode, view3d, venues, provinces)"
     },
     "copy": {
-      "units": "ร้าน = distinct shop banner · สาขา = outlet record · สถานที่ = venue (shopping centre, hypermarket or building) · ย่าน = CityMETER Locale; “แบรนด์” is not a unit",
+      "units": "แบรนด์ = distinct counted shop banner · สาขา = one outlet record · ศูนย์การค้า = venue label (shopping centre, hypermarket or building) · ย่าน = CityMETER Locale; owner vocabulary override 2026-10-23; keep actual source entity names and category taxonomy unchanged",
       "metricTiles": "ร้าน (photo_camera) · สาขา (storefront) · สถานที่ (local_mall, distinct venue keys) · ย่าน (map, omitted when no Locale holds a row)",
       "statuses": "describeStatus: พบในแหล่งข้อมูล (listed) · ตัวตนหน้าร้านรอตรวจ / รวมรายการรอตรวจ / ที่ตั้งขัดกัน / ที่อยู่ติดต่อ (pending) · ปิดถาวร (closed, factual; none in this snapshot)",
       "geometry": "describeGeometry: จุดตัวแทนอาคาร/ศูนย์การค้า · จุดตัวแทนไฮเปอร์มาร์เก็ต (supported, unused in this release) · พิกัดรอตรวจ (no point, venueJoin held — a venue the research master holds) · ยังไม่มีพิกัด — never upgraded to a shopfront",
@@ -632,10 +635,10 @@
     "research": "CityMETER Camera Shops Thailand — Research Master2026-10-22, refreshed2026-10-23; source check date differs from source publication/retrieval date",
     "rowFields": "id, brand, brands[], bannerSegments[], name, venue, venueId, province (Thai), segment, scope, channel, format, origin, status, identity, release, role, cameraSales, evidence, sourceType, source, statusSource, mapUrl, checkedOn (ISO), address, unit, operator, latitude, longitude, geometryRole, geometryStatus, venueJoin, coordinateSource, mallId, hostKind, dedupe, note",
     "neighborhoods": "data/neighborhoods.geojson:36production Bangkok Locales; actual selected point membership matches locatePoint48/48; no nearest/name fallback",
-    "hostBuildings": "data/venue-buildings.geojson — the research master building join (13_BUILDINGS + its feature file): 103 features (69 footprints + 34 parts), 69 hosts, 119 matched outlet rows",
+    "hostBuildings": "data/venue-buildings.geojson: 111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.",
     "cityMassing": "OpenFreeMap vector tiles, building source-layer (context, not part of the dataset)",
     "brandLogos": "data/brand-logos.json:43verified marks of44approved banners; Camera Exchange missing; original bytes/provenance and neutral backing retained",
-    "provinces": "data/provinces.geojson (metadata.version 2026-10-22-r1; 64 frames; OpenGISData-Thailand CC BY 4.0, commit fafcea1)",
+    "provinces": "data/provinces.geojson:77frames,13with no observed rows; original64preserved; pinned OpenGISData source/hash unchanged, extracted2026-10-23",
     "venueLogos": "data/venue-logos.json:83files,139of147labels,105accepted center logo links; file inventory complete, identity coverage partial",
     "cohorts": {
       "current": {
@@ -686,11 +689,11 @@
       "heldVenues": 6,
       "provincesWithMappedRows": 63,
       "locales": 36,
-      "hostBuildingFeatures": 103,
-      "hostsWithBuilding": 69,
-      "hostBuildingContexts": 129,
-      "insideHostContexts": 125,
-      "outsideNamedHostContexts": 4,
+      "hostBuildingFeatures": 111,
+      "hostsWithBuilding": 76,
+      "hostBuildingContexts": 160,
+      "insideHostContexts": 145,
+      "outsideNamedHostContexts": 12,
       "venueLogoFiles": 83,
       "venueLabelsWithLogo": 139,
       "storeLogos": 43,
@@ -727,17 +730,24 @@
           "outlets": 25,
           "banners": 4
         }
-      }
+      },
+      "hostContextsWithoutSelectedPoint": 3,
+      "hostBuildingFootprints": 76,
+      "hostBuildingParts": 35,
+      "provinceFrames": 77,
+      "provincesWithoutObservedRows": 13
     },
     "closurePolicy": "retain closure status factually; 1 brand-level closure (Eastbourne 2025-02-15) is recorded in meta.closedBrands, not as an outlet row; never delete to improve counts",
     "coordinatePolicy": "The normalized refresh master owns stable IDs, selected source-backed outlet points, source roles and accepted venue/building links independently. scripts/refresh-camera-master.py projects them without creating joins. Coordinates may come from official published branch geo, identity-checked named business-map targets, explicit venue references or clearly dated retained evidence; never viewport centres. A point need not have a joined host and must not be copied to venue coordinates without an explicit host role. Held host identity can coexist with an independently qualified business point. No geocoded, nearest-host or nearest-building fallback; containment retests use the actual selected point.",
     "privacy": "no phone numbers (scripts/build-camera-data.py no_phone scrubs names, addresses, units, operators and notes) and no private Drive/Docs/googleusercontent URLs (public_https) in any public file",
     "limitations": [
       "Listings are source observations, not field-verified operating status.",
-      "Coordinates are shopping-centre host points from the research master venue join, not shop entrances or floors.",
-      "Outlets the research master has not joined to a host (held, awaiting a registry match, or without a venue) keep missing coordinates.",
       "Coverage is not a national census of camera retail.",
-      "Do not infer sales, stock, spending or demographics from presence."
+      "Do not infer sales, stock, spending or demographics from presence.",
+      "111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged.",
+      "A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.",
+      "Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.",
+      "Zero province counts mean no observed outlets in this source-backed dataset/filter, not verified market absence."
     ]
   },
   "visualSystem": {
@@ -898,11 +908,11 @@
     },
     {
       "id": "INV21",
-      "rule": "On-screen copy is short and natural, without caveats: ร้าน = distinct shop banner, สาขา = one outlet record, สถานที่ = venue, ย่าน = Locale; “แบรนด์” is never a unit; provenance, units and limits live in the data section, help and docs"
+      "rule": "Public counted units: แบรนด์ = distinct counted shop banner, สาขา = one outlet record, ศูนย์การค้า = venue label, ย่าน = CityMETER Locale. Owner vocabulary override 2026-10-23 supersedes earlier ร้าน/สถานที่ count labels; actual business names, source fields and category taxonomy remain unchanged."
     },
     {
       "id": "INV22",
-      "rule": "The venue's host building is never hidden by context: it is drawn before every massing tier and the venue x-ray draws it on top in 3D; it stays clickable via the style layer and the x-ray hit-test"
+      "rule": "The qualified host solids of the current venue or selected neighborhood stay visible through context: city/focus/occluder massing is drawn before the host extrusion; venue-xray is appended last in the map style above basemap labels, with DOM outlet marks and logos above the canvas. The solids stay clickable through style-layer and x-ray triangle hit tests."
     },
     {
       "id": "INV23",
@@ -1004,12 +1014,12 @@
   },
   "venueXrayContract": {
     "module": "js/venue-xray.js#installVenueXray(map, {beforeId, toMercator, colors}) → {update(features, {colors}), setEnabled, hitTest(point), dispose, count, enabled, failed}",
-    "layer": "venue-xray (type custom, renderingMode 3d), inserted before water-name after every fill-extrusion layer",
-    "input": "host features of the venue being looked at (mall_ids — the host’s Shopping Center id — or venue_names match) with render_as = extrusion; display_base_m / display_height_m",
+    "layer": "venue-xray (type custom, renderingMode 3d), appended last in the MapLibre style after all fill-extrusion and basemap symbol layers; DOM outlet marks/logos remain above the map canvas",
+    "input": "Visible positive-height host extrusion features of the current venue (accepted mall_ids or exact venue_names match), or the qualified hosts of a selected neighborhood; display_base_m / display_height_m. Only explicit qualified source parent ownership can select parts; no proximity inference.",
     "geometry": "walls (two triangles per edge), roof via earcut (holes supported; js/vendor/earcut.js 3.2.4 ISC), edge lines; mercator coordinates relative to the centroid origin; z = MercatorCoordinate.z of the altitude",
     "matrix": "options.defaultProjectionData.mainMatrix (64-bit) × translate(origin) multiplied on the CPU, Float32 to the shader",
-    "depth": "scissored depth clear inside the venue screen box (device pixels, padded 4 px), then LEQUAL read-write depth test against itself only; polygon offset keeps edges on top",
-    "visibility": "3D only (pitch > 0) and zoom ≥ 13 (XRAY_MIN_ZOOM); hidden with the 3D toggle; disabled at non-venue levels (empty feature set); venues without an accepted footprint have no solid",
+    "depth": "Enable depth writes, then clear depth inside the projected host screen box (device pixels, padded 4 px); LEQUAL read-write depth test draws the host against itself only; polygon offset keeps edges on top",
+    "visibility": "3D only (pitch > 0) and zoom ≥ 13 (XRAY_MIN_ZOOM); hidden with the 3D toggle; current venue or selected neighborhood only, empty in overview; no solid for an unaccepted geometry, outline or invalid/nonpositive display height",
     "colours": "faces map.activeLayer × shade (roof 1, walls 0.66–0.92 by orientation), edges map.selectedStroke — map roles, not data colours",
     "interaction": "two paths: the style layer camera-venue-buildings-3d (MapLibre hit-test, reliable near the footprint) and xray.hitTest(point) — point-in-triangle against the solid projected with the last frame matrix — wired in app.js on map click (opens the venue when not already there) and mousemove (pointer cursor)",
     "failSafe": "a GL error disables the layer (failed = true) and the style host layer keeps drawing",
@@ -1022,11 +1032,11 @@
     "knownTradeOff": "inside the cleared box a translucent 2D layer that sits below an opaque fill in style order may draw over it; none of the generated paper style layers are ordered that way"
   },
   "provinceContract": {
-    "data": "data/provinces.geojson — 64 provinces that hold at least one outlet row; id = production code, properties.dopaCode = DOPA two-digit code (equal to production lv0 code), name (Thai), nameEn; metadata: source, sourceCommit, sourceSha256, retrievedOn, license CC BY 4.0, attribution, vertices 23213",
-    "source": "https://github.com/chingchai/OpenGISData-Thailand provinces.geojson (publisher credits DOPA); extracted by scripts/extract-provinces.mjs from the rows of data/camera.json; coordinates rounded to 5 decimals, no simplification; rings that collapse below 4 positions after rounding are dropped (one sliver hole in ร้อยเอ็ด)",
-    "module": "js/provinces.js#installProvinceLayers(map, geojson, {onSelect}) → {update({rows, selectedCode, visible}), retheme, dispose, model}; buildProvinceModel(rows, geojson)",
+    "data": "data/provinces.geojson — all 77 provinces; all original 64 feature records preserved exactly, with 13 previously omitted source polygons restored; id = production code, dopaCode = DOPA two-digit code; same source commit/SHA, retrieved 2026-10-23, CC BY 4.0, 27332 vertices",
+    "source": "Same pinned OpenGISData-Thailand provinces.geojson: commit fafcea179cda88b689f5697c3866a449e79cd298, SHA-256 310c3adf5c3f5ce574e0ecbc4fadc5761f520d02050fcc3a6373fd9f22d011c0; extract-provinces.mjs now retains every registered province. Existing rounding/ring policy and names unchanged.",
+    "module": "buildProvinceModel(rows, geojson, {metric}); installProvinceLayers.update({rows, selectedCode, visible, metric}); metric brands (default) or pos",
     "rows": "filterRows(data.rows, {...filters, province: \"\"}) — every filter except the province filter, so each frame keeps its own count",
-    "metric": "distinct shop banners per province; the full 41-sample count scale from 1 to the province maximum (snapshot ramp 1 · 19 · 36; กรุงเทพมหานคร 36 ร้าน); measured_zero = lowest fill + zero outline; out_of_scope = not drawn",
+    "metric": "Visible count-metric selector and ?metric=pos switch unique canonical banners / deduplicated outlet IDs together across choropleths, 41-sample LDS legends, badges, rankings and ranking/matrix charts. Zero observed uses canonical zero fill/outline and says ยังไม่พบสาขาในชุดข้อมูล; this is not verified market absence. Brand share and exclusive/shared charts keep explicit brand units.",
     "zoomWindows": {
       "fill": "< 9 (PROVINCE_FILL_MAX_ZOOM, hard switch)",
       "outline": "< 12 (PROVINCE_OUTLINE_MAX_ZOOM, opacity fades 10.5 → 12)",
@@ -1040,10 +1050,10 @@
       "province-outline",
       "province-selected"
     ],
-    "labels": "js/map-layers.js#installAreaLabels({className: province-label, minZoom 0, maxZoom 9.5}) — ink chips with the location_city pictogram and the banner count",
-    "drillDown": "click frame / label / panel row → app.js selectProvince(code): province filter, neighborhood cleared, overview panel, update({fit: true}) → camera on the province rows; URL ?province=CODE; breadcrumb ประเทศไทย › จังหวัด; outside Bangkok the first finding is venue-level",
+    "labels": "All 77 province features are eligible for collision-managed labels; badge value and accessible title follow the selected metric; zeros keep the observed-data note.",
+    "drillDown": "Click frame / label / row selects any of 77 provinces; zero-point selection frames the source province polygon; URL ?province=CODE&metric=pos is supported. No point or outlet is invented.",
     "quiet": "with a province selected the other frames are outline-only (filled 0, quiet 1)",
-    "panelList": "จังหวัดที่มีร้านกล้อง: ten rows, the rest folded in a native <details> disclosure",
+    "panelList": "All 77 provinces ranked by selected metric, ten rows followed by a native disclosure, including zero observed provinces.",
     "limits": "frames are navigation context, not an administrative claim; production boundaries may differ"
   },
   "pictogramContract": {
@@ -1164,8 +1174,8 @@
       }
     },
     "counting": {
-      "banners": "ร้าน = |brandSet(rows)| — model.js bannersOf / brandSet / countBrands; used by summarize, area-insight, chart-model, neighborhoods, provinces and profile-model",
-      "outlets": "สาขา = number of rows",
+      "banners": "แบรนด์ = |brandSet(rows)|; canonical public names correspond one-to-one to approved registry IDs. Shared banners count once; operator links do not count.",
+      "outlets": "สาขา = unique canonical outlet IDs; co-branded storefronts count once; colocated independent IDs remain distinct.",
       "segmentMix": "profile-model.js#segmentMixOf and chart-model.js count (outlet × banner) pairs by each banner's own segment: a co-branded outlet appears once in each of its banners' segments, so segment rows can add up to more than the outlet total",
       "exclusiveShared": "computed on banner names over all assigned Locales",
       "presence": "buildBrandPresence finds a banner in every outlet that carries it (the Insta360 store also counts for BIG CAMERA)",
@@ -1198,7 +1208,7 @@
       }
     },
     "labels": {
-      "vocabulary": "ร้าน (banner) · สาขา (outlet) · สถานที่ (venue) · ย่าน (Locale); segment names SEGMENTS (full) / SEGMENT_SHORT (matrix columns)",
+      "vocabulary": "Owner override 2026-10-23: แบรนด์ (shop banner) · สาขา (outlet) · ศูนย์การค้า (public venue label) · ย่าน (Locale). Canonical entity names, source fields and category values unchanged.",
       "storePanel": "heading = primary banner; linked banners “ร่วมกับ …” as search-brand buttons; table and popup join every banner with “ · ”",
       "mapChips": "Use verified registered banner logos when available; absent marks use the existing focused name-chip fallback from zoom14 under the250ceiling.43of44approved marks are collected; Camera Exchange remains missing. Never use a sold manufacturer mark as a retailer substitute.",
       "bannerLabels": {
@@ -1247,7 +1257,7 @@
         "meaning": "No accepted CityMETER host:61rows, including44with independently qualified source points and17without coordinates. Named venue identity may still be present."
       }
     },
-    "fields": "mallId/hostKind identify accepted CityMETER host references; they are not a coordinate-presence flag. geometryRole/geometryStatus/coordinateSource describe the selected point; venueJoin is a separate identity decision. Provider family shopping_center does not turn a department store into a mall.",
+    "fields": "mallId/hostKind identify accepted CityMETER host references; they are not a coordinate-presence flag. geometryRole/geometryStatus/coordinateSource describe the selected point; venueJoin is a separate identity decision. Provider family shopping_center does not turn a department store into a mall. Reviewed named-host building identity is independent of registry status; held/awaiting registry status is not upgraded by acquiring a building.",
     "join": {
       "method": "the research master venue join: a branch-specific name or alias and the province must match the registry; street, district or station names are never used as a building; no nearest-neighbour or radius join; centers[].match = the master venue_join_method",
       "basis": {
@@ -1267,23 +1277,30 @@
     },
     "geometry": {
       "point": "Each outlet retains its selected source-backed business or host-reference point and role. Several outlets may share a host point without merging; a source-backed business point may have no host.",
-      "buildings": "103retained source features (69footprints+34parts),129outlet building contexts:125inside+4outside named-host contexts. Recompute containment after point changes; Leica Siam Paragon becomes outside context. No new geometry, nearest-building substitution, synthetic footprints or height propagation. Source part geometry/base/top retained without claiming a new complete-polygon coverage certification.",
+      "buildings": "111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.",
       "joinMethods": {
         "citymeter_osm_identity_named_host_and_point_containment": 33,
         "existing_verified_host_identity_and_point_containment": 26,
-        "matching_retailer_banner_source_point_containment_and_retailer_admin": 7,
+        "current_part_complete_polygon_within_verified_host; existing_source_part_to_verified_parent": 31,
         "existing_verified_named_host_context_point_outside": 3,
-        "parts (current_part_complete_polygon_within_verified_host / existing_source_part_to_verified_parent)": 34
+        "current_part_complete_polygon_within_verified_host": 3,
+        "matching_retailer_banner_source_point_containment_and_retailer_admin": 7,
+        "exact_named_official_website_admin_phone_and_registry_point_containment": 1,
+        "osm_building_part_tag_full_polygon_covered_by_qualified_named_parent": 1,
+        "exact_named_host_identity_and_complete_source_geometry": 3,
+        "exact_named_floresta_wing_and_address199_context_without_selected_point": 1,
+        "independently_named_host_context_point_outside_no_spatial_total": 2
       },
       "heights": {
-        "citymeter_model_estimate": 56,
+        "citymeter_model_estimate": 59,
+        "unknown_display_fallback": 12,
         "citymeter_part_height_source": 34,
-        "unknown_display_fallback": 9,
         "osm_published_height_not_survey_verified": 2,
-        "unknown_parent_height_parts_owned": 2
+        "unknown_parent_height_parts_owned": 2,
+        "level_count_display_model": 2
       },
       "renderAs": {
-        "extrusion": 95,
+        "extrusion": 103,
         "outline": 8
       },
       "renderMapping": {
@@ -1296,10 +1313,12 @@
       "sources": {
         "OpenStreetMap original geometry": 69,
         "CityMETER public building parts (OSM-derived)": 31,
-        "CityMETER original public building parts (OSM-derived)": 3
+        "CityMETER original public building parts (OSM-derived)": 3,
+        "OpenStreetMap original complete geometry": 7,
+        "OpenStreetMap original relation geometry retained in qualified cross-dataset evidence": 1
       },
       "attribution": "© OpenStreetMap contributors (ODbL 1.0) on every feature",
-      "limits": "a footprint is the host building, not the shop unit; heights are source or model estimates (3 m display fallback when unknown)"
+      "limits": "Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only. Named context outside and context without a selected point do not count as containment; host/part geometry does not identify a tenant unit."
     }
   }
 }

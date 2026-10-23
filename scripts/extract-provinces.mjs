@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Extract the provinces that hold at least one outlet row of data/camera.json
+ * Extract all 77 provinces, including provinces with no observed outlet row
  * (matched to js/model.js PROVINCES by Thai name) from the OpenGISData-Thailand
  * provinces layer into data/provinces.geojson.
  *
@@ -24,7 +24,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = JSON.parse(readFileSync(resolve(input), 'utf8'));
 const dataset = JSON.parse(readFileSync(join(root, 'data', 'camera.json'), 'utf8'));
 const present = new Set(dataset.rows.map(r => r.province));
-const byThai = new Map(PROVINCES.filter(p => present.has(p.th)).map(p => [p.th, p]));
+const byThai = new Map(PROVINCES.map(p => [p.th, p]));
 const unknown = [...present].filter(name => !PROVINCES.some(p => p.th === name));
 if (unknown.length) { console.error('rows name provinces outside js/model.js PROVINCES:', unknown); process.exit(1); }
 const round = v => Math.round(v * 1e5) / 1e5;
@@ -49,7 +49,7 @@ for (const f of source.features) {
 }
 features.sort((a, b) => PROVINCES.findIndex(p => p.code === a.id) - PROVINCES.findIndex(p => p.code === b.id));
 const missing = [...byThai.values()].filter(p => !features.some(f => f.id === p.code)).map(p => p.th);
-if (missing.length) { console.error('provinces with rows but no source polygon:', missing); process.exit(1); }
+if (missing.length) { console.error('registered provinces with no source polygon:', missing); process.exit(1); }
 const vertices = features.reduce((n, f) => n + f.geometry.coordinates.reduce((m, poly) => m + poly.reduce((k, r) => k + r.length, 0), 0), 0);
 const out = {
   type: 'FeatureCollection',
@@ -60,7 +60,7 @@ const out = {
     sourceUrl: 'https://github.com/chingchai/OpenGISData-Thailand/blob/master/provinces.geojson',
     sourceCommit: opt('--commit', ''), sourceSha256: opt('--sha256', ''), retrievedOn: opt('--retrieved', ''),
     license: 'CC BY 4.0', attribution: 'ขอบเขตจังหวัด: OpenGISData-Thailand (CC BY 4.0), อ้างอิงกรมการปกครอง',
-    processing: 'provinces that hold at least one outlet row of data/camera.json only (matched to js/model.js PROVINCES by Thai name); coordinates rounded to 5 decimals (rings that collapse below 4 positions after rounding are dropped); no simplification, geometry otherwise unchanged; id = production province code, dopaCode = DOPA two-digit code',
+    processing: 'all 77 province frames (matched to js/model.js PROVINCES by Thai name), including zero observed outlets; coordinates rounded to 5 decimals (rings that collapse below 4 positions after rounding are dropped); no simplification, geometry otherwise unchanged; id = production province code, dopaCode = DOPA two-digit code',
     provinces: features.length, vertices,
   },
   features,

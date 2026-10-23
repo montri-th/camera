@@ -24,7 +24,7 @@
  * Colours: map.activeLayer (faces) and map.selectedStroke (edges) from
  * assets/theme.css — the host building is map context, never an analytical scale.
  */
-import earcut from './vendor/earcut.js?v=20261023-camera-r2';
+import earcut from './vendor/earcut.js?v=20261023-camera-r4';
 
 export const XRAY_LAYER = 'venue-xray';
 export const XRAY_MIN_ZOOM = 13;
@@ -75,8 +75,12 @@ export function buildSolid(features, toMercator, {light = [-0.55, -0.83]} = {}) 
   const polys = [];
   for (const f of features || []) {
     const p = f.properties || {};
-    const base = Math.max(0, Number(p.display_base_m) || 0);
-    const top = Math.max(base + 0.5, Number(p.display_height_m) || 0);
+    const base = Number(p.display_base_m) || 0;
+    const top = Number(p.display_height_m);
+    // Only draw the published display solid. An outline or null source height
+    // must not silently become a new 0.5 m building in the x-ray layer.
+    if (p.render_as === 'outline' || p.display_height_m == null || p.display_height_m === ''
+      || !Number.isFinite(top) || top <= base) continue;
     for (const poly of rings(f)) {
       const converted = poly.map(ring => ring.map(([lon, lat], i) => {
         const m = toMercator([lon, lat], 0);
@@ -145,20 +149,30 @@ export function screenBoxOf(world, matrix, width, height, pad = 4) {
 
 /** Point-in-triangle test of (x, y) device pixels against every triangle of the solid projected with `matrix`. */
 export function solidHit(solid, matrix, width, height, x, y) {
+  return solidHitDepth(solid, matrix, width, height, x, y) != null;
+}
+
+/** Nearest projected triangle depth, so an overlaid solid keeps its own venue identity. */
+export function solidHitDepth(solid, matrix, width, height, x, y) {
   const P = solid.positions;
   const proj = (i) => {
-    const [cx, cy, , w] = transformPoint(matrix, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
-    return w > 0 ? [(cx + 1) / 2 * width, (1 - cy) / 2 * height] : null;
+    const [cx, cy, cz, w] = transformPoint(matrix, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+    return w > 0 ? [(cx + 1) / 2 * width, (1 - cy) / 2 * height, cz] : null;
   };
-  const sign = (a, b, c) => (a[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (a[1] - c[1]);
+  let nearest = null;
   for (let t = 0; t < solid.count; t += 3) {
     const a = proj(t), b = proj(t + 1), c = proj(t + 2);
     if (!a || !b || !c) continue;
-    const d1 = sign([x, y], a, b), d2 = sign([x, y], b, c), d3 = sign([x, y], c, a);
-    const neg = d1 < 0 || d2 < 0 || d3 < 0, pos = d1 > 0 || d2 > 0 || d3 > 0;
-    if (!(neg && pos)) return true;
+    const area = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1]);
+    if (Math.abs(area) < 1e-9) continue;
+    const u = ((b[1] - c[1]) * (x - c[0]) + (c[0] - b[0]) * (y - c[1])) / area;
+    const v = ((c[1] - a[1]) * (x - c[0]) + (a[0] - c[0]) * (y - c[1])) / area;
+    const w = 1 - u - v;
+    if (u < -1e-7 || v < -1e-7 || w < -1e-7) continue;
+    const depth = u * a[2] + v * b[2] + w * c[2];
+    if (nearest == null || depth < nearest) nearest = depth;
   }
-  return false;
+  return nearest;
 }
 
 const VERTEX = `
@@ -180,16 +194,20 @@ function compile(gl, type, src) {
 }
 
 /**
- * Install the x-ray layer. `toMercator` defaults to MapLibre's MercatorCoordinate.
+ * Install the x-ray layer after every existing style layer, including basemap
+ * symbols. MapLibre paints symbols above 3D in style order without a depth test;
+ * inserting this solid before street labels lets their glyphs paint across its
+ * walls and roofs. The app's DOM venue/brand labels remain above the canvas.
+ * `toMercator` defaults to MapLibre's MercatorCoordinate.
  * update(features, {colors}) replaces the solid; setEnabled(false) hides it.
  * The layer draws only in 3D (pitch > 0) and from zoom XRAY_MIN_ZOOM.
  */
-export function installVenueXray(map, {beforeId, toMercator = null, colors = {}} = {}) {
+export function installVenueXray(map, {toMercator = null, colors = {}} = {}) {
   const merc = toMercator || ((lngLat, alt) => globalThis.maplibregl.MercatorCoordinate.fromLngLat(lngLat, alt));
   let solid = buildSolid([], merc), enabled = true, program = null, buffers = null, dirty = true;
   // Last frame's matrix and drawing-buffer size → screen-space hit test (MapLibre's own
   // fill-extrusion query only finds a tall building near its footprint or along the camera ray).
-  let lastMatrix = null, lastSize = [0, 0], lastDrawn = false;
+  let lastMatrix = null, lastMainMatrix = null, lastSize = [0, 0], lastDrawn = false, featureSolids = null;
   const palette = {fill: '#347DA8', stroke: '#176B82', ...colors};
   let features = [];
 
@@ -230,7 +248,7 @@ export function installVenueXray(map, {beforeId, toMercator = null, colors = {}}
       // 64-bit on the CPU: main × translate(origin); the shader only sees small offsets.
       const matrix = mat4Multiply(main, mat4Translation(solid.origin[0], solid.origin[1], solid.origin[2]));
       const width = gl.drawingBufferWidth, height = gl.drawingBufferHeight;
-      lastMatrix = matrix; lastSize = [width, height]; lastDrawn = false;
+      lastMatrix = matrix; lastMainMatrix = main; lastSize = [width, height]; lastDrawn = false;
       const box = screenBoxOf(solid.world.map(p => [p[0] - solid.origin[0], p[1] - solid.origin[1], p[2]]), matrix, width, height);
       if (!box) return;
       lastDrawn = true;
@@ -240,6 +258,10 @@ export function installVenueXray(map, {beforeId, toMercator = null, colors = {}}
       // 1. Nothing drawn before may hide the venue: clear depth inside its box only.
       gl.enable(gl.SCISSOR_TEST);
       gl.scissor(box.x, height - box.y - box.height, box.width, box.height);
+      // WebGL clear obeys DEPTH_WRITEMASK. MapLibre may leave depth writes
+      // disabled after a translucent pass; enable them before clearing, or
+      // coplanar style faces/context depths leak through the custom solid.
+      gl.depthMask(true);
       gl.clearDepth(1); gl.clear(gl.DEPTH_BUFFER_BIT);
       gl.disable(gl.SCISSOR_TEST);
       // 2. The solid, depth-tested against itself only.
@@ -260,13 +282,13 @@ export function installVenueXray(map, {beforeId, toMercator = null, colors = {}}
       gl.drawArrays(gl.LINES, 0, solid.lineCount);
       gl.disableVertexAttribArray(aShade);
   }
-  const before = beforeId && map.getLayer(beforeId) ? beforeId : undefined;
-  map.addLayer(layer, before);
+  map.addLayer(layer);
 
   function update(nextFeatures = [], {colors: next} = {}) {
     if (next) Object.assign(palette, next);
     features = Array.isArray(nextFeatures) ? nextFeatures : [];
     solid = buildSolid(features, merc);
+    featureSolids = null; lastDrawn = false;
     dirty = true;
     if (typeof map.triggerRepaint === 'function') map.triggerRepaint();
     return {vertices: solid.count, lines: solid.lineCount, features: features.length};
@@ -283,6 +305,21 @@ export function installVenueXray(map, {beforeId, toMercator = null, colors = {}}
     const x = point[0] * lastSize[0] / cssW, y = point[1] * lastSize[1] / cssH;
     return solidHit(solid, lastMatrix, lastSize[0], lastSize[1], x, y);
   }
+  /** The actual source feature hit in neighborhood view; never infer a venue by proximity. */
+  function hitFeature(point) {
+    if (!hitTest(point) || !lastMainMatrix) return null;
+    if (!featureSolids) featureSolids = features.map(feature => ({feature, solid: buildSolid([feature], merc)}));
+    const container = typeof map.getContainer === 'function' ? map.getContainer() : null;
+    const x = point[0] * lastSize[0] / (container?.clientWidth || lastSize[0]);
+    const y = point[1] * lastSize[1] / (container?.clientHeight || lastSize[1]);
+    let selected = null, nearest = Infinity;
+    for (const item of featureSolids) {
+      const matrix = mat4Multiply(lastMainMatrix, mat4Translation(...item.solid.origin));
+      const depth = solidHitDepth(item.solid, matrix, lastSize[0], lastSize[1], x, y);
+      if (depth != null && depth < nearest) { nearest = depth; selected = item.feature; }
+    }
+    return selected;
+  }
   function dispose() { if (map.getLayer(XRAY_LAYER)) map.removeLayer(XRAY_LAYER); }
-  return {update, setEnabled, hitTest, dispose, layerId: XRAY_LAYER, get count() { return solid.count; }, get enabled() { return enabled; }, get failed() { return failed; }};
+  return {update, setEnabled, hitTest, hitFeature, dispose, layerId: XRAY_LAYER, get count() { return solid.count; }, get enabled() { return enabled; }, get failed() { return failed; }};
 }

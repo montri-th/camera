@@ -1,5 +1,5 @@
 // Frozen analytical neighborhoods: membership is geographic, never inferred from labels or filters.
-import {countBrands} from './model.js?v=20261023-camera-r2';
+import {countBrands, uniqueOutletRows} from './model.js?v=20261023-camera-r4';
 
 const EPSILON = 1e-10;
 
@@ -107,7 +107,7 @@ function featureCenter(feature) {
 export function summarizeNeighborhoods(rows, geojson, {includeEmpty = false} = {}) {
   const features = neighborhoodFeatures(geojson);
   const grouped = new Map(features.map(feature => [feature.properties?.id ?? feature.id, []]));
-  for (const row of rows) {
+  for (const row of uniqueOutletRows(rows)) {
     const feature = assignNeighborhood(row, geojson);
     if (feature) grouped.get(feature.properties?.id ?? feature.id)?.push(row);
   }

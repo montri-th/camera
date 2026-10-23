@@ -265,7 +265,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
 .map-legend > * { pointer-events: auto; }
 .legend-block { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
 .legend-title { font-weight: 600; margin-right: 2px; }
-.legend-steps { display: flex; align-items: flex-end; gap: 2px; }
+.legend-steps { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 12px; }
 .legend-step { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; line-height: 1.2; min-width: 34px; color: var(--text-metadata); }
 .legend-step i { display: block; width: 100%; height: 10px; border: 1px solid var(--border-default); }
 .legend-step .legend-zero { background: var(--scale-count-1); box-shadow: inset 0 0 0 2px var(--data-zero-outline); }
@@ -404,7 +404,7 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
 .matrix tr.is-selected .matrix-cell { outline: 2px solid var(--map-selected-stroke); outline-offset: -2px; }
 .chart-empty { display: grid; place-items: center; gap: 10px; min-height: 120px; text-align: center; color: var(--text-metadata); font-size: 13px; }
 
-.results { position: absolute; left: 0; right: 0; bottom: var(--bottom-panel-height); max-height: 72%; z-index: 8; background: var(--surface-card); padding: 12px 14px; border-top: 1px solid var(--border-default); display: flex; flex-direction: column; }
+.results { position: absolute; left: 0; right: 0; bottom: var(--bottom-panel-height); max-height: min(72%, calc(100% - var(--bottom-panel-height))); z-index: 8; background: var(--surface-card); padding: 12px 14px; border-top: 1px solid var(--border-default); display: flex; flex-direction: column; }
 .results-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
 .results-heading h2 { font-size: 15px; }
 .results-heading button { font-size: 12px; min-height: 36px; padding: 5px 12px; }
@@ -474,7 +474,7 @@ td small { display: block; color: var(--text-metadata); font-size: 12px; margin-
   .insight-heading h2 { font-size: 14px; margin-right: auto; }
   .insight-heading .hint { display: none; }
   .insight-heading button { padding: 5px 9px; }
-  .results { padding: 8px 10px; max-height: 75%; }
+  .results { padding: 8px 10px; max-height: min(75%, calc(100% - var(--bottom-panel-height))); }
   .results-heading h2 { font-size: 14px; }
   .neighborhood-label, .province-label { max-width: 150px; font-size: 11px; }
   .bar-row { grid-template-columns: 16px minmax(70px, 110px) minmax(0, 1fr) 70px; gap: 6px; }

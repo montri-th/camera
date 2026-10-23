@@ -119,6 +119,42 @@ test('installMassing reports every applied result through onResult (also empty/p
   assert.equal(map.getLayer(CITY_LAYER), undefined);
 });
 
+test('equal-count host changes rebuild suppression; removing an invisible host restores background massing', async () => {
+  const map = fakeMap();
+  const bytes = readFileSync(new URL('./fixtures/mvt-sample.pbf', import.meta.url));
+  const massing = installMassing(map, {beforeId: null,
+    tileUrl: t => `stub/${t.z}/${t.x}/${t.y}.pbf`,
+    fetchImpl: async () => ({ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)})});
+  const host = layer.features.find(x => x.id === 101).rings()[0].map(([px, py]) => tileToLonLat(px, py, tile));
+  const farHost = host.map(([lon, lat]) => [lon + 0.01, lat]);
+  const one = await massing.update({regions: [whole], hosts: [host], zoom: 13.5});
+  assert.ok(one.droppedForHosts >= 1);
+  const moved = await massing.update({regions: [whole], hosts: [farHost], zoom: 13.5});
+  assert.notEqual(moved.cached, true, 'same count, different source geometry must rebuild');
+  assert.ok(map.data[FOCUS_SOURCE].features.some(f => f.properties.osm_id === 101));
+  await massing.update({regions: [whole], hosts: [host], zoom: 13.5});
+  const noVisibleHost = await massing.update({regions: [whole], hosts: [], zoom: 13.5});
+  assert.equal(noVisibleHost.droppedForHosts, 0);
+  assert.ok(map.data[FOCUS_SOURCE].features.some(f => f.properties.osm_id === 101));
+  assert.deepEqual(map.filters[CITY_LAYER].at(-1), ['!', ['in', ['id'], ['literal', []]]]);
+  massing.dispose();
+});
+
+test('a pending tile rebuild cannot restore stale masks after focus is cleared', async () => {
+  const map = fakeMap();
+  const bytes = readFileSync(new URL('./fixtures/mvt-sample.pbf', import.meta.url));
+  let release;
+  const pending = new Promise(resolve => { release = resolve; });
+  const massing = installMassing(map, {beforeId: null, tileUrl: () => 'stub',
+    fetchImpl: async () => { await pending; return {ok: true, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)}; }});
+  const delayed = massing.update({regions: [whole], hosts: [region], zoom: 13.5});
+  await massing.update({regions: [], hosts: [], zoom: 13.5});
+  release();
+  assert.equal((await delayed).stale, true);
+  assert.equal(map.data[FOCUS_SOURCE].features.length, 0);
+  massing.dispose();
+});
+
 test('venue-level eye scene: surroundings quiet, buildings standing between the camera and the venue become see-through', async () => {
   const map = fakeMap();
   const bytes = readFileSync(new URL('./fixtures/mvt-sample.pbf', import.meta.url));

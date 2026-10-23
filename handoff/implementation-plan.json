@@ -3,7 +3,7 @@
   "schemaVersion": "1.4.0",
   "documentType": "implementation-plan",
   "productId": "citymeter-camera-shops",
-  "productVersion": "0.5.1",
+  "productVersion": "0.5.2",
   "updatedOn": "2026-10-23",
   "brief": "product-brief.json",
   "statement": "product-statement.json",
@@ -11,7 +11,7 @@
   "sibling": {
     "product": "CityMETER · Luxury Brands 0.5.0",
     "repository": "https://github.com/montri-th/luxurybrands",
-    "relation": "same 0.5 architecture (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops replaces the data, the counting unit (ร้าน = shop banner), the ย่าน layer (CityMETER production Locales) and the copy"
+    "relation": "same 0.5 architecture (3D first Aha, focus/quiet, breadcrumb, venue x-ray, province frames, pictograms, venue logos); Camera Shops replaces the data, the counting unit (แบรนด์ = shop banner), the ย่าน layer (CityMETER production Locales) and the copy"
   },
   "architecture": {
     "runtime": "static HTML/CSS/JavaScript ES modules",
@@ -63,15 +63,15 @@
     },
     "coreDataTimeoutMs": 12000,
     "optionalVendorTimeoutMs": 20000,
-    "versionToken": "?v=20261023-c2 on every entry file in index.html",
+    "versionToken": "Read current cache revision from index.html/import graph; refresh consistently with the release. Historical task revisions remain evidence.",
     "modules": [
       {
         "path": "js/app.js",
-        "role": "orchestration: three row scopes and focus modes, panel modes + back stack, breadcrumb, URL state, map lifecycle, camera calls, spatial install (host → massing → x-ray); venue level reads its rows from scopeRows (detailRows); legend-aware pitchedPadding and the desktop zoom-13 floor for city fits (CITY_MASSING_ZOOM); selectProvince; legend switch by zoom; status line “ป้ายชื่อ”; legend hides the host-building key when no host building is displayed (.map-panel.no-host-buildings); table ย่าน shows “—” for a row without a point"
+        "role": "orchestration: three row scopes and focus modes, panel modes + back stack, breadcrumb, URL state, map lifecycle, camera calls, spatial install (host → massing → x-ray); venue level reads its rows from scopeRows (detailRows); legend-aware pitchedPadding and the desktop zoom-13 floor for city fits (CITY_MASSING_ZOOM); selectProvince; legend switch by zoom; status line “ป้ายชื่อ”; legend hides the host-building key when no host building is displayed (.map-panel.no-host-buildings); table ย่าน shows “—” for a row without a point Current0.5.2: count-metric brands|pos; map/legend/badge/ranking units are consistent; public vocabulary แบรนด์/ศูนย์การค้า;77provinceframes retain13zero-observed provinces."
       },
       {
         "path": "js/model.js",
-        "role": "taxonomy (5 segments = research scope groups A–E, 4 channels, cohorts current/all/review (isReview includes rows at venues the research master holds, venueJoin held), FORMATS), 77 PROVINCES with production codes + DOPA codes, banner helpers (bannersOf, bannerSegmentsOf, brandSet, countBrands, projectSegment), BANNER_LABELS/bannerLabel (chip labels, display only), shared filter with segment projection, summaries (banners, outlets, hosts, venues), point features, CSV helper"
+        "role": "taxonomy (5 segments = research scope groups A–E, 4 channels, cohorts current/all/review (isReview includes rows at venues the research master holds, venueJoin held), FORMATS), 77 PROVINCES with production codes + DOPA codes, banner helpers (bannersOf, bannerSegmentsOf, brandSet, countBrands, projectSegment), BANNER_LABELS/bannerLabel (chip labels, display only), shared filter with segment projection, summaries (banners, outlets, hosts, venues), point features, CSV helper Current0.5.2: count-metric brands|pos; map/legend/badge/ranking units are consistent; public vocabulary แบรนด์/ศูนย์การค้า;77provinceframes retain13zero-observed provinces."
       },
       {
         "path": "js/neighborhoods.js",
@@ -99,7 +99,7 @@
       },
       {
         "path": "js/map-layers.js",
-        "role": "Locale choropleth, outlines, focus/quiet, HTML ink-chip labels (installAreaLabels for Locales and provinces)"
+        "role": "Locale choropleth, outlines, focus/quiet, HTML ink-chip labels (installAreaLabels for Locales and provinces) Current0.5.2: count-metric brands|pos; map/legend/badge/ranking units are consistent; public vocabulary แบรนด์/ศูนย์การค้า;77provinceframes retain13zero-observed provinces."
       },
       {
         "path": "js/pins.js",
@@ -119,7 +119,7 @@
       },
       {
         "path": "js/provinces.js",
-        "role": "province frames for provinces holding rows: banners and outlets per province, count classes, fill/outline/selected layers with zoom windows, bounds"
+        "role": "province frames for provinces holding rows: banners and outlets per province, count classes, fill/outline/selected layers with zoom windows, bounds Current0.5.2: count-metric brands|pos; map/legend/badge/ranking units are consistent; public vocabulary แบรนด์/ศูนย์การค้า;77provinceframes retain13zero-observed provinces."
       },
       {
         "path": "js/massing.js",
@@ -143,7 +143,7 @@
       },
       {
         "path": "js/charts.js",
-        "role": "vendor-free ranking / equal-cell matrix / compare; SEGMENT_ORDER from SEGMENTS"
+        "role": "vendor-free ranking / equal-cell matrix / compare; SEGMENT_ORDER from SEGMENTS Current0.5.2: count-metric brands|pos; map/legend/badge/ranking units are consistent; public vocabulary แบรนด์/ศูนย์การค้า;77provinceframes retain13zero-observed provinces."
       },
       {
         "path": "js/panel.js",
@@ -163,7 +163,7 @@
       },
       {
         "path": "js/navigation.js",
-        "role": "approved nav-7 icons, toolbar titles, help dialog; PICTOGRAM_CONTRACT (ร้าน = photo_camera U+E412) + pictograms-ready font gate"
+        "role": "approved nav-7 icons, toolbar titles, help dialog; PICTOGRAM_CONTRACT (แบรนด์ = photo_camera U+E412) + pictograms-ready font gate"
       },
       {
         "path": "js/launch.js",
@@ -205,12 +205,12 @@
       "Read the normalized2026-10-23master and verified asset manifest; preserve existing IDs, raw source versions and reviewer fields.",
       "New category-killer outlets require branch-specific camera-selling evidence. Sixteen added Power Buy branches intersect current retailer branch identity/address with an undated Canon DSLR997/compact933 sales-stockist listing; this is source-listed eligibility, not current stock or field-open verification. AV VALUE qualifies only its Vanilla Moon4F physical camera/lens/video showroom; HQ65SoiChan33 is separate. Generic networks, catalog-only, announcement-only, stock-zero and excluded records remain in1411private network candidates and never enter public camera counts.",
       "The normalized refresh master owns stable IDs, selected source-backed outlet points, source roles and accepted venue/building links independently. scripts/refresh-camera-master.py projects them without creating joins. Coordinates may come from official published branch geo, identity-checked named business-map targets, explicit venue references or clearly dated retained evidence; never viewport centres. A point need not have a joined host and must not be copied to venue coordinates without an explicit host role. Held host identity can coexist with an independently qualified business point. No geocoded, nearest-host or nearest-building fallback; containment retests use the actual selected point.",
-      "Reuse the103known source features; retest actual point containment for accepted host links:125inside+4outside named contexts; no new building acquisition.",
+      "111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part. Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.",
       "Run python3 scripts/refresh-camera-master.py --master <delivery-records.json> --logos <complete-logo-library-manifest.json> --cache <private-cache>.",
-      "Verify selected-point Locale membership against production receipts;36Locale polygons and48/48Bangkokpoint agreement. Preserve existing64province frames.",
-      "Run unit/schema/source-hygiene/visual/live checks separately; do not claim a0.5.1live release from local data preparation. Historical task records below remain unchanged."
+      "Verify selected-point Locale membership against production receipts;36Locale polygons and48/48Bangkokpoint agreement. All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units.",
+      "Run unit/schema/source-hygiene/visual/live checks separately; do not claim a0.5.2live release from local data preparation. Historical task records below remain unchanged."
     ],
-    "hostLinks": "Accepted host/building references are supplied by the refreshed master. Selected business points do not create joins. Historical host-links01–04 cache and proposal ledgers remain private reproducibility evidence.",
+    "hostLinks": "Accepted host/building references are supplied by the refreshed master. Selected business points do not create joins. Historical host-links01–04 cache and proposal ledgers remain private reproducibility evidence. A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.",
     "publicHygiene": "Strip phones/privateDriveURLs and all network/reviewer/raw candidate material from public data. Only identity-checked named map-target/published source coordinates may be selected; never viewport centres."
   },
   "selection": {
@@ -237,7 +237,8 @@
       "place",
       "mall",
       "view3d",
-      "cam"
+      "cam",
+      "metric"
     ],
     "rowScopes": [
       "scopeRows",
@@ -288,7 +289,8 @@
       "crumb-venue",
       "crumb-expand",
       "toggle-3d"
-    ]
+    ],
+    "metricQuery": "metric=brands (default) or metric=pos; All77 source province frames remain (64 with observed rows,13 with no observed rows); the original64 feature records are unchanged. count-metric / ?metric=brands|pos switches unique banners / deduplicated outlet IDs across colours, legends, badges and rankings. Zero means ยังไม่พบสาขาในชุดข้อมูล, not verified absence. Brand share and exclusive/shared analysis retain explicit brand units."
   },
   "tasks": [
     {
@@ -910,7 +912,7 @@
     {
       "id": "AC14",
       "scenario": "Choropleth integrity",
-      "expected": "Class colours equal the legend and the ranking bars; measured zero has a zero outline; fill off at zoom ≥ 14.5; same HEX on both themes; count = distinct banners per Locale",
+      "expected": "Count colours equal the legend and ranking bars for the selected brands/pos metric; zero selected observations keep a zero outline and a ยังไม่พบสาขาในชุดข้อมูล label; fill off at zoom ≥ 14.5; exact same HEX on both themes",
       "verificationType": "unit-and-browser",
       "verification": "tests/scales.test.js, tests/profile-model.test.js (EVID-05 area model)",
       "result": "see VERIFICATION.md"
@@ -989,7 +991,7 @@
     {
       "id": "AC24",
       "scenario": "Venue always visible",
-      "expected": "At venue level in 3D the venue's host solid is visible from any bearing, pitch (≤ 75) and zoom ≥ 13 and clickable on every point; layer order city/focus/occluder massing → host extrusion → venue-xray → water-name; in 2D the footprint remains",
+      "expected": "At a current venue or selected neighborhood, qualified host solids stay visible in 3D at pitch ≤ 75 and zoom ≥ 13 and remain clickable; layer order city/focus/occluder massing → host extrusion → basemap symbol labels → venue-xray, with DOM outlet marks/logos above the canvas; in 2D the original footprint remains",
       "verificationType": "unit-and-browser",
       "verification": "tests/venue-xray.test.js (draw-order contract, hit test); harness venue MBK CENTER (parts extruded, x-ray), Ayutthaya City Park (master footprint)",
       "result": "see VERIFICATION.md"
@@ -997,9 +999,9 @@
     {
       "id": "AC25",
       "scenario": "Country view",
-      "expected": "With the whole country on screen (zoom < 9) the 64 provinces holding outlets show frames filled by their own count classes with the legend “จังหวัด · จำนวนร้าน” and chips; the panel lists ten provinces and folds the rest in a native disclosure; a frame, chip or row sets the จังหวัด filter, breadcrumb and camera; above zoom 9 frames become outlines and the legend returns to ย่าน",
+      "expected": "With the whole country on screen (zoom < 9), all 77 source province frames remain. The chosen จำนวนแบรนด์/จำนวนสาขา metric drives fills, legends, badges and ranking. Provinces without observed rows show 0 / ยังไม่พบสาขาในชุดข้อมูล, never verified market absence; all frames/chips/list rows remain drill-downs. Above zoom 9 the legend reads ย่าน.",
       "verificationType": "unit-and-browser",
-      "verification": "tests/provinces.test.js; harness country (64 frames, 64 panel rows, 54 folded) and drill-down ?province=CMI",
+      "verification": "tests/provinces.test.js; browser country target: 77 source frames and 77 panel rows (67 folded), including PLG/UTI/YST, both count metrics, and drill-down ?province=CMI; actual browser result belongs in dated VERIFICATION.md",
       "result": "see VERIFICATION.md"
     },
     {
@@ -1118,7 +1120,7 @@
     "Tune camera and massing live via window.__citymeter in the console before changing constants",
     "Publish only authorized changes; wait for the Pages run; run verify:live before reporting a release",
     "Regenerate the manifest and bundle from final bytes; never hand-edit hashes",
-    "3D layer order is a contract: host extrusion first, massing tiers inserted before it, venue-xray last — check with map.getStyle().layers / map.getLayer after any spatial change"
+    "3D layer order is a contract: massing tiers before the host extrusion; venue-xray appended last after basemap symbols; DOM outlet marks/logos remain above the canvas. Check map.getStyle().layers and actual rendered solids after any spatial change."
   ],
   "backlog": [
     {

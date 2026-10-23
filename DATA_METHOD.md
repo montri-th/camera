@@ -1,5 +1,7 @@
-# Data and method — 0.5.1 refresh
+# Data and method — 0.5.2 building/metric refresh
 
+**Province/metric update — 23 Oct 2026:** national frames now retain all 77 source provinces (the original 64 shapes are unchanged). “นับตาม” switches จำนวนแบรนด์ / จำนวนสาขา for map colours, legends, badges and rankings; `?metric=pos` selects branches. Zero means “ยังไม่พบสาขาในชุดข้อมูล”, not verified absence. Brand share and exclusive/shared analysis remain labelled as brands.
+**Owner vocabulary override, 2026-10-23:** public counted banners use “แบรนด์”, outlets use “สาขา”, and the venue label is “ศูนย์การค้า”. Earlier “ร้าน/สถานที่” count labels in retained history are superseded. Source fields, entity names and business categories are unchanged.
 **Snapshot:** 2026-10-23 (Asia/Bangkok). Public research demo; source listings are not field-verified operation or a market census. The refreshed master is projected by `scripts/refresh-camera-master.py`; the host-only 0.5.0 pipeline below is historical.
 
 ## Current units and coverage
@@ -7,7 +9,7 @@
 - 253 canonical outlet records: 252 retail outlet listings in the default view and one World Camera contact-location record.
 - 44 approved shop banners; 40 appear in all public rows and 39 in the default retail view. Pixpros House, Naituanoi Store, BaNANA and Studio7 have no qualified outlet row. Approval alone does not imply branch coverage.
 - 147 persistent named venues. Public data has 260 counted retail/host-counter associations; native `11_STORE_BRANDS` has 261 including one operator-only link. Shared host/coordinates never merge independent outlets.
-- 236 selected source/reference points; 17 rows remain without coordinates. There are 129 accepted host-building contexts: 125 inside a qualified footprint and four named-host contexts with an outside point. The 103 source features (69 footprints + 34 parts) are preserved; no new building geometry was acquired.
+- 111 source features = 76 footprints + 35 parts across 76 of 147 named venues (+7 venues); 160 outlet-building contexts = 145 inside + 12 named contexts with outside points + 3 linked contexts with no selected point. All 253 outlet IDs, 236 points, 17 missing points and 107 accepted CityMETER host records are unchanged.
 - Figures are computed from `data/camera.json` and the refreshed join. The 1,411 private network candidates do not enter public rows, counters or denominators.
 
 ## Camera-selling qualification
@@ -24,7 +26,13 @@ A selected point can be an official retailer coordinate, a named business-map de
 
 UNIT's walk-in host is Lido Connect 2F; company address 236/11 Siam Square Soi 2 remains separate evidence. Lido's point comes from official published event-location records and represents the host, not the UNIT unit/entrance. Central Chidlom's host reference is retained from 21 October evidence; its provider returned 403 on 23 October, so it is not freshly revalidated. Chidlom's dated 2024 camera-assortment note/hold remains alongside additional undated manufacturer evidence.
 
-Containment uses the actual selected point and the known qualified host feature. Leica Siam Paragon's new official point is outside its former footprint; preserve named-host context and exclude it from inside totals. No new complete-polygon/part-coverage certification is implied. Retain source/modeled/unknown height separately from display fallback and never spread a tower's height across a parent.
+Containment uses the actual selected point and the known qualified host feature. Leica Siam Paragon's new official point is outside its former footprint; preserve named-host context and exclude it from inside totals. New parts require complete polygon coverage against their qualified parent; a vertex-only test is insufficient. Retain source/modeled/unknown height separately from display fallback and never spread a tower's height across a parent.
+
+## Reviewed host geometry and display heights
+
+A reviewed, independently identified named host can have an accepted building even without a CityMETER registry join. No outlet/venue point moved and no registry join was upgraded. Preserve point containment, outside named context and missing-point context as different outcomes. The original 103 geometries are preserved and 34 original part ownership links restored; eight acquired/reused features add Fortune Town, Lido Connect, Vanilla Moon, Central Phuket Floresta, Future Park Rangsit, Siam Square One and Central Chidlom. The new hotel part is host-complex context, never proof that each tenant occupies that part.
+
+Fortune Town has 17 outlets / 13 counted banners. Retail-parent display top17.5m and hotel-context display top105m are explicit level-count models with source height_m=null, not published metre heights or surveyed measurements. Do not spread hotel/tower height across the retail parent. Unknown source height remains null; 3m fallbacks are display values only.
 
 ## Locale, privacy and assets
 

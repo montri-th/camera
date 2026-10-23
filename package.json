@@ -1,6 +1,6 @@
 {
   "name": "citymeter-camera-shops",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "type": "module",
   "description": "CityMETER · Camera Shops — neighborhood-first 3D map of camera-shop outlets in Thailand (same 0.5 architecture as CityMETER · Luxury Brands)",

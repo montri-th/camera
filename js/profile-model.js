@@ -5,15 +5,15 @@
  * same frozen neighborhood assignment as the map and charts.
  *
  * Counting rules (shared with chart-model.js):
- * - "brands" = Set of distinct shop banners (ร้าน); repeated outlets of one banner
+ * - "brands" = Set of distinct shop banners (แบรนด์); repeated outlets of one banner
  *   count once; a co-branded outlet contributes each of its counted banners
  * - "pos" = number of outlet rows (สาขา)
  * - segment mixes count (outlet × banner) pairs by each banner's own segment
  * - exclusive/shared compare ALL assigned neighborhoods in the selection, never a top-N
  */
-import {SEGMENTS, CHANNELS, hasPoint, isClosed, bannersOf, bannerSegmentsOf} from './model.js?v=20261023-camera-r2';
-import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r2';
-import {buildNeighborhoodChartModel} from './chart-model.js?v=20261023-camera-r2';
+import {SEGMENTS, CHANNELS, hasPoint, isClosed, bannersOf, bannerSegmentsOf} from './model.js?v=20261023-camera-r4';
+import {assignNeighborhood, summarizeNeighborhoods} from './neighborhoods.js?v=20261023-camera-r4';
+import {buildNeighborhoodChartModel} from './chart-model.js?v=20261023-camera-r4';
 
 const text = value => String(value ?? '').trim();
 const areaId = feature => feature?.properties?.id ?? feature?.id;
@@ -34,7 +34,7 @@ export function segmentMixOf(members = []) {
 /** Thai reading of the geometry role carried by a row; never upgrades precision. */
 export function describeGeometry(row = {}) {
   const role = text(row.geometryRole), status = text(row.geometryStatus);
-  if (!hasPoint(row) && row.venueJoin === 'held') return {level: 'review', label: 'พิกัดรอตรวจ', note: 'ชื่อหรือขอบเขตของสถานที่ยังรอตรวจ จึงยังไม่วางจุด'};
+  if (!hasPoint(row) && row.venueJoin === 'held') return {level: 'review', label: 'พิกัดรอตรวจ', note: 'ชื่อหรือขอบเขตของศูนย์การค้ายังรอตรวจ จึงยังไม่วางจุด'};
   if (!hasPoint(row)) return {level: 'none', label: 'ยังไม่มีพิกัด', note: 'รายการยังอยู่ในตารางและจำนวน แต่ไม่สร้างตำแหน่งขึ้นใหม่'};
   if (/host_hypermarket/.test(role)) return {level: 'host', label: 'จุดตัวแทนไฮเปอร์มาร์เก็ต', note: 'ไม่ใช่ประตูร้านหรือชั้นที่ตั้ง'};
   if (/host_complex|host_building|host_hotel|host_reference|official_venue_event_reference|representative|shared_building|other_tenant/.test(role) || /representative/.test(status)) {
@@ -49,7 +49,7 @@ export function describeGeometry(row = {}) {
   if (/not_currently_verified/.test(status)) {
     return {level: 'provider-historic', label: 'จุดร้านจากผู้ให้บริการแผนที่ (ประวัติเดิม)', note: 'ยังไม่ได้ตรวจซ้ำในรอบล่าสุด'};
   }
-  return {level: 'provider', label: 'จุดร้านจากผู้ให้บริการแผนที่', note: 'ตรงกับรายการแบรนด์และสถานที่ในรอบล่าสุด'};
+  return {level: 'provider', label: 'จุดร้านจากผู้ให้บริการแผนที่', note: 'ตรงกับรายการแบรนด์และศูนย์การค้าในรอบล่าสุด'};
 }
 
 /** Thai status label; closures stay factual and are never softened; holds keep their own label. */
@@ -57,18 +57,18 @@ export function describeStatus(row = {}) {
   if (isClosed(row)) return {tone: 'closed', label: 'ปิดถาวร', detail: 'พบหลักฐานปิดถาวร'};
   if (row.role === 'retailer_contact_location') return {tone: 'pending', label: 'ที่อยู่ติดต่อ', detail: 'ที่อยู่ร้านตามเว็บไซต์ ยังไม่ยืนยันว่าเป็นหน้าร้านขายปลีก'};
   switch (row.identity) {
-    case 'shared_venue_identity_review': return {tone: 'pending', label: 'ตัวตนหน้าร้านรอตรวจ', detail: 'สองเครือข่ายระบุร้านในสถานที่เดียวกัน ยังไม่ยืนยันว่าเป็นหน้าร้านเดียวกันหรือไม่'};
+    case 'shared_venue_identity_review': return {tone: 'pending', label: 'ตัวตนหน้าร้านรอตรวจ', detail: 'สองเครือข่ายระบุร้านในศูนย์การค้าเดียวกัน ยังไม่ยืนยันว่าเป็นหน้าร้านเดียวกันหรือไม่'};
     case 'same_unit_floor_conflict_review': return {tone: 'pending', label: 'รวมรายการรอตรวจ', detail: 'สองรายการชี้ห้องเดียวกัน รวมเป็นสาขาเดียวชั่วคราว'};
     case 'location_conflict_review': return {tone: 'pending', label: 'ที่ตั้งขัดกัน', detail: 'แหล่งข้อมูลระบุที่ตั้งไม่ตรงกัน ยังไม่เลือกจุดใด'};
     default: break;
   }
   switch (row.status) {
-    case 'source_listed_not_field_verified': return {tone: 'listed', label: 'พบในแหล่งข้อมูล', detail: 'มีรายการในแหล่งทางการของร้านหรือสถานที่'};
+    case 'source_listed_not_field_verified': return {tone: 'listed', label: 'พบในแหล่งข้อมูล', detail: 'มีรายการในแหล่งทางการของร้านหรือศูนย์การค้า'};
     case 'temporarily closed': return {tone: 'pending', label: 'ปิดชั่วคราว', detail: 'แหล่งข้อมูลระบุปิดชั่วคราว'};
     case 'closure_conflict_review': return {tone: 'pending', label: 'หลักฐานขัดกัน', detail: 'สถานะเปิด/ปิดยังขัดกัน รอตรวจ'};
     case 'provider_listed_not_field_verified': return {tone: 'neutral', label: 'พบในแหล่งแผนที่', detail: 'ยังไม่ได้ตรวจซ้ำกับแบรนด์'};
     case 'not_revalidated': return {tone: 'pending', label: 'ยังไม่ตรวจซ้ำ', detail: 'ประวัติเดิมที่ยังไม่ตรวจซ้ำ'};
-    case 'source_listed': return {tone: 'listed', label: 'พบในแหล่งข้อมูล', detail: 'มีรายการในแหล่งของแบรนด์หรือสถานที่'};
+    case 'source_listed': return {tone: 'listed', label: 'พบในแหล่งข้อมูล', detail: 'มีรายการในแหล่งของแบรนด์หรือศูนย์การค้า'};
     default: return {tone: 'neutral', label: text(row.status) || 'ไม่ระบุสถานะ', detail: ''};
   }
 }
@@ -78,8 +78,8 @@ export function describeStatus(row = {}) {
  * Returns the top-three area summary plus one "exclusivity" finding computed
  * against all assigned neighborhoods of the selection.
  */
-export function buildOverviewInsights(rows = [], geojson, segments = []) {
-  const model = buildNeighborhoodChartModel(rows, geojson, segments);
+export function buildOverviewInsights(rows = [], geojson, segments = [], {metric = 'brands'} = {}) {
+  const model = buildNeighborhoodChartModel(rows, geojson, segments, {metric});
   const byExclusive = [...model.areas].sort((a, b) => b.exclusiveBrands - a.exclusiveBrands || b.brands - a.brands || a.name.localeCompare(b.name));
   const mostExclusive = byExclusive[0] && byExclusive[0].exclusiveBrands > 0 ? byExclusive[0] : null;
   return {
@@ -98,10 +98,10 @@ export function buildOverviewInsights(rows = [], geojson, segments = []) {
  * `allRows` are the committed selection (before any single-area focus) so the
  * exclusive/shared comparison keeps the whole selection as its reference.
  */
-export function buildNeighborhoodProfile(allRows = [], feature, geojson, centers = [], segments = []) {
+export function buildNeighborhoodProfile(allRows = [], feature, geojson, centers = [], segments = [], {metric = 'brands'} = {}) {
   if (!feature) return null;
   const id = areaId(feature), p = feature.properties || {};
-  const model = buildNeighborhoodChartModel(allRows, geojson, segments);
+  const model = buildNeighborhoodChartModel(allRows, geojson, segments, {metric});
   const area = model.areas.find(a => a.id === id);
   const members = allRows.filter(r => hasPoint(r) && areaId(assignNeighborhood(r, geojson)) === id);
   const brandAreas = new Map();
@@ -131,7 +131,7 @@ export function buildNeighborhoodProfile(allRows = [], feature, geojson, centers
       longitude: center?.longitude ?? v.rows.find(hasPoint)?.longitude ?? null,
       source: center?.source || '', rowIds: v.rows.map(r => r.id),
     };
-  }).sort((a, b) => b.brands - a.brands || b.pos - a.pos || a.name.localeCompare(b.name));
+  }).sort((a, b) => b[metric === 'pos' ? 'pos' : 'brands'] - a[metric === 'pos' ? 'pos' : 'brands'] || b.brands - a.brands || a.name.localeCompare(b.name));
   const segmentMix = segmentMixOf(members);
   const channels = Object.entries(CHANNELS).map(([cid, name]) => ({id: cid, name, pos: members.filter(r => r.channel === cid).length})).filter(c => c.pos > 0).sort((a, b) => b.pos - a.pos);
   const closed = members.filter(isClosed).length;
@@ -139,7 +139,7 @@ export function buildNeighborhoodProfile(allRows = [], feature, geojson, centers
     id, name: p.name || p.nameTh || id, nameEn: p.nameEn || '', status: p.status || '', confidence: p.confidence || '',
     definition: p.definition || '', edges: p.edges || null, sourceURLs: Array.isArray(p.sourceURLs) ? p.sourceURLs : [],
     checkedOn: p.checkedOn || '', boundaryType: p.boundaryType || '', productionUrl: p.productionUrl || '',
-    pos: members.length, brands: brandNames.length, brandNames, exclusive, shared, venues, segmentMix, channels, closed,
+    pos: members.length, brands: brandNames.length, metric, brandNames, exclusive, shared, venues, segmentMix, channels, closed,
     rank: area ? model.areas.indexOf(area) + 1 : null, areaCount: model.areaCount, totalBrands: model.totalBrands,
     rowIds: members.map(r => r.id),
   };
@@ -188,7 +188,7 @@ export function buildVenueProfile(rows = [], {mallId = '', venue = '', centers =
 }
 
 /** Venues (CityMETER hosts or plain venue labels) ranked by distinct banners within the selection; street shops without a venue are not a venue. */
-export function rankVenues(rows = [], centers = []) {
+export function rankVenues(rows = [], centers = [], {metric = 'brands'} = {}) {
   const groups = new Map();
   for (const r of rows) {
     const key = venueKeyOf(r);
@@ -200,7 +200,7 @@ export function rankVenues(rows = [], centers = []) {
     const center = centers.find(c => c.id === g.mallId) || null;
     return {key: g.key, mallId: g.mallId, name: center?.name || g.venue, venue: g.venue, type: center?.type || '', province: text(g.rows[0].province),
       brands: bannerNames(g.rows).length, pos: g.rows.length};
-  }).sort((a, b) => b.brands - a.brands || b.pos - a.pos || a.name.localeCompare(b.name));
+  }).sort((a, b) => b[metric === 'pos' ? 'pos' : 'brands'] - a[metric === 'pos' ? 'pos' : 'brands'] || b.brands - a.brands || a.name.localeCompare(b.name));
 }
 
 /** Rows of a neighborhood inside the selection (same assignment as the map). */
