@@ -25,3 +25,8 @@ Created 2026-10-22; data/asset contracts refreshed 2026-10-23 (0.5.1) from the C
 - Use approved LDS Rounded outline navigation glyphs (FILL 0, weight 300, GRAD 0). The menu icon is for the mobile data sheet only.
 - Copy: short, natural Thai, no caveats on screen; units, provenance and limits live in the data section, help and docs. Neighborhood labels are ink chips (`--area-label-*`); pin name chips are light cards so they never look like area labels.
 - Charts: matrix cells are equal in size; only the number and its count class carry meaning. No CSV download control. Review actual Thai at desktop and narrow widths in light and dark themes before claiming a change is done; local renders are not proof of a live release — run `npm run verify:live`.
+
+## Discovery and dataset group (owner decision 2026-11-08)
+
+- Every page carries `<meta name="robots" content="noindex, nofollow">`. The owner does not want search engines to index the demos while developers keep building on them: “ไม่ต้องการให้เสิช engine เข้ามาดูเดโม แต่อยากให้ dev นำ demo บน github ไป vibe coding ต่อได้ง่าย คือ SEO อันไหนจัดการได้จัดการไปเลย แต่ยังไม่ต้องให้ crawler เข้ามา index”. Keep the rest of the SEO metadata ready for production, do not block crawlers in a robots.txt (they must be able to read the noindex), add no sitemap, and never point `rel="canonical"` at landometer.com from a noindex page. `tests/discovery-and-group.test.js` guards this.
+- The panel eyebrow `CITYMETER · LOCATION` follows the dataset registry (`R01_DATASETS.dataset_group`; owner: “ใช้ตามทะเบียนทั้งหมด”). This dataset is LOCATION in the registry read on 2026-11-08; change the label only when the registry changes.
