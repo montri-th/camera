@@ -3,7 +3,7 @@
   "schemaVersion": "1.4.0",
   "documentType": "implementation-plan",
   "productId": "citymeter-camera-shops",
-  "productVersion": "0.5.2",
+  "productVersion": "0.6.0",
   "updatedOn": "2026-10-23",
   "brief": "product-brief.json",
   "statement": "product-statement.json",
@@ -166,7 +166,7 @@
         "role": "approved nav-7 icons, toolbar titles, help dialog; PICTOGRAM_CONTRACT (แบรนด์ = photo_camera U+E412) + pictograms-ready font gate"
       },
       {
-        "path": "js/launch.js",
+        "path": "js/shell/launch.js",
         "role": "boot states; file: bridge to https://montri-th.github.io/camera/"
       },
       {
@@ -740,7 +740,7 @@
         "AC05"
       ],
       "files": [
-        "js/launch.js",
+        "js/shell/launch.js",
         "js/vendors.js",
         "js/app.js"
       ],
