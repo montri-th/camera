@@ -3,7 +3,7 @@
   "schemaVersion": "1.4.0",
   "documentType": "implementation-plan",
   "productId": "citymeter-camera-shops",
-  "productVersion": "0.7.2",
+  "productVersion": "0.7.3",
   "updatedOn": "2026-10-23",
   "brief": "product-brief.json",
   "statement": "product-statement.json",
