@@ -19,7 +19,7 @@
  */
 import {PROVINCES, provinceByName, bannersOf, uniqueOutletRows, normalizeCountMetric, metricValue, COUNT_METRICS} from './model.js?v=20261023-camera-r4';
 import {buildCountScale, classify} from './scales.js?v=20261023-camera-r4';
-import {featureBounds, firstLineLayerId} from './map-layers.js?v=20261023-camera-r4';
+import {featureBounds, firstLineLayerId} from './map-layers.js?v=20261112-r3';
 
 export const PROVINCE_FILL_MAX_ZOOM = 9;
 export const PROVINCE_OUTLINE_MAX_ZOOM = 12;
